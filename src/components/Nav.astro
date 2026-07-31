@@ -1,0 +1,65 @@
+---
+import { useTranslations, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { href: '/', label: 'SR', tag: 'sr' };
+---
+
+<nav class="nav" id="nav">
+  <div class="nav-links">
+    <a href="#karta">{t.nav.karta}</a><a href="#dan">{t.nav.dan}</a><a href="#kontakt">{t.nav.kontakt}</a>
+  </div>
+  <a class="nav-mark" href={locale === 'sr' ? '/' : '/en/'}>Nook</a>
+  <!-- Outside .nav-links on purpose: that is hidden below 720px, and the
+       language switch must not disappear on mobile. -->
+  <div class="nav-right">
+    <a class="nav-cta nav-hide-sm" href="#kontakt">{t.nav.cta}</a>
+    <a class="nav-cta nav-lang" href={other.href} hreflang={other.tag} lang={other.tag}>{other.label}</a>
+  </div>
+</nav>
+
+<script>
+  import '../scripts/nav';
+</script>
+
+<style is:global>
+/* ── nav ─────────────────────────────────────────────────────────────── */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.15rem var(--gutter);
+  font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--olive-deep);
+  transition:color .45s ease,background-color .45s ease,border-color .45s ease,padding .45s ease;
+  border-bottom:1px solid transparent;
+}
+.nav.is-solid{
+  background:rgba(242,236,225,.88);border-bottom-color:var(--hair);
+  padding-top:.85rem;padding-bottom:.85rem;
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
+}
+.nav.is-solid-dark{
+  background:rgba(24,18,10,.72);border-bottom-color:rgba(247,242,232,.14);
+  padding-top:.85rem;padding-bottom:.85rem;
+  -webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
+}
+.nav a{opacity:.78;transition:opacity .3s}
+.nav a:hover{opacity:1}
+.nav-mark{font-weight:400;letter-spacing:.34em;transition:color .55s ease}
+.nav.is-solid .nav-mark{color:var(--olive-deep)}
+.nav-mark.on-dark{color:#F7F2E8}
+.nav-links{display:flex;gap:1.6rem}
+.nav-cta{border:1px solid currentColor;border-radius:2rem;padding:.5rem 1.15rem;opacity:.85}
+.nav.is-dark{color:#F7F2E8}
+@media(max-width:720px){.nav-links{display:none}}
+
+  .nav-right { display: flex; align-items: center; gap: .6rem; }
+  .nav-lang { font-variant-numeric: tabular-nums; }
+  @media (max-width: 720px) { .nav-hide-sm { display: none; } }
+</style>

@@ -28,6 +28,15 @@ export function motion() {
   (window as any).__motionBoots = ((window as any).__motionBoots ?? 0) + 1;
   document.documentElement.dataset.motion = 'on';
 
+  // Jost/Instrument Sans arrive after first paint and change the page height.
+  // ScrollTrigger caches maxScroll on refresh, so without this any trigger
+  // ending at 'max' — the nav's footer surfaces — is computed against a
+  // shorter document and never fires.
+  document.fonts?.ready.then(() => {
+    ScrollTrigger.refresh();
+    document.documentElement.dataset.motionRefreshed = 'on';
+  });
+
   booted = { gsap, ScrollTrigger };
   return booted;
 }
