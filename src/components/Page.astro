@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../i18n';
 import Hero from './sections/Hero.astro';
+import Prostor from './sections/Prostor.astro';
 
 interface Props {
   locale: Locale;
@@ -11,6 +12,7 @@ const { locale } = Astro.props;
 
 <main data-locale={locale}>
   <Hero locale={locale} />
+  <Prostor locale={locale} />
 </main>
 
 <script>
