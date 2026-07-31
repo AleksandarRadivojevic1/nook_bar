@@ -144,3 +144,10 @@ vite.config.ts.timestamp-*
 
 # Local documentation — specs, plans, notes. Not committed.
 docs/
+
+# Build and test output
+.astro/
+dist/
+.vercel/
+test-results/
+playwright-report/
