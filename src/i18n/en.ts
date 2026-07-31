@@ -46,6 +46,8 @@ export const en: Dictionary = {
   },
   recenzije: {
     title: 'Reviews',
+    score: '5.0',
+    meta: '20 reviews · Google',
   },
   kontakt: {
     title: 'Practical',

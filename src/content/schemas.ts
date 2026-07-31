@@ -21,7 +21,15 @@ export const menuItemSchema = z.object({
 });
 
 export const reviewSchema = z.object({
-  quote: localized,
+  /**
+   * NOT localized, deliberately. These are verbatim public Google reviews.
+   * Translating a real person's words and presenting them as that person's
+   * quote would not be honest, so each quote stays in the language it was
+   * written in and is shown as-is in both locales.
+   */
+  quote: z.string().min(1),
+  /** First name + last initial only — full names of real customers do not
+   * belong on a page they never agreed to appear on. */
   author: z.string().min(1),
   source: z.string().default('Google'),
   stars: z.number().int().min(1).max(5),

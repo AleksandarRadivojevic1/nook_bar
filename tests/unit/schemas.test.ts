@@ -36,7 +36,7 @@ describe('menu items', () => {
 describe('reviews', () => {
   it('bounds the star rating to 1..5', () => {
     const base = {
-      quote: { sr: 'Najbolji bar.', en: 'The best bar.' },
+      quote: 'The best bar in town.',
       author: 'M. P.',
       stars: 5,
       order: 1,

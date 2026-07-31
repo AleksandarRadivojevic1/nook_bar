@@ -1,11 +1,8 @@
 {
-  "quote": {
-    "sr": "Mali prostor, velika mera. Koktel je tačno onakav kakav treba.",
-    "en": "Small room, full measures. The cocktail is exactly what it should be."
-  },
-  "author": "J. S.",
-  "source": "Google",
+  "quote": "Perfect spot for breakfast and coffee, or late night cocktails.",
+  "author": "Kristina I.",
+  "source": "Google recenzija",
   "stars": 5,
   "order": 2,
-  "placeholder": true
+  "placeholder": false
 }

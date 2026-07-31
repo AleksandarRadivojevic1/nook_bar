@@ -47,6 +47,8 @@ export const sr = {
   },
   recenzije: {
     title: 'Recenzije',
+    score: '5,0',
+    meta: '20 recenzija · Google',
   },
   kontakt: {
     title: 'Praktično',

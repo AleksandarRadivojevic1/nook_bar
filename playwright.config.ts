@@ -24,7 +24,11 @@ export default defineConfig({
   webServer: {
     command: 'npm run build && npm run preview',
     url: 'http://localhost:4321',
-    reuseExistingServer: !process.env.CI,
+    // Never reuse: a stray `astro dev` or an older preview on 4321 will happily
+    // serve stale HTML and the suite will verify a build that no longer exists.
+    // The build takes under a second, so rebuilding every run is the cheap side
+    // of this trade.
+    reuseExistingServer: false,
     timeout: 180_000,
   },
 });
