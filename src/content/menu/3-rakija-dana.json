@@ -1,0 +1,8 @@
+{
+  "name": "Rakija dana",
+  "price": 320,
+  "order": 3,
+  "desc": { "sr": "Ono što je domaćin doneo tog jutra.", "en": "Whatever the host brought in that morning." },
+  "crop": "linear-gradient(140deg,#F2ECE1,#C98A44)",
+  "placeholder": true
+}

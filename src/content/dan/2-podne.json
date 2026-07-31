@@ -1,0 +1,11 @@
+{
+  "n": 2,
+  "title": { "sr": "Podne", "en": "Noon" },
+  "body": {
+    "sr": "Neko radi za stolom u ćošku. Espreso, voda, tišina.",
+    "en": "Someone works at the corner table. Espresso, water, quiet."
+  },
+  "when": { "sr": "11—17", "en": "11—17" },
+  "anchor": [260, 512.6],
+  "placeholder": true
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Espreso",
+  "price": 180,
+  "order": 6,
+  "desc": { "sr": "Jedna šolja, bez pitanja.", "en": "One cup, no questions." },
+  "crop": "linear-gradient(210deg,#454534,#C98A44)",
+  "placeholder": true
+}

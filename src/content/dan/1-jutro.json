@@ -1,0 +1,11 @@
+{
+  "n": 1,
+  "title": { "sr": "Jutro", "en": "Morning" },
+  "body": {
+    "sr": "Prva kafa, novine niko ne čita, i sunce koje tek stiže do šanka.",
+    "en": "First coffee, nobody reading the papers, and sun only just reaching the bar."
+  },
+  "when": { "sr": "08—11", "en": "08—11" },
+  "anchor": [740, 225.5],
+  "placeholder": true
+}

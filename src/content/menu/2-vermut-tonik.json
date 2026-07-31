@@ -1,0 +1,8 @@
+{
+  "name": "Vermut & tonik",
+  "price": 520,
+  "order": 2,
+  "desc": { "sr": "Beli vermut, tonik, kora limuna.", "en": "White vermouth, tonic, lemon peel." },
+  "crop": "linear-gradient(200deg,#D3C3A3,#454534)",
+  "placeholder": true
+}

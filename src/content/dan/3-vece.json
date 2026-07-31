@@ -1,0 +1,11 @@
+{
+  "n": 3,
+  "title": { "sr": "Veče", "en": "Evening" },
+  "body": {
+    "sr": "Led počinje da zvoni. Prvi koktel odlazi sa šanka u 18:04.",
+    "en": "Ice starts to ring. The first cocktail leaves the bar at 18:04."
+  },
+  "when": { "sr": "17—22", "en": "17—22" },
+  "anchor": [720, 771],
+  "placeholder": true
+}

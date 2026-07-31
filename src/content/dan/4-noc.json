@@ -1,0 +1,11 @@
+{
+  "n": 4,
+  "title": { "sr": "Noć", "en": "Night" },
+  "body": {
+    "sr": "Svetlo se spušta, razgovor se diže, i niko ne gleda na sat.",
+    "en": "The lights drop, the talk rises, and nobody checks the time."
+  },
+  "when": { "sr": "22—24", "en": "22—24" },
+  "anchor": [300, 1000.6],
+  "placeholder": true
+}
