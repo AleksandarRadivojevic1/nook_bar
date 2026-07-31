@@ -1,11 +1,21 @@
 {
   "n": 3,
-  "title": { "sr": "Veče", "en": "Evening" },
-  "body": {
-    "sr": "Led počinje da zvoni. Prvi koktel odlazi sa šanka u 18:04.",
-    "en": "Ice starts to ring. The first cocktail leaves the bar at 18:04."
+  "title": {
+    "sr": "Veče",
+    "en": "Evening"
   },
-  "when": { "sr": "17—22", "en": "17—22" },
-  "anchor": [720, 771],
+  "body": {
+    "sr": "Prvi koktel, dok se svetlo gasi.",
+    "en": "The first cocktail, as the light goes down."
+  },
+  "when": {
+    "sr": "18 — 22",
+    "en": "18 — 22"
+  },
+  "anchor": [
+    720,
+    771
+  ],
+  "media": "radial-gradient(56% 42% at 38% 32%,rgba(255,214,150,.9),rgba(90,62,30,0) 70%),linear-gradient(160deg,#C9AE86,#7C552C 56%,#2C1E10)",
   "placeholder": true
 }

@@ -40,6 +40,11 @@ export const danCardSchema = z.object({
    * through these exact points. See src/assets/ASSETS.md.
    */
   anchor: z.tuple([z.number(), z.number()]),
+  /**
+   * CSS background standing in for the card's photograph. Replaced by a real
+   * image path once the bar supplies photography.
+   */
+  media: z.string(),
   placeholder: z.boolean().default(false),
 });
 

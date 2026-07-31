@@ -37,6 +37,7 @@ export const sr = {
     title: 'Jedan dan',
     sub: 'Od prve kafe do poslednjeg koktela — bar se menja četiri puta dnevno.',
     arrive: 'Koste Stamenkovića 23 · Leskovac',
+    arriveScript: 'I tu si.',
     pin: 'Leskovac',
   },
   karta: {

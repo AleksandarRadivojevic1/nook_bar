@@ -54,6 +54,7 @@ describe('dan cards', () => {
     body: { sr: 'Prva kafa.', en: 'First coffee.' },
     when: { sr: '08—11', en: '08—11' },
     anchor: [740, 225.5] as [number, number],
+    media: 'linear-gradient(168deg,#D8C6A4,#3A2B18)',
   };
 
   it('accepts a card anchored on the route', () => {

@@ -1,11 +1,21 @@
 {
   "n": 4,
-  "title": { "sr": "Noć", "en": "Night" },
-  "body": {
-    "sr": "Svetlo se spušta, razgovor se diže, i niko ne gleda na sat.",
-    "en": "The lights drop, the talk rises, and nobody checks the time."
+  "title": {
+    "sr": "Noć",
+    "en": "Night"
   },
-  "when": { "sr": "22—24", "en": "22—24" },
-  "anchor": [300, 1000.6],
+  "body": {
+    "sr": "Do ponoći. Pa još malo.",
+    "en": "Until midnight. Then a little longer."
+  },
+  "when": {
+    "sr": "22 — 24",
+    "en": "22 — 24"
+  },
+  "anchor": [
+    300,
+    1000.6
+  ],
+  "media": "radial-gradient(58% 44% at 52% 28%,rgba(242,228,198,.86),rgba(70,70,50,0) 72%),linear-gradient(172deg,#BDB79A,#6E6B4F 56%,#282819)",
   "placeholder": true
 }

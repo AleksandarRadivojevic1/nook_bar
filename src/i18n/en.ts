@@ -36,6 +36,7 @@ export const en: Dictionary = {
     title: 'One day',
     sub: 'From the first coffee to the last cocktail — the bar changes four times a day.',
     arrive: 'Koste Stamenkovića 23 · Leskovac',
+    arriveScript: 'And there you are.',
     pin: 'Leskovac',
   },
   karta: {
