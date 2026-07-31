@@ -1,6 +1,6 @@
 ---
-// Sections are added here, in order, by Tasks 7 and 9-14.
 import type { Locale } from '../i18n';
+import Hero from './sections/Hero.astro';
 
 interface Props {
   locale: Locale;
@@ -9,7 +9,9 @@ interface Props {
 const { locale } = Astro.props;
 ---
 
-<main data-locale={locale}></main>
+<main data-locale={locale}>
+  <Hero locale={locale} />
+</main>
 
 <script>
   import { motion } from '../scripts/motion';

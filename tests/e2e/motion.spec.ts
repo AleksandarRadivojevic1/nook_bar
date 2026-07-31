@@ -1,6 +1,15 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('motion singleton', () => {
+  // These assert motion IS running, which is false by design in the
+  // reduced-motion project — that path is covered by the describe below.
+  test.beforeEach(({}, testInfo) => {
+    test.skip(
+      testInfo.project.name === 'reduced-motion',
+      'motion is intentionally not booted when the visitor asks for reduced motion',
+    );
+  });
+
   test('boots smooth scrolling normally', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('data-motion', 'on');
