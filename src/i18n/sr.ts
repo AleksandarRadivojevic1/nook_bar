@@ -42,7 +42,8 @@ export const sr = {
   },
   karta: {
     title: 'Karta',
-    note: 'Karta se menja sezonski.', // PLACEHOLDER — confirm with owners
+    note: 'Kratka namerno. Menja se kad se promeni sezona.',
+    currency: 'RSD',
   },
   recenzije: {
     title: 'Recenzije',

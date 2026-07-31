@@ -1,0 +1,11 @@
+{
+  "name": "Timijan i limeta",
+  "price": 520,
+  "order": 5,
+  "desc": {
+    "sr": "Džin, timijan, limeta, soda.",
+    "en": "Gin, thyme, lime, soda."
+  },
+  "crop": "linear-gradient(160deg,#DCE0C0,#6E7A46 58%,#2A3018)",
+  "placeholder": true
+}

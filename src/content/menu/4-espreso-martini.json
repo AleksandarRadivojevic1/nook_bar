@@ -1,8 +1,0 @@
-{
-  "name": "Espreso martini",
-  "price": 700,
-  "order": 4,
-  "desc": { "sr": "Votka, sveži espreso, kafeni liker.", "en": "Vodka, fresh espresso, coffee liqueur." },
-  "crop": "linear-gradient(180deg,#3A3628,#7C7C5E)",
-  "placeholder": true
-}

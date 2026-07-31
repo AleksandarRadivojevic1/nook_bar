@@ -1,8 +1,0 @@
-{
-  "name": "Limunada s nanom",
-  "price": 350,
-  "order": 5,
-  "desc": { "sr": "Cedjen limun, nana, bez šećera u višku.", "en": "Pressed lemon, mint, no excess sugar." },
-  "crop": "linear-gradient(120deg,#D3C3A3,#F2ECE1)",
-  "placeholder": true
-}

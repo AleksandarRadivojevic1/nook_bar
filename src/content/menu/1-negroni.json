@@ -1,8 +1,0 @@
-{
-  "name": "Negroni",
-  "price": 650,
-  "order": 1,
-  "desc": { "sr": "Džin, kampari, crveni vermut.", "en": "Gin, Campari, red vermouth." },
-  "crop": "linear-gradient(160deg,#C98A44,#7C7C5E)",
-  "placeholder": true
-}

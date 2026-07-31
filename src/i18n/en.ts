@@ -41,7 +41,8 @@ export const en: Dictionary = {
   },
   karta: {
     title: 'Menu',
-    note: 'The menu changes with the season.', // PLACEHOLDER — confirm with owners
+    note: 'Deliberately short. It changes when the season does.',
+    currency: 'RSD',
   },
   recenzije: {
     title: 'Reviews',
