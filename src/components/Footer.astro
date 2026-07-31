@@ -1,0 +1,140 @@
+---
+import { useTranslations, type Locale } from '../i18n';
+import { formatClock, formatDate } from '../lib/hours';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Build-time values so nothing renders as a dash; clock.ts corrects them on
+// the first frame — the page is prerendered, so this is the build's clock.
+const now = new Date();
+const clock = formatClock(now, locale);
+const date = formatDate(now, locale);
+const year = now.getFullYear();
+---
+
+<!-- The footer has no scroll effects by design: it scrolls at page rate and
+     its only scripted behaviour is the nav flip, which lives in nav.ts. -->
+<div class="footer-wrap" data-nav-surface="ink">
+  <div class="footer-bg">
+    <div class="footer-bg-art"></div>
+    <div class="footer-counter"></div>
+  </div>
+
+  <footer class="footer" id="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <dl class="fcol">
+          <dt>{t.footer.menuCol}</dt>
+          <a href="#karta">{t.nav.karta}</a>
+          <a href="#dan">{t.nav.dan}</a>
+          <a href="#recenzije">{t.recenzije.title}</a>
+          <a href="#kontakt">{t.nav.kontakt}</a>
+        </dl>
+        <dl class="fcol">
+          <dt>{t.footer.socialCol}</dt>
+          <a href="#">Instagram</a>
+          <a href="#">Google Maps</a>
+        </dl>
+        <dl class="fcol">
+          <dt>{t.footer.locationCol}</dt>
+          <div>{t.footer.location}</div>
+          <div id="fdate">{date}</div>
+          <div class="clock" id="fclock">{clock}</div>
+        </dl>
+        <dl class="fcol">
+          <dt>{t.footer.ratingCol}</dt>
+          <div>{t.footer.rating}</div>
+          <div style="color:rgba(247,242,232,.55)">Google</div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <div>© {year} Nook · Leskovac</div>
+      <div>{t.footer.boundaries}</div>
+      <div>{t.footer.concept}</div>
+    </div>
+
+    <div class="footer-mark">
+      <svg viewBox="0 0 1200 172" aria-label="Nook">
+        <text
+          x="600"
+          y="168"
+          text-anchor="middle"
+          font-family="Jost, sans-serif"
+          font-weight="200"
+          font-size="212"
+          letter-spacing="26"
+          fill="#F7F2E8">NOOK</text>
+      </svg>
+    </div>
+  </footer>
+</div>
+
+<script>
+  import { startClock } from '../scripts/clock';
+
+  const root = document.querySelector('.footer-wrap');
+  const locale = document.querySelector('main')?.getAttribute('data-locale');
+  if (root && (locale === 'sr' || locale === 'en')) startClock(root, locale);
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 7 — FOOTER  (rebuilt from the Flyward recon)
+   ══════════════════════════════════════════════════════════════════════ */
+/* Measured off Flyward: .section_footer is exactly 100vh with
+   box-sizing:border-box and a 55px/39px border coloured the SAME as the page
+   background — the border IS the frame, which is why the panel reads as inset.
+   The artwork is a sibling behind it spanning the full width; the border
+   paints the page colour back over its edges. The wordmark is clipped by just
+   ~5px (their margin-bottom:-4.8px), not deeply cropped. */
+.footer-wrap{position:relative;background:var(--bone)}
+.footer-bg{position:absolute;inset:0;z-index:1;overflow:hidden}
+/* stand-in for the photograph: light pooled along the lower half, mirroring
+   Flyward's object-position:50% 100%. Drop-in slot for a real image. */
+.footer-bg-art{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(20% 22% at 31% 58%, rgba(255,222,168,.60), rgba(27,20,9,0) 76%),
+    radial-gradient(15% 17% at 68% 66%, rgba(255,212,150,.42), rgba(27,20,9,0) 78%),
+    linear-gradient(180deg,transparent 54%,rgba(255,206,138,.10) 55.2%,transparent 56.2%),
+    radial-gradient(90% 40% at 44% 88%, rgba(201,138,68,.36), rgba(27,20,9,0) 78%),
+    radial-gradient(120% 90% at 44% 72%, rgba(20,14,7,0) 24%, rgba(20,14,7,.82) 100%),
+    linear-gradient(180deg,#1B1409 0%,#1B1409 34%,#3B2A17 74%,#1F1708 100%);
+}
+.footer-counter{
+  position:absolute;left:0;right:0;top:78%;height:2px;z-index:2;
+  background:linear-gradient(90deg,rgba(255,214,150,0) 14%,rgba(255,222,170,.5) 46%,rgba(255,214,150,0) 84%);
+  box-shadow:0 10px 30px rgba(255,190,110,.20);
+}
+.footer{
+  position:relative;z-index:3;height:100vh;width:100%;box-sizing:border-box;
+  border:solid var(--bone);
+  border-width:clamp(2.4rem,6.1vh,3.45rem) clamp(.9rem,2.71vw,2.45rem) clamp(.9rem,2.71vw,2.45rem);
+  background:transparent;color:#F7F2E8;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.footer-inner{position:relative;z-index:4;padding:0 clamp(1.25rem,3vw,2.6rem)}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;padding-bottom:3.5vh;align-items:start}
+@media(max-width:860px){.footer-grid{grid-template-columns:1fr 1fr;gap:2.2rem}}
+.fcol dt{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(247,242,232,.55);margin-bottom:1rem}
+.fcol a,.fcol div{display:block;font-size:.92rem;line-height:2;color:rgba(247,242,232,.9)}
+.fcol a:hover{color:#fff}
+.clock{font-variant-numeric:tabular-nums}
+/* legal sits INSIDE the panel, above the wordmark, as on Flyward */
+.footer-legal{
+  position:relative;z-index:4;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding:0 clamp(1.25rem,3vw,2.6rem) 2.2vh;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,242,232,.5);
+}
+.footer-mark{position:relative;z-index:4;width:100%;margin-bottom:-5px}
+.footer-mark svg{width:100%;height:auto;display:block}
+
+</style>

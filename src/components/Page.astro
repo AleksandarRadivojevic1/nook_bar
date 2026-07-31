@@ -6,6 +6,7 @@ import Dan from './sections/Dan.astro';
 import Karta from './sections/Karta.astro';
 import Recenzije from './sections/Recenzije.astro';
 import Kontakt from './sections/Kontakt.astro';
+import Footer from './Footer.astro';
 
 interface Props {
   locale: Locale;
@@ -22,6 +23,8 @@ const { locale } = Astro.props;
   <Recenzije locale={locale} />
   <Kontakt locale={locale} />
 </main>
+
+<Footer locale={locale} />
 
 <script>
   import { motion } from '../scripts/motion';
