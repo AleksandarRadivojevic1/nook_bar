@@ -10,3 +10,8 @@ const { locale } = Astro.props;
 ---
 
 <main data-locale={locale}></main>
+
+<script>
+  import { motion } from '../scripts/motion';
+  motion();
+</script>
