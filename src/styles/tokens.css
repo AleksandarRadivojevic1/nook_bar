@@ -1,0 +1,25 @@
+:root{
+  --bone:#F2ECE1;
+  --sand:#D3C3A3;
+  --olive:#7C7C5E;
+  --olive-deep:#454534;
+  --ink:#3A3628;
+  --amber:#C98A44;
+
+  --display:'Jost',ui-sans-serif,system-ui,sans-serif;
+  --body:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;
+  --script:'Caveat',cursive;
+
+  --gutter:clamp(1.25rem,5vw,6rem);
+  --hair:rgba(124,124,94,.22);
+
+  /* Syros is 1000x1614 — aspect 0.620, tall where Flyward's landmass is
+     wide. Sized by HEIGHT past 100vh so it crops top and bottom exactly
+     the way theirs does, rather than sitting complete inside the frame. */
+  --arch-x:50%;
+  --arch-y:50%;
+  --key-y:64%;
+  --glass-y:78%;
+  --counter-y:90%;
+}
+

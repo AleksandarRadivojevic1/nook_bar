@@ -1,0 +1,70 @@
+---
+import { localeTag, useTranslations, type Locale } from '../i18n';
+import { hours } from '../lib/hours';
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const site = Astro.site!;
+const srUrl = new URL('/', site).href;
+const enUrl = new URL('/en/', site).href;
+const canonical = locale === 'sr' ? srUrl : enUrl;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BarOrPub',
+  name: 'Nook',
+  description: t.meta.description,
+  url: canonical,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Koste Stamenkovića 23',
+    addressLocality: 'Leskovac',
+    addressCountry: 'RS',
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: hours.open,
+      // Schema.org has no 24:00; 23:59 is the conventional stand-in.
+      closes: hours.close === '24:00' ? '23:59' : hours.close,
+    },
+  ],
+};
+---
+
+<html lang={localeTag(locale)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="sr" href={srUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={srUrl} />
+    <meta property="og:type" content="business.business" />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'sr' ? 'sr_RS' : 'en_GB'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Instrument+Sans:wght@400;500&family=Caveat:wght@400&display=swap"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
