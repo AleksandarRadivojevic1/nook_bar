@@ -5,6 +5,7 @@ import Prostor from './sections/Prostor.astro';
 import Dan from './sections/Dan.astro';
 import Karta from './sections/Karta.astro';
 import Recenzije from './sections/Recenzije.astro';
+import Kontakt from './sections/Kontakt.astro';
 
 interface Props {
   locale: Locale;
@@ -19,6 +20,7 @@ const { locale } = Astro.props;
   <Dan locale={locale} />
   <Karta locale={locale} />
   <Recenzije locale={locale} />
+  <Kontakt locale={locale} />
 </main>
 
 <script>

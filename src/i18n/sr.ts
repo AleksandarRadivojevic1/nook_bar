@@ -53,6 +53,11 @@ export const sr = {
   kontakt: {
     title: 'Praktično',
     addressLabel: 'Adresa',
+    priceLabel: 'Cena',
+    nowLabel: 'Sada',
+    addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
+    hoursValue: 'Svakog dana|08 — 24',
+    priceValue: 'RSD 500 — 1.000|po osobi',
     hoursLabel: 'Radno vreme',
     phoneLabel: 'Telefon',
     socialLabel: 'Instagram',

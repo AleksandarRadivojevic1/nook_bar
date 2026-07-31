@@ -1,0 +1,78 @@
+---
+import { fill, useTranslations, type Locale } from '../../i18n';
+import { displayTime, hours, isOpenAt, minuteOfDayInTz } from '../../lib/hours';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Rendered at build time so the pill is never blank on first paint. The page
+// is prerendered, so this reflects the build, not the visitor — clock.ts
+// corrects it on the first frame.
+const openNow = isOpenAt(minuteOfDayInTz(new Date()), hours);
+const statusLabel = openNow
+  ? fill(t.status.open, { close: displayTime(hours.close) })
+  : fill(t.status.closed, { open: hours.open });
+
+const [addressLine1, addressLine2] = t.kontakt.addressLines.split('|');
+const [hoursLine1, hoursLine2] = t.kontakt.hoursValue.split('|');
+const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
+---
+
+<section class="prakt" id="kontakt" data-section="kontakt" data-nav-surface="bone">
+  <h2 class="display is-wide" style="font-size:clamp(1rem,1.5vw,1.3rem)">{t.kontakt.title}</h2>
+  <div class="prakt-grid">
+    <dl class="fact">
+      <dt>{t.kontakt.addressLabel}</dt>
+      <dd>{addressLine1}<br />{addressLine2}</dd>
+    </dl>
+    <dl class="fact">
+      <dt>{t.kontakt.hoursLabel}</dt>
+      <dd>{hoursLine1}<br />{hoursLine2}</dd>
+    </dl>
+    <dl class="fact">
+      <dt>{t.kontakt.priceLabel}</dt>
+      <dd>{priceLine1}<br />{priceLine2}</dd>
+    </dl>
+    <dl class="fact">
+      <dt>{t.kontakt.nowLabel}</dt>
+      <dd>
+        <span class:list={['status', openNow ? 'is-open' : 'is-shut']} id="status">
+          <i></i><span>{statusLabel}</span>
+        </span>
+      </dd>
+    </dl>
+  </div>
+  <div class="grain is-fine"></div>
+</section>
+
+<script>
+  import { startClock } from '../../scripts/clock';
+
+  const root = document.querySelector('[data-section="kontakt"]');
+  const locale = document.querySelector('main')?.getAttribute('data-locale');
+  if (root && (locale === 'sr' || locale === 'en')) startClock(root, locale);
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 6 — PRAKTIČNO
+   ══════════════════════════════════════════════════════════════════════ */
+.prakt{padding:14vh var(--gutter) 18vh;background:var(--bone);position:relative}
+.prakt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1.5rem,3vw,3rem);margin-top:5vh}
+@media(max-width:860px){.prakt-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.prakt-grid{grid-template-columns:1fr}}
+.fact dt{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--olive);margin-bottom:.7rem}
+.fact dd{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(1rem,1.4vw,1.22rem);
+  line-height:1.5;color:var(--olive-deep)}
+.status{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--display);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.status i{width:6px;height:6px;border-radius:50%;background:var(--olive);display:block}
+.status.is-open i{background:#6E8B4A;box-shadow:0 0 0 4px rgba(110,139,74,.18)}
+.status.is-shut i{background:#A8543C;box-shadow:0 0 0 4px rgba(168,84,60,.18)}
+
+</style>
