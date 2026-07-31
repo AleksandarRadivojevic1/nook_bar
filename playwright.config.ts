@@ -16,7 +16,8 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1920, height: 900 },
-        reducedMotion: 'reduce',
+        // Playwright 1.62 moved reducedMotion under contextOptions.
+        contextOptions: { reducedMotion: 'reduce' },
       },
     },
   ],
