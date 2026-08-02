@@ -1,8 +1,9 @@
 ---
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import type { Locale } from '../i18n';
 import type { SectionId } from '../lib/sections';
 import Hero from './sections/Hero.astro';
+import Instagram from './sections/Instagram.astro';
 import Prostor from './sections/Prostor.astro';
 import Siros from './sections/Siros.astro';
 import Dan from './sections/Dan.astro';
@@ -38,6 +39,7 @@ const { locale } = Astro.props;
  */
 const siros = await getEntry('story', 'siros');
 const ljudi = await getEntry('story', 'ljudi');
+const instagram = await getCollection('instagram');
 
 const present = new Set<SectionId>([
   'prostor',
@@ -50,6 +52,7 @@ const present = new Set<SectionId>([
 ]);
 if (siros) present.add('siros');
 if (ljudi) present.add('ljudi');
+if (instagram.length > 0) present.add('instagram');
 ---
 
 <Nav locale={locale} sections={present} />
@@ -66,6 +69,7 @@ if (ljudi) present.add('ljudi');
   <Ljudi locale={locale} />
   <Recenzije locale={locale} />
   <Kontakt locale={locale} />
+  <Instagram locale={locale} />
 </main>
 
 <Footer locale={locale} sections={present} />

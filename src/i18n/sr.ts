@@ -110,6 +110,11 @@ export const sr = {
     mapLabel: 'Gde smo',
     mapOpen: 'Otvori mapu',
   },
+  instagram: {
+    eyebrow: 'Instagram',
+    title: 'Odavde nastavljamo',
+    follow: 'Zaprati',
+  },
   status: {
     open: 'Otvoreno · do {close}',
     closed: 'Zatvoreno · otvara u {open}',

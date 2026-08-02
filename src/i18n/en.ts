@@ -96,6 +96,11 @@ export const en: Dictionary = {
     mapLabel: 'Where we are',
     mapOpen: 'Open the map',
   },
+  instagram: {
+    eyebrow: 'Instagram',
+    title: 'Where we keep talking',
+    follow: 'Follow',
+  },
   status: {
     open: 'Open · until {close}',
     closed: 'Closed · opens at {open}',
