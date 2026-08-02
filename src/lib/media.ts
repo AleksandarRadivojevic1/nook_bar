@@ -9,16 +9,7 @@ interface MediaEntry {
   };
 }
 
-/**
- * The CSS background value for each entry: an uploaded photograph if there is
- * one, otherwise the gradient stand-in.
- *
- * The gradients exist because the bar has no photography yet. They are real
- * CSS, which meant the owners' editor showed them a field expecting
- * `linear-gradient(160deg,#E8CFA4,#B07C3C 60%,#4A3218)`. The gradient stays in
- * the data as a fallback but is hidden from Keystatic; owners upload a photo
- * and it takes over.
- */
+/** An uploaded photograph if there is one, otherwise the gradient stand-in. */
 export async function backgrounds(
   entries: readonly MediaEntry[],
   width = 900,

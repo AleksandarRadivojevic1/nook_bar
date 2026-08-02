@@ -15,9 +15,7 @@ const t = useTranslations(locale);
 // The complete index, same list the overlay menu renders.
 const index = visibleSections(sections, 'menu');
 
-// Derived, not typed. This line read "5,0 — 20 recenzija" in both
-// dictionaries: the same two facts the Recenzije section already takes from
-// site.json, stored a second and third time in the place nobody looks.
+// Derived from site.json, not typed into the dictionaries.
 const rating = fill(t.footer.rating, {
   score: formatScore(site.reviewScore, locale),
   count: String(site.reviewCount),

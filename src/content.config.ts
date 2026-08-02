@@ -13,17 +13,8 @@ import {
 } from './content/schemas';
 
 /**
- * `glob()` without the "No files found" warning.
- *
- * Three collections ship registered and deliberately empty — `people`,
- * `practical` and `instagram` — because their content is the owners' to
- * supply and inventing it would put claims about a real business on its own
- * site. The loader's warning is correct in general and wrong here, and three
- * lines of WARN on every single build is how warnings that DO matter stop
- * being read.
- *
- * Only that one message is dropped; anything else the loader says still comes
- * through.
+ * `glob()` without the "No files found" warning. Three collections ship
+ * registered and deliberately empty; only that one message is dropped.
  */
 function optionalGlob(options: Parameters<typeof glob>[0]) {
   const loader = glob(options);

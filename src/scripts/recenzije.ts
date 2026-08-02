@@ -25,15 +25,7 @@ const CITRUS = `<svg width="150" height="150" viewBox="0 0 150 150">
   }).join('')}
   <circle cx="75" cy="75" r="9"/></svg>`;
 
-/**
- * Ornaments only.
- *
- * This used to run a 4.2s auto-advancing carousel over the quotes. It was
- * deleted rather than repaired: auto-advance with no pause control fails
- * WCAG 2.2.2, the 5x5px dots failed 2.5.8, and the dot row was a role=tablist
- * with no panels and no aria-controls. Showing every quote fixes all four at
- * once and reads better, so there is nothing left here but the line-work.
- */
+/** Ornaments only. The auto-advancing carousel was deleted, not repaired. */
 export function initRecenzije(root: HTMLElement): void {
   const m = motion();
   if (!m) return;

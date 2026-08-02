@@ -11,16 +11,7 @@ const { locale } = Astro.props;
 const entry = await getEntry('story', 'ljudi');
 const story = entry?.data;
 
-/**
- * Portraits are additive. With the collection empty this is a signed
- * statement, which is a finished thing — a marketing page carrying an
- * empty-state message for its own founders is worse than no founders
- * section, so there is no placeholder branch here at all.
- *
- * Filtered on having a photo rather than merely existing: a name with no
- * portrait would render as an empty frame with a caption under it, which is
- * the placeholder this design avoids.
- */
+/** Filtered on having a photo: a name with no portrait is an empty frame. */
 const people = (await getCollection('people'))
   .filter((person) => person.data.photo)
   .sort((a, b) => a.data.order - b.data.order);
@@ -57,19 +48,8 @@ const people = (await getCollection('people'))
 }
 
 <style is:global>
-/* ══════════════════════════════════════════════════════════════════════
-   ACT 8 — LJUDI, the founders
-   The words lead and the faces are an aside. A bar whose entire voice is
-   understatement should not open with two people looking at the camera;
-   letting them speak and treating their portraits as a footnote IS the
-   personality.
-
-   It also gives Caveat a real job. The script face currently loads for
-   three words in the hero and nothing else.
-
-   Ships complete with no photograph: with the people collection empty this
-   is a signed statement, which is a finished thing rather than a hole.
-   ══════════════════════════════════════════════════════════════════════ */
+/* LJUDI — the founders. The words lead; the portraits are an aside, and the
+   section is finished without them. */
 .ljudi{position:relative;background:var(--sand);padding:18vh var(--gutter) 16vh;overflow:clip}
 .ljudi-in{max-width:44rem;margin:0 auto}
 

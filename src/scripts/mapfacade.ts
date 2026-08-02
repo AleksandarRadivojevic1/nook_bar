@@ -1,13 +1,6 @@
 /**
- * Swaps the drawn block for the real Google embed, on click and only on click.
- *
- * The iframe is constructed here rather than living in the markup with a
- * data-src, so that before a click there is nothing on the page capable of
- * contacting Google. `tests/e2e/map.spec.ts` asserts that by watching every
- * request the page makes.
- *
- * No motion() involvement: this is navigation, not decoration, so it works
- * identically with reduced motion.
+ * Swaps the drawing for the real embed, on click only. The iframe is built
+ * here rather than sitting in the markup, so nothing can reach Google first.
  */
 function initMapFacade(figure: HTMLElement): void {
   const button = figure.querySelector<HTMLButtonElement>('.mapf-open');

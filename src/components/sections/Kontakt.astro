@@ -43,9 +43,7 @@ const schedule = DAY_ORDER.map((day) => ({
   span: `${timeLabel(hours.week[day].open, t.hours.midnight)} — ${timeLabel(hours.week[day].close, t.hours.midnight)}`,
 }));
 
-// Empty until the owners answer them. The block is absent rather than showing
-// four questions with invented answers under them: these are claims about a
-// real business that a customer can act on.
+// Empty until the owners answer them; the block is absent rather than faked.
 const questions = (await getCollection('practical')).sort((a, b) => a.data.order - b.data.order);
 
 const [street, town] = addressLines();

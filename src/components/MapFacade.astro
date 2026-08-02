@@ -64,21 +64,8 @@ const view = {
 </script>
 
 <style is:global>
-/* ══════════════════════════════════════════════════════════════════════
-   THE MAP FACADE
-   The drawing is what renders. Clicking loads the real Google embed in
-   its place.
-
-   An eager iframe pulls several hundred KB of Google JS and tiles onto a
-   page already carrying GSAP, Lenis and WebGL; it contacts Google and sets
-   cookies before the visitor has agreed to anything, which under Serbia's
-   ZZPL is the same consideration as GDPR; and a full-colour Google map is a
-   hard palette break on bone and olive.
-
-   The iframe is BUILT IN JAVASCRIPT rather than sitting here with a
-   data-src. An element that does not exist cannot make a request, and a
-   data-src is one careless refactor away from being a src.
-   ══════════════════════════════════════════════════════════════════════ */
+/* MAP FACADE — the drawing renders; clicking loads the real embed. The
+   iframe is built in JS, so nothing can reach Google before a click. */
 .mapf{
   position:relative;margin:12vh auto 0;max-width:52rem;width:100%;
   background:var(--bone);overflow:hidden;

@@ -7,11 +7,7 @@ import { site } from '../../lib/site';
 
 interface Props {
   locale: Locale;
-  /**
-   * Passed in rather than fetched here. Page.astro already reads this
-   * collection to decide whether the section renders at all, and a second
-   * read is a second trip through the content layer for the same answer.
-   */
+  /** Passed in: Page.astro already read this to decide whether to render. */
   posts: CollectionEntry<'instagram'>[];
 }
 
@@ -46,16 +42,8 @@ const posts = recentPosts(entries.map((entry) => entry.data));
 }
 
 <style is:global>
-/* ══════════════════════════════════════════════════════════════════════
-   ACT 11 — INSTAGRAM
-   Last, on ink, four sections away from Galerija so the two photo grids
-   never compete, and continuous with the footer. Its job is "this is where
-   we keep talking", not "look at the room".
-
-   Every tile is a real post that links to itself, so the section is honest
-   without claiming to be live. There is no API behind it and deliberately
-   so — see src/content/schemas.ts.
-   ══════════════════════════════════════════════════════════════════════ */
+/* INSTAGRAM — on ink, continuous with the footer. Every tile links to its
+   own post. */
 .ig{background:var(--ink);padding:14vh var(--gutter) 12vh;position:relative}
 
 .ig-head{max-width:36ch;margin-bottom:6vh}

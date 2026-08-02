@@ -10,11 +10,7 @@ const { locale } = Astro.props;
 const entry = await getEntry('story', 'siros');
 const story = entry?.data;
 
-/**
- * Syros, 37.4° N 24.9° E. Formatted rather than written into the content so
- * Serbian gets its decimal comma and English its point from one number, the
- * same way the review score does.
- */
+/** Formatted, so Serbian gets its comma and English its point. */
 const number = new Intl.NumberFormat(localeTag(locale), {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
@@ -53,20 +49,8 @@ const readout = `${number.format(37.4)}° N · ${number.format(24.9)}° E`;
 }
 
 <style is:global>
-/* ══════════════════════════════════════════════════════════════════════
-   ACT 3 — SIROS, the origin
-   The manifesto asserts something about plaster, wood and brass going dark.
-   This is where that assertion comes from. Assertion, then source.
-
-   The identity's central gesture is that the logo is DEBOSSED into plaster
-   rather than printed on it. Applying the same gesture to the island the
-   brand came from means nothing is added to the wall — something is taken
-   out of it. It also returns Syros to the warm dark it occupied in the hero,
-   closing a loop the page otherwise leaves open.
-
-   No script. The deboss is a gradient fill and two drop-shadows, so the
-   reduced-motion state and the finished state are the same thing.
-   ══════════════════════════════════════════════════════════════════════ */
+/* SIROS — the origin. The coastline is debossed into the wall, not drawn on
+   it. No script: the reduced-motion state is the finished state. */
 .siros{
   position:relative;overflow:clip;
   padding:22vh var(--gutter) 20vh;
