@@ -155,7 +155,27 @@ export const practicalSchema = z.object({
   order: z.number().int(),
 });
 
+/**
+ * A curated Instagram post. Content stays in-repo rather than coming from the
+ * API: Instagram's Basic Display API was retired in 2024, and its replacement
+ * needs a Business account plus a token refreshed every 60 days — which is a
+ * section that silently goes blank two months after whoever set it up stops
+ * thinking about it.
+ *
+ * No `order` field. The row is the most recent posts by `postedAt`, and a
+ * hand-kept order beside a date is two sources of truth for one sequence.
+ */
+export const instagramPostSchema = (image: SchemaContext['image']) =>
+  z.object({
+    image: image(),
+    /** Doubles as the image's alt text, which is why it is required in both. */
+    caption: localized,
+    permalink: z.url(),
+    postedAt: z.coerce.date(),
+  });
+
 export type MenuItem = z.infer<typeof menuItemSchema>;
+export type InstagramPost = z.infer<ReturnType<typeof instagramPostSchema>>;
 export type Practical = z.infer<typeof practicalSchema>;
 export type Story = z.infer<typeof storySchema>;
 export type Person = z.infer<ReturnType<typeof personSchema>>;

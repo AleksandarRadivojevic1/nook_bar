@@ -3,6 +3,7 @@ import { glob } from 'astro/loaders';
 import {
   danCardSchema,
   galleryTileSchema,
+  instagramPostSchema,
   menuItemSchema,
   personSchema,
   practicalSchema,
@@ -51,4 +52,9 @@ const practical = defineCollection({
   schema: practicalSchema,
 });
 
-export const collections = { menu, reviews, dan, signature, gallery, story, people, practical };
+const instagram = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/instagram' }),
+  schema: ({ image }) => instagramPostSchema(image),
+});
+
+export const collections = { menu, reviews, dan, signature, gallery, story, people, practical, instagram };
