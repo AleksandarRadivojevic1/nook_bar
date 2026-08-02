@@ -9,11 +9,22 @@ export const sr = {
     description:
       'Skriveno mesto u Leskovcu. Kafa od jutra, koktel do ponoći, i nijedan sat na zidu.',
   },
+  /**
+   * One label per section, keyed by the section's id. `src/lib/sections.ts`
+   * derives SectionId from these keys, so a section cannot be added to the page
+   * without also being labelled in both locales.
+   */
   nav: {
     prostor: 'Prostor',
+    siros: 'Siros',
     dan: 'Jedan dan',
     karta: 'Karta',
+    potpis: 'Potpis',
+    galerija: 'Galerija',
+    ljudi: 'Ljudi',
+    recenzije: 'Recenzije',
     kontakt: 'Kontakt',
+    instagram: 'Instagram',
     cta: 'Pronađi nas',
     menu: 'Meni',
     menuClose: 'Zatvori meni',
