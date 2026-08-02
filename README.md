@@ -127,3 +127,18 @@ serving anything. `npm run preview` therefore runs `scripts/preview-static.mjs`,
 a dependency-free static server over `dist/client`, which is exactly the bytes
 Vercel serves for the public site. The Playwright suite runs against it. The
 admin route is not served there, and no test touches it.
+
+### The "collection does not exist or is empty" lines
+
+Three collections ship registered and deliberately empty — `people`,
+`practical` and `instagram` — because their content is the owners' to supply.
+Astro's `getCollection` prints one line per empty collection, from a plain
+`console.warn` in `astro/dist/content/runtime.js`. There is no option to
+silence it and no public API that reads a collection without it.
+
+It is expected. The glob loader's separate "No files found" warning IS
+silenced, by `optionalGlob()` in `src/content.config.ts`, which drops that one
+message and passes everything else through.
+
+Both go away on their own as soon as the owners add their first person,
+question or post.
