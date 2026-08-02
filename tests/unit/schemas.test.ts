@@ -7,6 +7,7 @@ import {
   menuItemSchema,
   personSchema,
   reviewSchema,
+  signatureSchema,
   storySchema,
 } from '../../src/content/schemas';
 
@@ -215,5 +216,33 @@ describe('story signatures', () => {
     expect(storySchema.parse({ ...base, signature: 'Anđela i Dimitrije' }).signature).toBe(
       'Anđela i Dimitrije',
     );
+  });
+});
+
+describe('signature tasting notes', () => {
+  const base = {
+    name: 'Siros',
+    tagline: { sr: 'Egejsko veče u čaši.', en: 'An Aegean evening in a glass.' },
+    spec: { sr: 'Džin, morska trava, med, limun.', en: 'Gin, sea herbs, honey, lemon.' },
+    price: 640,
+    media: 'linear-gradient(150deg,#DCE3E8,#7FA0B0 46%,#2C3F4C 88%)',
+    order: 1,
+  };
+
+  // Optional on purpose. The owners have not written the notes yet, and a
+  // required field would mean inventing three tasting notes for a bar whose
+  // drinks nobody on this side of the screen has tasted.
+  it('accepts a drink with no note yet', () => {
+    expect(() => signatureSchema.parse(base)).not.toThrow();
+    expect(signatureSchema.parse(base).notes).toBeUndefined();
+  });
+
+  it('takes a note in both languages once it exists', () => {
+    const notes = { sr: 'Slano, pa medeno.', en: 'Saline, then honeyed.' };
+    expect(signatureSchema.parse({ ...base, notes }).notes).toEqual(notes);
+  });
+
+  it('will not take a note in only one', () => {
+    expect(() => signatureSchema.parse({ ...base, notes: { sr: 'Samo srpski.' } })).toThrow();
   });
 });

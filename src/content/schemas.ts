@@ -59,6 +59,14 @@ export const signatureSchema = z.object({
   price: z.number().int().nonnegative(),
   /** Optional provenance note, e.g. the Syros drink names its island. */
   origin: localized.optional(),
+  /**
+   * A tasting note, a sentence or two. Optional because the owners write
+   * these and have not yet: the row renders without one rather than carrying
+   * invented prose about a drink nobody here has tasted. This field is the
+   * reason the section is a column of rows instead of three squares — a
+   * square has nowhere to put it.
+   */
+  notes: localized.optional(),
   /** CSS background standing in for the drink's photograph. */
   media: z.string(),
   order: z.number().int(),
