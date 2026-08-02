@@ -6,6 +6,7 @@ import {
   localized,
   menuItemSchema,
   personSchema,
+  practicalSchema,
   reviewSchema,
   signatureSchema,
   storySchema,
@@ -244,5 +245,29 @@ describe('signature tasting notes', () => {
 
   it('will not take a note in only one', () => {
     expect(() => signatureSchema.parse({ ...base, notes: { sr: 'Samo srpski.' } })).toThrow();
+  });
+});
+
+describe('practical questions', () => {
+  const base = {
+    question: { sr: 'Ima li hrane?', en: 'Is there food?' },
+    answer: { sr: 'Doručak do 12.', en: 'Breakfast until 12.' },
+    order: 1,
+  };
+
+  it('accepts a complete pair', () => {
+    expect(() => practicalSchema.parse(base)).not.toThrow();
+  });
+
+  it('requires both languages on both sides', () => {
+    expect(() => practicalSchema.parse({ ...base, question: { sr: 'Samo srpski?' } })).toThrow();
+    expect(() => practicalSchema.parse({ ...base, answer: { en: 'English only.' } })).toThrow();
+  });
+
+  // Facts stay derived. This collection is Q&A only — an hours or address
+  // answer typed in here would be the fourth copy of something config knows.
+  it('has no place to put a fact', () => {
+    const parsed = practicalSchema.parse(base);
+    expect(Object.keys(parsed).sort()).toEqual(['answer', 'order', 'question']);
   });
 });

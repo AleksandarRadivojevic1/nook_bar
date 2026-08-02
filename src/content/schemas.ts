@@ -144,7 +144,19 @@ export const personSchema = (image: SchemaContext['image']) =>
     order: z.number().int(),
   });
 
+/**
+ * The questions people actually ask, one line each. Q&A only: facts stay
+ * derived from site.json and hours.json, because a hard-typed answer about
+ * opening times would be a fourth copy of something config already knows.
+ */
+export const practicalSchema = z.object({
+  question: localized,
+  answer: localized,
+  order: z.number().int(),
+});
+
 export type MenuItem = z.infer<typeof menuItemSchema>;
+export type Practical = z.infer<typeof practicalSchema>;
 export type Story = z.infer<typeof storySchema>;
 export type Person = z.infer<ReturnType<typeof personSchema>>;
 export type Review = z.infer<typeof reviewSchema>;

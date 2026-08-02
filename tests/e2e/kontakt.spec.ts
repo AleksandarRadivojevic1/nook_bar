@@ -89,3 +89,11 @@ test('the same address renders on both locales, because it is one fact', async (
   const en = await page.locator('#kontakt .fact-link').first().innerText();
   expect(sr).toBe(en);
 });
+
+// Empty for now: only the owners can answer these, so the block is absent
+// rather than showing four questions with placeholder answers under them.
+test('shows no question block while the owners have not answered', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#kontakt .qa')).toHaveCount(0);
+  await expect(page.locator('#kontakt')).not.toContainText(/uskoro|coming soon/i);
+});

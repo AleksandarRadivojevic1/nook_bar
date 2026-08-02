@@ -5,6 +5,7 @@ import {
   galleryTileSchema,
   menuItemSchema,
   personSchema,
+  practicalSchema,
   reviewSchema,
   signatureSchema,
   storySchema,
@@ -45,4 +46,9 @@ const people = defineCollection({
   schema: ({ image }) => personSchema(image),
 });
 
-export const collections = { menu, reviews, dan, signature, gallery, story, people };
+const practical = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/practical' }),
+  schema: practicalSchema,
+});
+
+export const collections = { menu, reviews, dan, signature, gallery, story, people, practical };

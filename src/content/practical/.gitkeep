@@ -1,0 +1,9 @@
+# The practical collection is registered and deliberately empty.
+#
+# These are answers about a real business that a customer can act on, so
+# they wait for the owners rather than being drafted. One JSON file each:
+#
+#   { "question": { "sr": "Ima li bašta?", "en": "Is there a terrace?" },
+#     "answer":   { "sr": "...", "en": "..." }, "order": 1 }
+#
+# Do NOT answer anything here that hours.json or site.json already knows.

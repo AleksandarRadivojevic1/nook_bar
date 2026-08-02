@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import { fill, useTranslations, type Locale } from '../../i18n';
 import { addressLines, site } from '../../lib/site';
 import {
@@ -40,6 +41,11 @@ const schedule = DAY_ORDER.map((day) => ({
   name: t.hours.days[day],
   span: `${timeLabel(hours.week[day].open, t.hours.midnight)} — ${timeLabel(hours.week[day].close, t.hours.midnight)}`,
 }));
+
+// Empty until the owners answer them. The block is absent rather than showing
+// four questions with invented answers under them: these are claims about a
+// real business that a customer can act on.
+const questions = (await getCollection('practical')).sort((a, b) => a.data.order - b.data.order);
 
 const [street, town] = addressLines();
 const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
@@ -89,6 +95,20 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
       </dd>
     </dl>
   </div>
+
+  {
+    questions.length > 0 && (
+      <dl class="qa">
+        {questions.map((entry) => (
+          <div class="qa-row">
+            <dt>{entry.data.question[locale]}</dt>
+            <dd>{entry.data.answer[locale]}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+
   <div class="grain is-fine"></div>
 </section>
 
@@ -114,6 +134,28 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
   background-size:0% 1px;background-repeat:no-repeat;background-position:0 100%;
   transition:background-size .4s cubic-bezier(.2,.7,.2,1),color .4s ease}
 .fact-link:hover{color:var(--amber-text);background-size:100% 1px}
+
+/* Same hairline the Karta rows use. These are worth more than another
+   paragraph of atmosphere, and only the owners can supply them. */
+.qa{margin:12vh auto 0;max-width:52rem;display:flex;flex-direction:column}
+.qa-row{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+  gap:clamp(1rem,4vw,3rem);align-items:baseline;
+  padding:1.5rem 0;border-top:1px solid var(--hair);
+}
+.qa-row:last-child{border-bottom:1px solid var(--hair)}
+.qa-row dt{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(1rem,1.5vw,1.2rem);color:var(--olive-deep);margin:0;
+}
+.qa-row dd{
+  font-family:var(--body);font-size:clamp(.92rem,1.1vw,1rem);line-height:1.68;
+  color:var(--ink-soft);margin:0;text-wrap:pretty;
+}
+@media(max-width:760px){
+  .qa{margin-top:9vh}
+  .qa-row{grid-template-columns:1fr;gap:.5rem}
+}
 @media(max-width:860px){.prakt-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.prakt-grid{grid-template-columns:1fr}}
 .fact dt{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
