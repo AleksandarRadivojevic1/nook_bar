@@ -1,0 +1,12 @@
+{
+  "source": "union of OSM relation/1741311 (Serbia) and relation/2088990 (Kosovo), via Nominatim",
+  "note": "Kosovo INCLUDED — unioned into a single outline at the user's explicit request, so no internal border is drawn.",
+  "simplification": "Douglas-Peucker, tol 0.006 deg",
+  "viewBox": "0 0 1000 1435.4",
+  "aspect": 0.6967,
+  "points": 396,
+  "leskovac": {
+    "x": 747.1,
+    "y": 1059.2
+  }
+}

@@ -1,0 +1,46 @@
+:root{
+  --bone:#F2ECE1;
+  --sand:#D3C3A3;
+  --olive:#7C7C5E;
+  --olive-deep:#454534;
+  --ink:#3A3628;
+  --amber:#C98A44;
+
+  /* Text roles, separate from the surface colours above.
+     --olive and --amber stay as they are: they are correct as rules, dots,
+     hairlines and SVG fills, where contrast minimums do not apply. As TEXT they
+     measure 3.64:1 and 2.48:1 on bone, so anything readable uses these instead.
+     Each value clears WCAG AA 4.5:1 on the surface it is scoped to. */
+  --label:#6A6A4B;      /* 4.73:1 on bone — eyebrows, prices, small caps */
+  --ink-soft:#63604E;   /* 5.39:1 on bone — secondary and supporting copy */
+  --amber-text:#8A5A22; /* 5.01:1 on bone — the hover accent, still amber */
+
+  --display:'Jost',ui-sans-serif,system-ui,sans-serif;
+  --body:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;
+  --script:'Caveat',cursive;
+
+  --gutter:clamp(1.25rem,5vw,6rem);
+  --hair:rgba(124,124,94,.22);
+
+  /* Syros is 1000x1614 — aspect 0.620, tall where Flyward's landmass is
+     wide. Sized by HEIGHT past 100vh so it crops top and bottom exactly
+     the way theirs does, rather than sitting complete inside the frame. */
+  --arch-x:50%;
+  --arch-y:50%;
+  --key-y:64%;
+  --glass-y:78%;
+  --counter-y:90%;
+}
+
+/**
+ * Sand is roughly a third darker than bone, so the quiet text roles step down
+ * with it. Re-pointing the tokens on the surface means every descendant picks
+ * up the readable variant on its own; no section has to know it sits on sand.
+ */
+.potpis,
+.journey{
+  --label:#4F4F37;      /* 4.83:1 on sand */
+  --ink-soft:#454534;   /* 5.62:1 on sand */
+  --amber-text:#6B4318; /* 5.05:1 on sand */
+}
+

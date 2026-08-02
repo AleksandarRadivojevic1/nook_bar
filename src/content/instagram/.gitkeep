@@ -1,0 +1,11 @@
+# The instagram collection is registered and deliberately empty.
+#
+# The owners choose which posts represent them. One JSON file per post,
+# with the image saved under src/assets/instagram/:
+#
+#   { "image": "../../assets/instagram/2026-07-14.jpg",
+#     "caption": { "sr": "...", "en": "..." },
+#     "permalink": "https://www.instagram.com/p/XXXXXXXXX/",
+#     "postedAt": "2026-07-14" }
+#
+# The four most recent by postedAt render. There is no order field.

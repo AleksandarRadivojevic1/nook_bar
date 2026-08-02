@@ -1,0 +1,11 @@
+{
+  "name": "Dim od smokve",
+  "price": 640,
+  "order": 4,
+  "desc": {
+    "sr": "Burbon, smokva, dim hrasta.",
+    "en": "Bourbon, fig, oak smoke."
+  },
+  "crop": "linear-gradient(160deg,#E3C79C,#8E5C2C 58%,#33200E)",
+  "placeholder": true
+}

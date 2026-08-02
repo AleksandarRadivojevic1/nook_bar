@@ -1,0 +1,311 @@
+---
+import { useTranslations, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Procedural room detail. Rendered server-side rather than injected by script:
+// it is static decoration and injecting it client-side costs a layout pass.
+const bokeh: Array<[number, number, number]> = [
+  [18, 62, 110], [74, 30, 64], [86, 70, 140], [30, 22, 48],
+  [62, 80, 88], [46, 14, 36], [8, 36, 72], [92, 44, 52],
+];
+const bottles: Array<[number, number]> = [
+  [58, 54], [61, 72], [64, 44], [71, 66], [74, 50], [77, 78], [80, 58],
+];
+---
+
+<section class="hero" id="hero" data-section="hero" data-nav-surface="dark">
+  <div class="stage">
+    <div class="scene">
+      <div class="scene-base"></div>
+      <div class="scene-shelves"></div>
+      <div class="scene-bottles" id="bottles">
+        {bottles.map(([x, h]) => <i style={`left:${x}%;height:${h}px`}></i>)}
+      </div>
+      <div class="scene-key"></div>
+      <div class="scene-counter"></div>
+      <div class="scene-bokeh" id="bokeh">
+        {
+          bokeh.map(([x, y, s], i) => (
+            <i
+              style={`left:${x}%;top:${y}%;width:${s}px;height:${s}px;margin:${-s / 2}px 0 0 ${-s / 2}px;opacity:${(0.22 + ((i * 37) % 40) / 100).toFixed(2)}`}
+            ></i>
+          ))
+        }
+      </div>
+      <svg class="scene-glass" viewBox="0 0 200 260" fill="none" aria-hidden="true">
+        <path
+          d="M52 34h96l-6 46c-3 22-19 38-42 38s-39-16-42-38L52 34z"
+          stroke="rgba(255,232,192,.62)"
+          stroke-width="1.6"></path>
+        <path d="M100 118v96" stroke="rgba(255,232,192,.5)" stroke-width="1.6"></path>
+        <path d="M70 222h60" stroke="rgba(255,232,192,.5)" stroke-width="1.6"></path>
+        <path
+          d="M60 44h80l-5 34c-2 17-15 29-35 29s-33-12-35-29L60 44z"
+          fill="rgba(255,206,140,.26)"></path>
+      </svg>
+      <div class="scene-veil"></div>
+      <!-- holds contrast under the centred light-on-dark copy; without it the
+           headline sits directly on the key light and washes out -->
+      <div class="scene-scrim"></div>
+    </div>
+
+    <!-- survey field, beneath the wall so the wall's growth wipes it away -->
+    <div class="survey" id="survey">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+        <rect class="ln" x="54" y="112" width="1332" height="676" fill="none"></rect>
+        <line class="ln" x1="54" y1="424" x2="1386" y2="424"></line>
+        <line class="ln" x1="400" y1="112" x2="400" y2="788"></line>
+        <line class="ln" x1="746" y1="112" x2="746" y2="788"></line>
+        <line class="ln" x1="1092" y1="112" x2="1092" y2="788"></line>
+        <path class="arc" d="M54 168C420 470 1020 470 1386 168"></path>
+        <path class="arc" d="M54 788C420 486 1020 486 1386 788"></path>
+        <g class="star">
+          <path d="M164 410v28M150 424h28"></path>
+          <path d="M155 415l18 18M173 415l-18 18"></path>
+        </g>
+        <g class="star">
+          <path d="M1328 410v28M1314 424h28"></path>
+          <path d="M1319 415l18 18M1337 415l-18 18"></path>
+        </g>
+      </svg>
+    </div>
+
+    <div class="wall-wrap">
+      <div class="matte" id="matte">
+        <!-- Syros - real OSM coastline (relation 531999, via Nominatim),
+             2207 points, 1000x1614. The wall is an oversized rect with the
+             coastline as the mask's hole, so the ISLAND is the hole and the
+             warm room shows through it. -->
+        <svg viewBox="0 0 1000 1614.2" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <!-- The coastline itself is defined once per document by
+                 SyrosPath.astro; both the mask below and the Siros section
+                 reference it, rather than inlining 29KB of path data twice. -->
+            <mask id="seaMask" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="7000" height="7614">
+              <rect x="-3000" y="-3000" width="7000" height="7614" fill="#fff"></rect>
+              <!-- The reveal scales THIS, not the element around it. See the
+                   note over .matte for why that distinction matters. -->
+              <g class="isle" id="isle-hole"><use href="#syros" fill="#000"></use></g>
+            </mask>
+          </defs>
+          <rect
+            class="wall"
+            x="-3000"
+            y="-3000"
+            width="7000"
+            height="7614"
+            mask="url(#seaMask)"></rect>
+          <g class="isle" id="isle-lip"><use class="lip" id="coast" href="#syros"></use></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grain grain-stage"></div>
+
+    <div class="readout is-left" id="ro1">
+      {t.hero.readoutInspiration} — <b>{t.hero.readoutSyros}</b><br />37,4°&nbsp;N · 24,9°&nbsp;E
+    </div>
+    <div class="readout is-right" id="ro2">
+      {t.hero.readoutBar} — <b>{t.hero.readoutCity}</b><br />43,0°&nbsp;N · 21,9°&nbsp;E
+      <span class="bar"></span>
+    </div>
+  </div>
+
+  <!-- outside .stage, so it scrolls past the sticky stage -->
+  <div class="hero-copy">
+    <div class="hero-block is-first" id="hb1">
+      <p class="eyebrow">{t.hero.eyebrow}</p>
+      <h1 class="display">{t.hero.headlineLine1}<br />{t.hero.headlineLine2}</h1>
+      <p class="sub">{t.hero.sub}</p>
+      <a class="pill" href="#prostor">{t.hero.cta}</a>
+    </div>
+    <div class="hero-block is-over" id="hb2">
+      <div class="wordmark-lg">Nook</div>
+      <p class="script">{t.hero.script}</p>
+      <p class="sub">{t.hero.over}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/hero';
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 1 — THE NOOK
+   300vh wrapper; ONE sticky stage. The bone wall has the coastline punched out
+   of it by a mask. Scrolling grows the hole inside a wall that never moves; the
+   picture behind is never transformed, so it never resamples. Copy lives
+   OUTSIDE the sticky stage so it can scroll past it.
+   ══════════════════════════════════════════════════════════════════════ */
+.hero{position:relative;height:340vh}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bone)}
+
+/* the warm room — procedural stand-in for a photograph */
+.scene{position:absolute;inset:0;z-index:1;background:#1B1409;overflow:hidden}
+.scene-base{
+  position:absolute;inset:0;
+  background:linear-gradient(176deg,#221909 0%,#3C2A15 38%,#6B4520 66%,#2A1D0F 100%);
+}
+/* backbar: horizontal bands of warm shelf light */
+.scene-shelves{
+  position:absolute;inset:0;opacity:.55;
+  background:
+    linear-gradient(180deg,transparent 20%,rgba(255,206,138,.20) 21.4%,transparent 22.6%),
+    linear-gradient(180deg,transparent 33%,rgba(255,206,138,.16) 34.3%,transparent 35.4%),
+    linear-gradient(180deg,transparent 46%,rgba(255,206,138,.12) 47.2%,transparent 48.2%);
+}
+/* bottle silhouettes, deliberately soft — a suggestion, not an inventory */
+.scene-bottles{position:absolute;inset:0;opacity:.42;filter:blur(3px)}
+.scene-bottles i{
+  position:absolute;bottom:32%;width:14px;border-radius:6px 6px 2px 2px;
+  background:linear-gradient(180deg,rgba(46,32,16,.9),rgba(88,58,28,.55));
+}
+/* the key light over the counter */
+.scene-key{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(30% 22% at var(--arch-x) var(--key-y), rgba(255,222,166,.98) 0%, rgba(236,176,96,.70) 32%, rgba(150,96,44,.28) 62%, rgba(40,28,17,0) 82%),
+    radial-gradient(70% 46% at var(--arch-x) calc(var(--key-y) + 36%), rgba(201,138,68,.42) 0%, rgba(34,25,15,0) 74%);
+}
+/* the counter edge — falls off toward the arch, so it doesn't read as a
+   horizon ruled straight across the whole viewport */
+.scene-counter{
+  position:absolute;left:0;right:0;top:var(--counter-y);height:2px;
+  background:linear-gradient(90deg,rgba(255,214,150,0) 22%,rgba(255,222,170,.62) 62%,rgba(255,214,150,0) 92%);
+  box-shadow:0 10px 34px rgba(255,190,110,.26);
+}
+.scene-bokeh{position:absolute;inset:0;opacity:.48;filter:blur(1.5px)}
+.scene-bokeh i{position:absolute;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,224,170,.9),rgba(255,200,130,0) 70%)}
+.scene-glass{position:absolute;left:var(--arch-x);top:var(--glass-y);translate:-50% -50%;width:min(19vh,15vw);opacity:.62}
+.scene-scrim{
+  position:absolute;inset:0;
+  background:radial-gradient(46% 34% at 50% 42%, rgba(20,14,7,.66), rgba(20,14,7,.26) 60%, rgba(20,14,7,0) 80%);
+}
+/* vignette: corners fall away so the full-bleed state still has a centre */
+.scene-veil{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(120% 100% at var(--arch-x) var(--glass-y), rgba(20,14,7,0) 32%, rgba(20,14,7,.74) 100%),
+    linear-gradient(180deg,rgba(20,14,7,.46),rgba(20,14,7,0) 34%,rgba(20,14,7,.52));
+}
+
+/* Flyward's ornament layer: a hairline survey field inset from the edges,
+   four-point stars on the intersections, one dashed great-circle arc. It
+   sits UNDER the wall so the wall's growth wipes it away. */
+.survey{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.62}
+.survey svg{width:100%;height:100%;display:block}
+.survey .ln{stroke:var(--olive);stroke-width:.7;opacity:.30}
+.survey .arc{stroke:var(--olive);stroke-width:.7;opacity:.26;fill:none;stroke-dasharray:3 6}
+.survey .star{stroke:var(--olive);stroke-width:.8;opacity:.45}
+
+/* the wall, with Syros cut out of it */
+.wall-wrap{position:absolute;inset:0;z-index:3;pointer-events:none}
+/* The element itself is NEVER transformed. The wall it carries is ~5,900px
+   square at 1920x900; scaling the element by the reveal's 14x would ask the
+   compositor to rasterise that at ~83,000px square, far past what it will
+   allocate — it drops tiles, and the wall comes back in bone fragments once you
+   scroll to the bottom and return to the top. The reveal scales the island
+   geometry inside the SVG instead, so every frame rasterises within this box. */
+.matte{
+  position:absolute;left:var(--arch-x);top:var(--arch-y);translate:-50% -50%;
+  height:152vh;aspect-ratio:1000/1614.2;
+}
+.matte svg{width:100%;height:100%;overflow:visible}
+.matte .wall{fill:var(--bone)}
+/* the coastline itself, drawn on by scrubbed dashoffset — the one thing
+   Flyward also scrubs. non-scaling-stroke keeps it hairline at any scale. */
+.matte .lip{
+  fill:none;stroke:rgba(124,124,94,.55);stroke-width:1.1;
+  vector-effect:non-scaling-stroke;stroke-linejoin:round;
+}
+
+/* cartographic chrome, bottom corners */
+.readout{
+  position:absolute;bottom:2.4vh;z-index:7;
+  font-family:var(--display);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--label);font-variant-numeric:tabular-nums;transition:color .55s ease;
+}
+.readout.is-left{left:var(--gutter)}
+.readout.is-right{right:var(--gutter);text-align:right}
+.readout b{font-weight:500;color:var(--olive-deep);transition:color .55s ease}
+.readout.on-dark{color:rgba(242,236,225,.72)}
+.readout.on-dark b{color:#F7F2E8}
+.readout .bar{display:block;width:74px;height:1px;background:currentColor;opacity:.5;margin:.45rem 0 0}
+.readout.is-right .bar{margin-left:auto}
+@media(max-width:760px){.readout.is-right{display:none}}
+
+.grain-stage{z-index:6}
+
+.cue{
+  position:absolute;left:var(--gutter);bottom:2.4vh;z-index:7;
+  display:flex;align-items:center;gap:.8rem;
+  font-family:var(--display);font-size:9px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--label);
+}
+.cue i{display:block;width:38px;height:1px;background:currentColor;
+  transform-origin:left;animation:drop 2.4s ease-in-out infinite}
+@keyframes drop{0%,100%{scale:.2 1;opacity:.28}50%{scale:1 1;opacity:.85}}
+
+/* copy: sibling of .stage, so it scrolls past it.
+   Both blocks are centred on the island, light-on-dark, as Flyward does —
+   the shape is the stage the type stands on. */
+.hero-copy{position:absolute;inset:0;z-index:8;pointer-events:none}
+.hero-block{height:auto;display:flex;flex-direction:column;padding:0 var(--gutter);gap:1.4rem}
+.hero-block.is-first{height:100vh;justify-content:center;align-items:center;text-align:center;gap:1.15rem}
+.hero-block.is-first .display{max-width:14ch;color:#F7F2E8}
+.hero-block.is-first .eyebrow{color:rgba(242,222,182,.86)}
+.hero-block.is-first .sub{max-width:25ch;color:rgba(247,242,232,.88)}
+.pill{
+  margin-top:.9rem;pointer-events:auto;
+  font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ink);background:var(--bone);border-radius:2rem;padding:.85rem 1.7rem;
+  transition:background .35s,color .35s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;
+}
+.pill:hover{background:#fff;transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,14,7,.22)}
+/* second block: centred over the opened room, light on dark */
+.hero-block.is-over{height:240vh;justify-content:center;align-items:center;text-align:center;gap:.5rem}
+.hero-block.is-over .display,.hero-block.is-over .eyebrow{color:#F7F2E8}
+.hero-block.is-over .sub{color:rgba(247,242,232,.84);max-width:30ch;margin-top:1rem}
+.hero-block.is-over .script{color:rgba(242,222,182,.92)}
+.wordmark-lg{font-family:var(--display);font-weight:200;letter-spacing:.4em;text-transform:uppercase;
+  font-size:clamp(1.7rem,3.4vw,3rem);color:#F7F2E8}
+/* Mobile: there is no room for type beside the opening, so it stacks —
+   type in the upper third, the doorway filling the lower two thirds and
+   bleeding off the bottom edge, same logic as desktop. The first block is
+   capped at 100vh so its content stays above the fold (at 150vh it lands
+   below it), and the second absorbs the remaining 200vh. */
+/* Mobile: the island is already narrow, so size it by WIDTH here — at 126vh
+   on a 390x844 screen it would be a sliver. Copy stays centred on it. */
+@media(max-width:760px){
+  :root{--key-y:66%;--glass-y:80%;--counter-y:92%}
+  .matte{height:auto;width:124vw}
+  .scene-glass{width:36vw}
+  .hero-block.is-first{max-width:none;gap:1.05rem}
+  .hero-block.is-first .display{max-width:16ch}
+  .cue{display:none}
+}
+
+
+  /* The animated properties carry their FINISHED value here; hero.ts rewinds
+     them at init when it is actually going to run. With reduced motion nothing
+     runs and the hero reads as the completed design. */
+  @media (prefers-reduced-motion: reduce) {
+    .matte { display: none; }
+    .survey { opacity: 0; }
+    .readout { display: none; }
+    .hero { height: auto; }
+    .stage { position: relative; }
+    .hero-copy { position: static; }
+    .hero-block.is-first { height: 100vh; }
+    .hero-block.is-over { height: auto; padding: 12vh var(--gutter); background: #2A1D0F; }
+  }
+</style>

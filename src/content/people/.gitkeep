@@ -1,0 +1,9 @@
+# The people collection is registered and deliberately empty.
+#
+# Ljudi ships as a signed statement; portraits are additive. Drop one JSON
+# file per founder here when the photography exists:
+#
+#   { "name": "Anđela", "photo": "../../assets/people/andjela.jpg", "order": 1 }
+#
+# Leave "instagram" out until the owners confirm which handle is whose AND
+# agree to linking a personal account from the bar page.

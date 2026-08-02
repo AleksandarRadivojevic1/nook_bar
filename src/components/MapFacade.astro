@@ -1,0 +1,122 @@
+---
+import { useTranslations, type Locale } from '../i18n';
+import { blockMap } from '../lib/blockmap';
+import { site } from '../lib/site';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Thickest first. Drawing through-roads under the service lanes is what keeps
+// them reading as continuous rather than being nicked at every junction.
+const byRank = [...blockMap.streets].sort((a, b) => a.rank - b.rank);
+const WIDTH = { 1: 7, 2: 4.2, 3: 2 } as const;
+
+const embed = `https://www.google.com/maps?q=${site.lat},${site.lng}&z=17&output=embed`;
+
+/**
+ * A window on the asset rather than the whole of it, in metres, centred on
+ * the bar. The generator's radius pulls in more than the block, and the full
+ * extent is a near-square that renders as a tall slab in the middle of the
+ * section. Landscape and tighter reads as a map of somewhere, and roads that
+ * run off the edges are what make it look like a map at all rather than an
+ * island of streets floating in bone.
+ *
+ * Cropping here rather than in the generator keeps the asset general: the
+ * next thing that needs it can choose its own window.
+ */
+const VIEW_W = 440;
+const VIEW_H = 300;
+const view = {
+  x: blockMap.bar.x - VIEW_W / 2,
+  y: blockMap.bar.y - VIEW_H / 2,
+};
+---
+
+<figure
+  class="mapf"
+  data-embed={embed}
+  data-title={t.kontakt.mapLabel}
+  style={`aspect-ratio:${VIEW_W}/${VIEW_H}`}
+>
+  <svg class="mapf-draw" viewBox={`${view.x} ${view.y} ${VIEW_W} ${VIEW_H}`} aria-hidden="true">
+    {blockMap.buildings.map((d) => <path class="mapf-b" d={d} />)}
+    {byRank.map((street) => (
+      <path class="mapf-s" d={street.d} stroke-width={WIDTH[street.rank as 1 | 2 | 3]} />
+    ))}
+    <g class="mapf-pin" transform={`translate(${blockMap.bar.x} ${blockMap.bar.y})`}>
+      <circle class="mapf-pin-ring" r="17" />
+      <circle class="mapf-pin-dot" r="6" />
+    </g>
+  </svg>
+
+  <figcaption class="mapf-cap">
+    <span>{t.kontakt.mapLabel}</span>
+    <button class="mapf-open" type="button">{t.kontakt.mapOpen}</button>
+  </figcaption>
+</figure>
+
+<script>
+  import '../scripts/mapfacade';
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   THE MAP FACADE
+   The drawing is what renders. Clicking loads the real Google embed in
+   its place.
+
+   An eager iframe pulls several hundred KB of Google JS and tiles onto a
+   page already carrying GSAP, Lenis and WebGL; it contacts Google and sets
+   cookies before the visitor has agreed to anything, which under Serbia's
+   ZZPL is the same consideration as GDPR; and a full-colour Google map is a
+   hard palette break on bone and olive.
+
+   The iframe is BUILT IN JAVASCRIPT rather than sitting here with a
+   data-src. An element that does not exist cannot make a request, and a
+   data-src is one careless refactor away from being a src.
+   ══════════════════════════════════════════════════════════════════════ */
+.mapf{
+  position:relative;margin:12vh auto 0;max-width:52rem;width:100%;
+  background:var(--bone);overflow:hidden;
+  box-shadow:inset 0 0 0 1px var(--hair);
+}
+.mapf-draw{display:block;width:100%;height:100%}
+
+.mapf-b{fill:var(--olive-deep);fill-opacity:.09;stroke:none}
+.mapf-s{
+  fill:none;stroke:var(--olive);stroke-opacity:.5;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+
+.mapf-pin-ring{fill:none;stroke:var(--amber-text);stroke-opacity:.5;stroke-width:2}
+.mapf-pin-dot{fill:var(--amber-text)}
+
+.mapf-cap{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.9rem 1.1rem;
+  font-family:var(--display);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--label);
+  background:linear-gradient(180deg,rgba(242,236,225,0),rgba(242,236,225,.92) 42%);
+}
+.mapf-open{
+  font:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--olive-deep);background:none;cursor:pointer;
+  border:1px solid var(--hair);border-radius:2rem;padding:.5rem 1.1rem;
+  transition:color .4s ease,border-color .4s ease;
+}
+.mapf-open:hover{color:var(--amber-text);border-color:var(--amber-text)}
+
+/* Once loaded the embed takes the whole frame. It brings its own palette,
+   which is exactly why it is not shown until someone asks for it. */
+.mapf-frame{display:block;width:100%;height:100%;border:0}
+
+@media(max-width:760px){
+  .mapf{margin-top:9vh}
+  .mapf-cap{padding:.75rem .85rem;gap:.6rem}
+}
+</style>

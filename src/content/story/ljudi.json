@@ -1,0 +1,15 @@
+{
+  "eyebrow": { "sr": "Ljudi", "en": "The people" },
+  "title": { "sr": "Iza šanka", "en": "Behind the bar" },
+  "signature": "Anđela i Dimitrije",
+  "body": [
+    {
+      "sr": "Otvorili smo Nook zato što nam je nedostajalo mesto na koje bismo i sami svraćali. Malo, tiho, sa pićem koje se ne pravi na brzinu.",
+      "en": "We opened Nook because we missed having a place we would drop into ourselves. Small, quiet, with drinks that are not made in a hurry."
+    },
+    {
+      "sr": "Ako nas zateknete za šankom — to nije gostoprimstvo. Tu smo jer nam se tu sedi.",
+      "en": "If you find us behind the bar, that is not hospitality. We are there because that is where we like to sit."
+    }
+  ]
+}

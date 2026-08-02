@@ -1,0 +1,112 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
+import type { Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const entry = await getEntry('story', 'ljudi');
+const story = entry?.data;
+
+/**
+ * Portraits are additive. With the collection empty this is a signed
+ * statement, which is a finished thing — a marketing page carrying an
+ * empty-state message for its own founders is worse than no founders
+ * section, so there is no placeholder branch here at all.
+ *
+ * Filtered on having a photo rather than merely existing: a name with no
+ * portrait would render as an empty frame with a caption under it, which is
+ * the placeholder this design avoids.
+ */
+const people = (await getCollection('people'))
+  .filter((person) => person.data.photo)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+{
+  story && (
+    <section class="ljudi" id="ljudi" data-section="ljudi" data-nav-surface="bone">
+      <div class="ljudi-in">
+        <p class="eyebrow">{story.eyebrow[locale]}</p>
+        <h2 class="display">{story.title[locale]}</h2>
+
+        <div class="lj-statement">
+          {story.body.map((paragraph) => (
+            <p>{paragraph[locale]}</p>
+          ))}
+        </div>
+
+        {story.signature && <p class="script lj-sign">{story.signature}</p>}
+
+        {people.length > 0 && (
+          <div class="lj-faces">
+            {people.map((person) => (
+              <figure class="lj-face">
+                <Image src={person.data.photo!} alt={person.data.name} width={128} height={160} />
+                <figcaption>{person.data.name}</figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 8 — LJUDI, the founders
+   The words lead and the faces are an aside. A bar whose entire voice is
+   understatement should not open with two people looking at the camera;
+   letting them speak and treating their portraits as a footnote IS the
+   personality.
+
+   It also gives Caveat a real job. The script face currently loads for
+   three words in the hero and nothing else.
+
+   Ships complete with no photograph: with the people collection empty this
+   is a signed statement, which is a finished thing rather than a hole.
+   ══════════════════════════════════════════════════════════════════════ */
+.ljudi{position:relative;background:var(--sand);padding:18vh var(--gutter) 16vh;overflow:clip}
+.ljudi-in{max-width:44rem;margin:0 auto}
+
+.ljudi .display{
+  font-size:clamp(1.6rem,3.4vw,2.7rem);line-height:1.2;
+  color:var(--olive-deep);margin:1.2rem 0 3.4rem;text-wrap:balance;
+}
+
+/* Manifesto scale: this is a statement, not body copy under a heading. */
+.lj-statement p{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(1.15rem,2.3vw,1.85rem);line-height:1.46;
+  color:var(--olive-deep);margin:0 0 1.8rem;max-width:30ch;text-wrap:pretty;
+}
+.lj-statement p:last-child{margin-bottom:0}
+
+/* Set larger than the .script default and given room, because here it is a
+   signature rather than an annotation. */
+.lj-sign{
+  font-size:clamp(1.5rem,3vw,2.2rem);color:var(--olive-deep);
+  margin:3.2rem 0 0;
+}
+
+/* The aside. Small, in the corner, and after the words in reading order. */
+.lj-faces{display:flex;gap:1.4rem;margin-top:5vh}
+.lj-face{margin:0;width:clamp(4.5rem,7vw,6rem)}
+.lj-face img{
+  width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;
+  filter:grayscale(1) contrast(1.04);
+}
+.lj-face figcaption{
+  font-family:var(--display);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--label);margin-top:.6rem;
+}
+
+@media(max-width:760px){
+  .ljudi{padding:13vh var(--gutter) 12vh}
+  .lj-statement p{max-width:none}
+}
+</style>

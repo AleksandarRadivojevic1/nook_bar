@@ -1,0 +1,148 @@
+import { expect, test } from '@playwright/test';
+
+test('renders at least nine gallery tiles, each with a caption/alt', async ({ page }) => {
+  await page.goto('/');
+  const tiles = page.locator('[data-section="galerija"] .g-tile');
+  const count = await tiles.count();
+  expect(count).toBeGreaterThanOrEqual(9);
+
+  const imgs = page.locator('[data-section="galerija"] .g-img');
+  for (let i = 0; i < count; i++) {
+    const alt = await imgs.nth(i).getAttribute('alt');
+    expect(alt?.trim().length ?? 0).toBeGreaterThan(0);
+  }
+});
+
+test('captions are hidden at rest and content is localised', async ({ page }) => {
+  await page.goto('/');
+  const cap = page.locator('[data-section="galerija"] .g-tile figcaption').first();
+  expect(await cap.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(0);
+  await expect(page.locator('[data-section="galerija"]')).toContainText('Šank');
+
+  await page.goto('/en');
+  await expect(page.locator('[data-section="galerija"]')).toContainText('The bar');
+});
+
+test('the fallback grid is a responsive multi-column masonry', async ({ page }, testInfo) => {
+  await page.goto('/');
+  const cols = await page
+    .locator('[data-section="galerija"] .g-grid')
+    .evaluate((el) => getComputedStyle(el).columnCount);
+  // Desktop / reduced-motion run at 1920px → 4 columns; mobile (Pixel 7) → 2.
+  expect(cols).toBe(testInfo.project.name === 'mobile' ? '2' : '4');
+});
+
+test.describe('with motion', () => {
+  test.beforeEach(({}, testInfo) => {
+    test.skip(testInfo.project.name === 'reduced-motion', 'the WebGL layer is off under reduced motion');
+  });
+
+  test('boots the WebGL layer and gives the canvas real size', async ({ page }) => {
+    await page.goto('/');
+    const section = page.locator('[data-section="galerija"]');
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).toHaveClass(/is-webgl/, { timeout: 5000 });
+
+    const box = await page.locator('.g-canvas').evaluate((el: HTMLCanvasElement) => ({
+      w: el.clientWidth,
+      h: el.clientHeight,
+      backing: el.width,
+    }));
+    expect(box.w).toBeGreaterThan(200);
+    expect(box.h).toBeGreaterThan(200);
+    expect(box.backing).toBeGreaterThan(200);
+  });
+
+  test('the photos still carry their alt text once WebGL takes over', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('[data-section="galerija"]').scrollIntoViewIfNeeded();
+    // The markup grid is folded away visually but must remain in the document.
+    await expect(page.locator('[data-section="galerija"] .g-img').first()).toHaveAttribute(
+      'alt',
+      /\S/,
+    );
+  });
+});
+
+test.describe('lightbox', () => {
+  /**
+   * Once the WebGL layer is up the markup grid is pointer-events:none — the
+   * canvas owns the mouse and the tile buttons exist for the keyboard and the
+   * fallback. Activating the button the way a keyboard does exercises the same
+   * handler on every project.
+   */
+  const openFirstTile = (page: import('@playwright/test').Page) =>
+    page
+      .locator('[data-section="galerija"] .g-open')
+      .first()
+      .evaluate((el: HTMLElement) => el.click());
+
+  test('opens from a tile, shows the caption, and closes on Escape', async ({ page }) => {
+    await page.goto('/');
+    const modal = page.locator('.g-modal');
+    await expect(modal).toBeHidden();
+
+    await openFirstTile(page);
+    await expect(modal).toBeVisible();
+    await expect(page.locator('.g-modal-img')).toHaveAttribute('src', /\S/);
+    await expect(page.locator('.g-modal-caption')).toContainText(/\S/);
+
+    await page.keyboard.press('Escape');
+    await expect(modal).toBeHidden();
+  });
+
+  test('steps through photos with the arrow keys', async ({ page }) => {
+    await page.goto('/');
+    await openFirstTile(page);
+    const src = () => page.locator('.g-modal-img').getAttribute('src');
+
+    const first = await src();
+    await page.keyboard.press('ArrowRight');
+    await expect.poll(src).not.toBe(first);
+    await page.keyboard.press('ArrowLeft');
+    await expect.poll(src).toBe(first);
+  });
+
+  test('wraps around and locks the page behind it', async ({ page }) => {
+    await page.goto('/');
+    await openFirstTile(page);
+    await expect(page.locator('body')).toHaveClass(/g-modal-open/);
+
+    // Stepping back from the first photo lands on the last one.
+    const first = await page.locator('.g-modal-img').getAttribute('src');
+    await page.locator('.g-modal-prev').click();
+    await expect.poll(() => page.locator('.g-modal-img').getAttribute('src')).not.toBe(first);
+
+    await page.locator('.g-modal-close').click();
+    await expect(page.locator('body')).not.toHaveClass(/g-modal-open/);
+  });
+
+  test('the tile buttons are reachable by keyboard', async ({ page }) => {
+    await page.goto('/');
+    const first = page.locator('[data-section="galerija"] .g-open').first();
+    await first.focus();
+    await expect(first).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.g-modal')).toBeVisible();
+  });
+});
+
+test.describe('reduced motion', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } });
+
+  test('falls back to the still grid with no WebGL layer', async ({ page }) => {
+    await page.goto('/');
+    const section = page.locator('[data-section="galerija"]');
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).not.toHaveClass(/is-webgl/);
+    await expect(page.locator('.g-stage')).toBeHidden();
+
+    const tiles = page.locator('[data-section="galerija"] .g-tile');
+    const count = await tiles.count();
+    for (let i = 0; i < count; i++) {
+      const t = tiles.nth(i);
+      expect(await t.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(1);
+      expect(await t.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
+    }
+  });
+});

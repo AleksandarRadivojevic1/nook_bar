@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import { useTranslations, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const items = (await getCollection('menu')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="karta" id="karta" data-section="karta" data-nav-surface="bone">
+  <div class="karta-head">
+    <h2 class="display is-wide" style="font-size:clamp(1rem,1.5vw,1.3rem)">{t.karta.title}</h2>
+    <p class="sub" style="max-width:28ch">{t.karta.note}</p>
+  </div>
+  <div class="list">
+    {
+      items.map((item) => (
+        <div class="row" data-crop={item.data.crop}>
+          <div>
+            <h4>{item.data.name}</h4>
+            <p>{item.data.desc[locale]}</p>
+          </div>
+          <div class="price">{t.karta.currency} {item.data.price}</div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="grain is-fine"></div>
+</section>
+<div class="row-crop" id="crop"><div class="inner"></div></div>
+
+<script>
+  import '../../scripts/karta';
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 4 — KARTA
+   ══════════════════════════════════════════════════════════════════════ */
+.karta{padding:16vh var(--gutter) 9vh;position:relative;background:var(--bone)}
+.karta-head{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;margin-bottom:6vh;flex-wrap:wrap}
+.list{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(2rem,6vw,7rem)}
+@media(max-width:820px){.list{grid-template-columns:1fr}}
+.row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:1rem;
+  padding:1.35rem 0;border-bottom:1px solid var(--hair);position:relative}
+.row h4{font-family:var(--display);font-weight:400;font-size:clamp(1rem,1.35vw,1.2rem);
+  color:var(--olive-deep);margin:0;transition:color .35s}
+.row p{margin:.3rem 0 0;font-size:.83rem;line-height:1.6;color:var(--ink-soft);max-width:34ch}
+.row .price{font-family:var(--display);font-weight:400;font-size:.86rem;letter-spacing:.1em;
+  color:var(--label);font-variant-numeric:tabular-nums}
+.row:hover h4{color:var(--amber-text)}
+.row-crop{position:fixed;width:190px;height:240px;pointer-events:none;z-index:30;
+  opacity:0;translate:-50% -50%;overflow:hidden;box-shadow:0 18px 50px rgba(58,54,40,.28)}
+.row-crop .inner{position:absolute;inset:0}
+
+
+  @media (prefers-reduced-motion: reduce) {
+    /* No cursor-trailing crop when motion is reduced. */
+    .row-crop { display: none; }
+  }
+</style>

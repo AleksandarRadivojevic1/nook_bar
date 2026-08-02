@@ -1,0 +1,38 @@
+---
+import { useTranslations, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="manifesto" id="prostor" data-section="prostor" data-nav-surface="bone">
+  <p id="manifest">{t.prostor.manifesto}</p>
+</section>
+
+<script>
+  import '../../scripts/prostor';
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 2 — MANIFESTO, word by word
+   ══════════════════════════════════════════════════════════════════════ */
+.manifesto{padding:28vh var(--gutter) 24vh;position:relative;background:var(--bone)}
+.manifesto p{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(1.2rem,2.5vw,2.1rem);line-height:1.42;
+  color:var(--olive-deep);margin:0;max-width:26ch;
+}
+.manifesto .w{opacity:.13}
+
+  /* .w is opacity .13 by default and only GSAP raises it. Under reduced motion
+     the split never happens, so the paragraph renders as plain text — but
+     guard it anyway in case a .w survives. */
+  @media (prefers-reduced-motion: reduce) {
+    .manifesto .w { opacity: 1; }
+  }
+</style>

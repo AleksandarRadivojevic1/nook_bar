@@ -1,0 +1,25 @@
+---
+import syrosPath from '../assets/syros.path.txt?raw';
+---
+
+{/*
+  The Syros coastline, defined once for the whole document.
+
+  Two sections draw it now — the hero matte and the Siros deboss — and the
+  path is ~29 KB of OSM coordinates, so inlining it per section would be the
+  single largest thing on the page. It lives here rather than inside either
+  section because neither owns it, and because a `<use href="#syros">` inside
+  a section that happens to be hidden must still resolve.
+
+  The wrapper is zero-sized and absolutely positioned so it can never
+  contribute layout. `<defs>` content does not render on its own.
+*/}
+<svg class="syros-def" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="syros" d={syrosPath.trim()}></path>
+  </defs>
+</svg>
+
+<style is:global>
+  .syros-def{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+</style>
