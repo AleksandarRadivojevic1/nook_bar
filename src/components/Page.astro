@@ -23,6 +23,10 @@ const { locale } = Astro.props;
  * menu and the footer all derive from this, so none of them can link to
  * something that is not here. Adding a section means adding its id here and
  * nothing else.
+ *
+ * Reviews sit directly before Kontakt on purpose: social proof does nothing
+ * in the middle of a page. Before the decision point it builds — see the
+ * room, hear that other people agree, here is the address.
  */
 const present = new Set<SectionId>([
   'prostor',
@@ -43,8 +47,8 @@ const present = new Set<SectionId>([
   <Dan locale={locale} />
   <Karta locale={locale} />
   <Potpis locale={locale} />
-  <Recenzije locale={locale} />
   <Galerija locale={locale} />
+  <Recenzije locale={locale} />
   <Kontakt locale={locale} />
 </main>
 
