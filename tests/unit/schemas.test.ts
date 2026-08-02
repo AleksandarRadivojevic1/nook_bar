@@ -326,3 +326,59 @@ describe('instagram posts', () => {
     expect('order' in schema.parse(base)).toBe(false);
   });
 });
+
+/**
+ * Keystatic does not omit fields the editor left alone: it writes `{}` for an
+ * untouched localized object and an empty string for untouched text. Every
+ * optional field in every schema has to survive that, or an owner filling in
+ * one section breaks the build of the whole site.
+ */
+describe('what Keystatic writes for fields nobody filled in', () => {
+  const drink = {
+    name: 'Test',
+    tagline: { sr: 'ovo je test', en: 'this is a test' },
+    spec: { sr: 'test', en: 'test' },
+    price: 700,
+    order: 4,
+  };
+
+  it('accepts an untouched tasting note written as {}', () => {
+    const parsed = signatureSchema.parse({ ...drink, notes: {} });
+    expect(parsed.notes).toBeUndefined();
+  });
+
+  it('accepts an untouched origin note written as empty strings', () => {
+    const parsed = signatureSchema.parse({ ...drink, origin: { sr: '', en: '' } });
+    expect(parsed.origin).toBeUndefined();
+  });
+
+  // A drink with no image stand-in is fine; the row renders without one.
+  it('accepts a drink with no image stand-in at all', () => {
+    expect(() => signatureSchema.parse(drink)).not.toThrow();
+    expect(signatureSchema.parse({ ...drink, media: '' }).media).toBeUndefined();
+  });
+
+  // Half-filled is NOT the same as untouched. Someone who wrote the Serbian
+  // and forgot the English should be told, not silently have both dropped.
+  it('still rejects a note filled in only one language', () => {
+    expect(() => signatureSchema.parse({ ...drink, notes: { sr: 'Slano.', en: '' } })).toThrow();
+  });
+
+  it('accepts an untouched story signature', () => {
+    const base = {
+      eyebrow: { sr: 'a', en: 'a' },
+      title: { sr: 'b', en: 'b' },
+      body: [{ sr: 'c', en: 'c' }],
+    };
+    expect(storySchema.parse({ ...base, signature: '' }).signature).toBeUndefined();
+  });
+
+  it('accepts a person with untouched photo and instagram fields', () => {
+    const schema = personSchema(
+      (() => z.string()) as unknown as Parameters<typeof personSchema>[0],
+    );
+    const parsed = schema.parse({ name: 'Anđela', order: 1, photo: '', instagram: '' });
+    expect(parsed.photo).toBeUndefined();
+    expect(parsed.instagram).toBeUndefined();
+  });
+});

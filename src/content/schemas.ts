@@ -11,13 +11,38 @@ export const localized = z.object({
   en: z.string().min(1),
 });
 
+/**
+ * An optional field, tolerant of what an editor writes for "I left this alone".
+ *
+ * Keystatic does not omit untouched fields. It writes `{}` for a localized
+ * object nobody typed into and `''` for empty text, and `.optional()` accepts
+ * neither — `{}` is not `undefined`, so zod parses it and fails on the missing
+ * halves. The first time an owner added a drink without a tasting note, the
+ * production build broke and they were given no reason why.
+ *
+ * Wholly empty means absent. PARTLY filled still fails: someone who wrote the
+ * Serbian and forgot the English should be told, not have both silently
+ * dropped.
+ */
+export const optional = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((value) => {
+    if (value === '' || value === null) return undefined;
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      const parts = Object.values(value as Record<string, unknown>);
+      if (parts.every((part) => part === '' || part === undefined || part === null)) {
+        return undefined;
+      }
+    }
+    return value;
+  }, schema.optional());
+
 export const menuItemSchema = z.object({
   name: z.string().min(1),
   price: z.number().int().nonnegative(),
   desc: localized,
   order: z.number().int(),
   /** CSS background shorthand for the cursor-trailing crop in the Karta section. */
-  crop: z.string().optional(),
+  crop: optional(z.string().min(1)),
   placeholder: z.boolean().default(false),
 });
 
@@ -39,7 +64,7 @@ export const reviewSchema = z.object({
    */
   source: z.enum(['google', 'localGuide']).default('google'),
   /** Local Guides show how many reviews they have written. Nobody else does. */
-  guideReviews: z.number().int().positive().optional(),
+  guideReviews: optional(z.number().int().positive()),
   stars: z.number().int().min(1).max(5),
   /**
    * The language the review was written in, which is not necessarily the
@@ -65,7 +90,7 @@ export const signatureSchema = z.object({
   spec: localized,
   price: z.number().int().nonnegative(),
   /** Optional provenance note, e.g. the Syros drink names its island. */
-  origin: localized.optional(),
+  origin: optional(localized),
   /**
    * A tasting note, a sentence or two. Optional because the owners write
    * these and have not yet: the row renders without one rather than carrying
@@ -73,9 +98,13 @@ export const signatureSchema = z.object({
    * reason the section is a column of rows instead of three squares — a
    * square has nowhere to put it.
    */
-  notes: localized.optional(),
-  /** CSS background standing in for the drink's photograph. */
-  media: z.string(),
+  notes: optional(localized),
+  /**
+   * CSS background standing in for the drink's photograph. Optional: a drink
+   * added before anyone has shot it renders as an empty frame rather than
+   * failing the build.
+   */
+  media: optional(z.string().min(1)),
   order: z.number().int(),
   placeholder: z.boolean().default(false),
 });
@@ -131,7 +160,7 @@ export const storySchema = z.object({
    * A name written by hand, set in Caveat. Not localized: a signature is the
    * same in both languages. Optional because Siros has nobody to sign it.
    */
-  signature: z.string().min(1).optional(),
+  signature: optional(z.string().min(1)),
 });
 
 /**
@@ -146,8 +175,8 @@ export const storySchema = z.object({
 export const personSchema = (image: SchemaContext['image']) =>
   z.object({
     name: z.string().min(1),
-    photo: image().optional(),
-    instagram: z.url().optional(),
+    photo: optional(image()),
+    instagram: optional(z.url()),
     order: z.number().int(),
   });
 
