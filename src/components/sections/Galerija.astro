@@ -1,0 +1,212 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { useTranslations, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const tiles = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+
+// A larger rendition for the lightbox, where a photo fills the viewport rather
+// than a grid cell.
+const views = await Promise.all(
+  tiles.map(async (tile) => ({
+    src: tile.data.src,
+    caption: tile.data.caption[locale],
+    full: (await getImage({ src: tile.data.src, width: 1400, format: 'webp' })).src,
+  })),
+);
+---
+
+<section class="galerija" id="galerija" data-section="galerija" data-nav-surface="bone">
+  <div class="galerija-head">
+    <p class="eyebrow">{t.galerija.eyebrow}</p>
+    <h2 class="display">{t.galerija.title}</h2>
+    <p class="sub">{t.galerija.note}</p>
+  </div>
+
+  <div class="g-stage">
+    <div class="g-sticky">
+      <canvas class="g-canvas" aria-hidden="true"></canvas>
+    </div>
+  </div>
+
+  <div class="g-grid">
+    {
+      views.map((view, i) => (
+        <figure class="g-tile">
+          <button class="g-open" type="button" data-index={i} data-full={view.full}>
+            <Image
+              class="g-img"
+              src={view.src}
+              alt={view.caption}
+              widths={[320, 640, 960]}
+              sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
+            />
+          </button>
+          <figcaption>{view.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <div class="grain is-fine"></div>
+</section>
+
+<div class="g-modal" role="dialog" aria-modal="true" aria-label={t.galerija.title} hidden>
+  <button class="g-modal-close" type="button">{t.galerija.close}</button>
+  <div class="g-modal-center">
+    <img class="g-modal-img" src="" alt="" />
+    <p class="g-modal-caption" />
+  </div>
+  <div class="g-modal-nav">
+    <button class="g-modal-prev" type="button">{t.galerija.prev}</button>
+    <button class="g-modal-next" type="button">{t.galerija.next}</button>
+  </div>
+</div>
+
+<script>
+  import '../../scripts/galerija';
+</script>
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 6 — GALERIJA  (WebGL contact sheet)
+   Two layers live here. `.g-grid` is a plain CSS multi-column masonry: it is
+   what a visitor gets with no JS, no WebGL, or reduced motion, and it is also
+   the accessible copy and the texture source. When galerija.ts boots the WebGL
+   layer it sets `.is-webgl` on the section, which reveals the pinned `.g-stage`
+   canvas and folds the markup grid away behind it (kept rendered so the photos
+   still load and the alt text still reaches assistive tech).
+   The bulge itself is per-vertex displacement in gallery-gl.ts — a CSS
+   transform can only move a rectangle rigidly, so it could never bend a photo.
+   ══════════════════════════════════════════════════════════════════════ */
+.galerija{background:var(--bone);padding:15vh var(--gutter) 15vh;position:relative;overflow:clip}
+.galerija-head{max-width:40ch;margin-bottom:6vh}
+.galerija-head .display{margin-top:1rem}
+.galerija-head .sub{margin-top:1.1rem}
+
+/* The WebGL stage: hidden until the script confirms it can render.
+   It breaks out of the section's gutter so the canvas is full-bleed — the outer
+   columns are meant to run off the edges of the screen, not sit inside a
+   margin. */
+.g-stage{display:none}
+/* The height is a starting point only — galerija.ts overwrites it from the
+   scene's own row count, which is the one thing that knows how far the grid
+   has to travel at this breakpoint. */
+.galerija.is-webgl .g-stage{
+  display:block;height:280vh;
+  margin-inline:calc(var(--gutter) * -1);
+}
+/* svh, not vh: on phones vh is the height with browser chrome RETRACTED, so a
+   100vh sticky is taller than the visible area until the address bar hides. */
+.g-sticky{position:sticky;top:0;height:100vh;height:100svh}
+.g-canvas{display:block;width:100%;height:100%}
+
+/* With WebGL live the markup grid is folded away, but stays rendered: the
+   photos must still load (they are the textures) and the captions must still
+   reach assistive tech. Hence opacity rather than display:none. */
+.galerija.is-webgl .g-grid{
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+}
+
+.g-grid{
+  column-count:4;
+  column-gap:clamp(.6rem,1.1vw,1rem);
+}
+@media(max-width:1024px){ .g-grid{column-count:3} }
+@media(max-width:640px){ .g-grid{column-count:2} }
+
+.g-tile{
+  break-inside:avoid;
+  margin:0 0 clamp(.6rem,1.1vw,1rem);
+  position:relative;overflow:hidden;
+  background:var(--sand);
+  box-shadow:inset 0 0 0 1px rgba(69,69,52,.14);
+}
+/* The tile is a button so the lightbox is reachable by keyboard and without
+   WebGL — the canvas itself can take neither focus nor a click. */
+.g-open{
+  display:block;width:100%;
+  margin:0;padding:0;border:0;background:none;
+  cursor:pointer;
+}
+.g-img{
+  display:block;width:100%;height:auto;
+  transition:transform .9s cubic-bezier(.2,.7,.2,1);
+}
+/* will-change only while it can actually change. Left on permanently it holds a
+   compositor layer per photo for the whole page, including the twelve that are
+   folded away at opacity 0 behind the canvas. */
+.g-tile:hover .g-img{transform:scale(1.05);will-change:transform}
+
+/* Hover-only caption. This single rule is the toggle: raise `opacity` here (and
+   drop the :hover rule) to make captions always visible again. The text is also
+   the image alt, so it is always present for assistive tech even when hidden. */
+.g-tile figcaption{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:2.2rem .95rem .8rem;
+  font-family:var(--display);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  color:#F7F2E8;
+  background:linear-gradient(180deg,rgba(20,14,7,0),rgba(20,14,7,.62));
+  opacity:0;transition:opacity .4s ease;
+}
+.g-tile:hover figcaption{opacity:1}
+
+@media (prefers-reduced-motion: reduce){
+  /* A still contact sheet — no hover ramp, no scripted drift. */
+  .g-img{transition:none}
+}
+
+/* ── Lightbox ──────────────────────────────────────────────────────────
+   A sibling of the section, not a child: `.galerija` clips its overflow, and
+   a fixed overlay has no business inheriting that. */
+.g-modal[hidden]{display:none}
+.g-modal{
+  position:fixed;inset:0;z-index:120;
+  display:flex;flex-direction:column;
+  padding:clamp(1rem,3vw,2rem);
+  background:rgba(20,14,7,.94);
+  backdrop-filter:blur(6px);
+}
+body.g-modal-open{overflow:hidden}
+
+.g-modal button{
+  font-family:var(--display);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:#F7F2E8;background:none;border:0;padding:.7rem .2rem;cursor:pointer;
+  opacity:.72;transition:opacity .3s ease;
+}
+.g-modal button:hover,.g-modal button:focus-visible{opacity:1}
+.g-modal-close{align-self:flex-end}
+
+.g-modal-center{
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.2rem;
+}
+.g-modal-img{
+  max-width:min(100%,900px);max-height:70vh;
+  width:auto;height:auto;object-fit:contain;
+  display:block;
+}
+.g-modal-caption{
+  margin:0;text-align:center;
+  font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:#F7F2E8;
+}
+/* Each word rides in its own clipped box so the stagger reads as a reveal. */
+.g-word{display:inline-block;overflow:hidden;vertical-align:bottom}
+.g-word > span{display:inline-block;white-space:pre}
+
+.g-modal-nav{display:flex;align-items:center;justify-content:space-between}
+
+@media (prefers-reduced-motion: reduce){
+  .g-modal{backdrop-filter:none}
+  .g-word,.g-word > span{overflow:visible;transform:none}
+}
+</style>
