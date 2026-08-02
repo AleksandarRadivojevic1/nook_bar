@@ -145,6 +145,9 @@ vite.config.ts.timestamp-*
 # Local documentation — specs, plans, notes. Not committed.
 docs/
 
+# Brainstorming mockups from the superpowers visual companion. Local only.
+.superpowers/
+
 # Build and test output
 .astro/
 dist/
