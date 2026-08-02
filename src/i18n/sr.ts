@@ -95,10 +95,8 @@ export const sr = {
     addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
     priceValue: 'RSD 500 — 1.000|po osobi',
     hoursLabel: 'Radno vreme',
-    phoneLabel: 'Telefon',
     socialLabel: 'Instagram',
     address: 'Koste Stamenkovića 23, Leskovac',
-    phone: '+381 00 000 0000', // PLACEHOLDER — confirm with owners
   },
   status: {
     open: 'Otvoreno · do {close}',

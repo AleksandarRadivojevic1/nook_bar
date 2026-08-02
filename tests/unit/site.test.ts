@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatScore, site, telHref } from '../../src/lib/site';
+import { formatScore, site } from '../../src/lib/site';
 import { assertSite, siteSchema } from '../../src/lib/site.schema';
 
 describe('the site singleton', () => {
@@ -35,10 +35,11 @@ describe('the site singleton', () => {
   });
 });
 
-describe('telHref', () => {
-  it('strips the spaces a tel: link cannot carry', () => {
-    expect(telHref).toBe(`tel:${site.phone.replace(/\s+/g, '')}`);
-    expect(telHref).not.toMatch(/\s/);
+describe('the phone', () => {
+  // Removed rather than shipped as a stand-in: the only number available was
+  // +381 00 000 0000 and nothing rendered it. It returns with a real one.
+  it('is absent, not faked', () => {
+    expect(site).not.toHaveProperty('phone');
   });
 });
 

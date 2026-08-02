@@ -6,9 +6,6 @@ export interface Site {
   addressLocality: string;
   postalCode: string;
   countryCode: string;
-  phone: string;
-  /** Still true: the number is a stand-in until the owners confirm one. */
-  phonePlaceholder: boolean;
   mapsUrl: string;
   lat: number;
   lng: number;
@@ -23,14 +20,14 @@ export interface Site {
  *
  * Same two-module split as hours: this file is client-safe, and
  * `site.schema.ts` holds the zod validator so it never reaches a browser
- * bundle. Before this existed the address was hardcoded in Base.astro, the
- * phone sat translated in both dictionaries and rendered nowhere, and the
+ * bundle. Before this existed the address was hardcoded in Base.astro and the
  * Instagram and Maps links in the footer were `href="#"`.
+ *
+ * There is deliberately no `phone`: the only number anyone had was a
+ * placeholder that nothing rendered. It comes back when there is a real one,
+ * along with the `tel:` link that needs it.
  */
 export const site: Site = raw;
-
-/** `tel:` needs the number without spaces; the display keeps them. */
-export const telHref = `tel:${site.phone.replace(/\s+/g, '')}`;
 
 /**
  * Locale-aware so the score is never hard-coded as a string. "5,0" in sr.ts

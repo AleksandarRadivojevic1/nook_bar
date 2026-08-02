@@ -89,10 +89,8 @@ export const en: Dictionary = {
     addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
     priceValue: 'RSD 500 — 1,000|per person',
     hoursLabel: 'Hours',
-    phoneLabel: 'Phone',
     socialLabel: 'Instagram',
     address: 'Koste Stamenkovića 23, Leskovac',
-    phone: '+381 00 000 0000', // PLACEHOLDER — confirm with owners
   },
   status: {
     open: 'Open · until {close}',

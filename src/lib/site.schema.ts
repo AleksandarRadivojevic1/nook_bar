@@ -11,8 +11,6 @@ export const siteSchema = z.object({
   addressLocality: z.string().min(1),
   postalCode: z.string().min(1),
   countryCode: z.string().length(2),
-  phone: z.string().min(1),
-  phonePlaceholder: z.boolean().default(true),
   mapsUrl: z.url(),
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
