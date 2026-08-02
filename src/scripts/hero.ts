@@ -5,25 +5,39 @@ export function initHero(root: HTMLElement): void {
   if (!m) return;
   const { gsap } = m;
 
-  const matte = root.querySelector<SVGElement>('#matte');
+  const matte = root.querySelector<HTMLElement>('#matte');
   const coast = root.querySelector<SVGUseElement>('#coast');
-  const source = root.querySelector<SVGPathElement>('#syros');
+  // Document-level, not hero-level: the coastline is defined once per page by
+  // SyrosPath.astro because the Siros section draws it too. Only its LENGTH is
+  // read here, to set up the stroke that draws the shape on.
+  const source = document.querySelector<SVGPathElement>('#syros');
+  // The hole in the mask and the coastline drawn over it are two references to
+  // the same shape, so they have to be scaled as one.
+  const isle = root.querySelectorAll<SVGGElement>('.isle');
   const survey = root.querySelector<HTMLElement>('#survey');
   const ro1 = root.querySelector<HTMLElement>('#ro1');
   const ro2 = root.querySelector<HTMLElement>('#ro2');
   const hb1 = root.querySelector<HTMLElement>('#hb1');
   const hb2 = root.querySelector<HTMLElement>('#hb2');
   if (!matte || !coast || !source || !survey || !ro1 || !ro2 || !hb1 || !hb2) return;
+  if (isle.length !== 2) return;
 
   const hero = root;
 
-  // Scale the wall, not the picture. Syros is centred, so 14x clears the far
+  // Grow the hole, not the picture. Syros is centred, so 14x clears the far
   // corner of a 1920x900 viewport — a narrow shape needs more than a wide one.
+  //
+  // This scales the island inside the SVG rather than the .matte element:
+  // scaling the element scales the masked wall with it, and at 14x that is a
+  // raster surface the compositor will not allocate — which is what left the
+  // wall in fragments after a scroll to the bottom and back. svgOrigin is the
+  // viewBox centre, which is where the element used to scale from.
   gsap.fromTo(
-    matte,
+    isle,
     { scale: 1 },
     {
       scale: 14,
+      svgOrigin: '500 807.1',
       ease: 'power1.in',
       scrollTrigger: { trigger: hero, start: 'top top', end: '42% top', scrub: 0.6 },
     },

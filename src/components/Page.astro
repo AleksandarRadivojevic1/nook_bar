@@ -11,6 +11,7 @@ import Galerija from './sections/Galerija.astro';
 import Kontakt from './sections/Kontakt.astro';
 import Footer from './Footer.astro';
 import Nav from './Nav.astro';
+import SyrosPath from './SyrosPath.astro';
 
 interface Props {
   locale: Locale;
@@ -42,6 +43,7 @@ const present = new Set<SectionId>([
 <Nav locale={locale} sections={present} />
 
 <main data-locale={locale}>
+  <SyrosPath />
   <Hero locale={locale} />
   <Prostor locale={locale} />
   <Dan locale={locale} />

@@ -1,6 +1,5 @@
 ---
 import { useTranslations, type Locale } from '../../i18n';
-import syrosPath from '../../assets/syros.path.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -85,22 +84,24 @@ const bottles: Array<[number, number]> = [
              warm room shows through it. -->
         <svg viewBox="0 0 1000 1614.2" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
-            <path id="syros" d={syrosPath.trim()}></path>
-            <!-- A mask lets the coastline be referenced once instead of
-                 inlining 29KB of path data twice. -->
-            <mask id="seaMask" maskUnits="userSpaceOnUse" x="-9000" y="-9000" width="19000" height="19000">
-              <rect x="-9000" y="-9000" width="19000" height="19000" fill="#fff"></rect>
-              <use href="#syros" fill="#000"></use>
+            <!-- The coastline itself is defined once per document by
+                 SyrosPath.astro; both the mask below and the Siros section
+                 reference it, rather than inlining 29KB of path data twice. -->
+            <mask id="seaMask" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="7000" height="7614">
+              <rect x="-3000" y="-3000" width="7000" height="7614" fill="#fff"></rect>
+              <!-- The reveal scales THIS, not the element around it. See the
+                   note over .matte for why that distinction matters. -->
+              <g class="isle" id="isle-hole"><use href="#syros" fill="#000"></use></g>
             </mask>
           </defs>
           <rect
             class="wall"
-            x="-9000"
-            y="-9000"
-            width="19000"
-            height="19000"
+            x="-3000"
+            y="-3000"
+            width="7000"
+            height="7614"
             mask="url(#seaMask)"></rect>
-          <use class="lip" id="coast" href="#syros"></use>
+          <g class="isle" id="isle-lip"><use class="lip" id="coast" href="#syros"></use></g>
         </svg>
       </div>
     </div>
@@ -139,10 +140,10 @@ const bottles: Array<[number, number]> = [
 <style is:global>
 /* ══════════════════════════════════════════════════════════════════════
    ACT 1 — THE NOOK
-   300vh wrapper; ONE sticky stage. The bone wall has the arch punched out
-   (evenodd). Scaling the wall grows the hole; the picture behind is never
-   transformed, so it never resamples. Copy lives OUTSIDE the sticky stage
-   so it can scroll past it.
+   300vh wrapper; ONE sticky stage. The bone wall has the coastline punched out
+   of it by a mask. Scrolling grows the hole inside a wall that never moves; the
+   picture behind is never transformed, so it never resamples. Copy lives
+   OUTSIDE the sticky stage so it can scroll past it.
    ══════════════════════════════════════════════════════════════════════ */
 .hero{position:relative;height:340vh}
 .stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bone)}
@@ -208,9 +209,15 @@ const bottles: Array<[number, number]> = [
 
 /* the wall, with Syros cut out of it */
 .wall-wrap{position:absolute;inset:0;z-index:3;pointer-events:none}
+/* The element itself is NEVER transformed. The wall it carries is ~5,900px
+   square at 1920x900; scaling the element by the reveal's 14x would ask the
+   compositor to rasterise that at ~83,000px square, far past what it will
+   allocate — it drops tiles, and the wall comes back in bone fragments once you
+   scroll to the bottom and return to the top. The reveal scales the island
+   geometry inside the SVG instead, so every frame rasterises within this box. */
 .matte{
   position:absolute;left:var(--arch-x);top:var(--arch-y);translate:-50% -50%;
-  height:152vh;aspect-ratio:1000/1614.2;will-change:transform;
+  height:152vh;aspect-ratio:1000/1614.2;
 }
 .matte svg{width:100%;height:100%;overflow:visible}
 .matte .wall{fill:var(--bone)}
@@ -225,7 +232,7 @@ const bottles: Array<[number, number]> = [
 .readout{
   position:absolute;bottom:2.4vh;z-index:7;
   font-family:var(--display);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;
-  color:var(--olive);font-variant-numeric:tabular-nums;transition:color .55s ease;
+  color:var(--label);font-variant-numeric:tabular-nums;transition:color .55s ease;
 }
 .readout.is-left{left:var(--gutter)}
 .readout.is-right{right:var(--gutter);text-align:right}
@@ -242,7 +249,7 @@ const bottles: Array<[number, number]> = [
   position:absolute;left:var(--gutter);bottom:2.4vh;z-index:7;
   display:flex;align-items:center;gap:.8rem;
   font-family:var(--display);font-size:9px;letter-spacing:.34em;text-transform:uppercase;
-  color:var(--olive);
+  color:var(--label);
 }
 .cue i{display:block;width:38px;height:1px;background:currentColor;
   transform-origin:left;animation:drop 2.4s ease-in-out infinite}
@@ -261,9 +268,9 @@ const bottles: Array<[number, number]> = [
   margin-top:.9rem;pointer-events:auto;
   font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
   color:var(--ink);background:var(--bone);border-radius:2rem;padding:.85rem 1.7rem;
-  transition:background .35s,color .35s;
+  transition:background .35s,color .35s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;
 }
-.pill:hover{background:#fff}
+.pill:hover{background:#fff;transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,14,7,.22)}
 /* second block: centred over the opened room, light on dark */
 .hero-block.is-over{height:240vh;justify-content:center;align-items:center;text-align:center;gap:.5rem}
 .hero-block.is-over .display,.hero-block.is-over .eyebrow{color:#F7F2E8}
