@@ -230,7 +230,18 @@ export default config({
           description: 'Two or three of these across the whole section.',
           defaultValue: false,
         }),
-        source: fields.text({ label: 'Source', defaultValue: 'Google' }),
+        source: fields.select({
+          label: 'Where it is from',
+          options: [
+            { label: 'Google', value: 'google' },
+            { label: 'Google Local Guide', value: 'localGuide' },
+          ],
+          defaultValue: 'google',
+        }),
+        guideReviews: fields.integer({
+          label: 'Reviews this Local Guide has written',
+          description: 'Only for Local Guides. A number, not "45 recenzija" — the site writes the word.',
+        }),
         stars: fields.integer({ label: 'Stars', defaultValue: 5 }),
         order,
         placeholder: fields.checkbox({ label: 'Placeholder content', defaultValue: false }),

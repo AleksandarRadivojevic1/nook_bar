@@ -21,7 +21,7 @@ const index = visibleSections(sections, 'menu');
 const rating = fill(t.footer.rating, {
   score: formatScore(site.reviewScore, locale),
   count: String(site.reviewCount),
-  noun: pluralNoun(site.reviewCount, locale, t.footer.reviewNoun),
+  noun: pluralNoun(site.reviewCount, locale, t.recenzije.reviewNoun),
 });
 
 // Build-time values so nothing renders as a dash; clock.ts corrects them on

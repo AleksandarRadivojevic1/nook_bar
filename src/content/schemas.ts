@@ -32,7 +32,14 @@ export const reviewSchema = z.object({
   /** First name + last initial only — full names of real customers do not
    * belong on a page they never agreed to appear on. */
   author: z.string().min(1),
-  source: z.string().default('Google'),
+  /**
+   * WHERE the review is from, not how to write it. This was free text and it
+   * was Serbian — "Google recenzija" rendered verbatim under an English quote
+   * on /en. The platform is the fact; the wording belongs in the dictionary.
+   */
+  source: z.enum(['google', 'localGuide']).default('google'),
+  /** Local Guides show how many reviews they have written. Nobody else does. */
+  guideReviews: z.number().int().positive().optional(),
   stars: z.number().int().min(1).max(5),
   /**
    * The language the review was written in, which is not necessarily the

@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { fill, useTranslations, type Locale } from '../../i18n';
+import { fill, pluralNoun, useTranslations, type Locale } from '../../i18n';
 import { langMarker, orderReviews } from '../../lib/reviews';
 import { formatScore, site } from '../../lib/site';
 
@@ -15,6 +15,18 @@ const reviews = orderReviews((await getCollection('reviews')).map((entry) => ent
 
 // The count and the score describe the live Google listing, not this
 // collection: twenty reviews exist, three have been transcribed so far.
+/**
+ * "Google recenzija", or "Local Guide · 45 recenzija" when the reviewer is
+ * one. Built from the platform and a number rather than stored as a sentence,
+ * which is how Serbian ended up printed under English quotes on /en.
+ */
+function sourceLabel(source: 'google' | 'localGuide', guideReviews?: number): string {
+  if (source !== 'localGuide') return t.recenzije.google;
+  if (!guideReviews) return t.recenzije.localGuide;
+  const noun = pluralNoun(guideReviews, locale, t.recenzije.reviewNoun);
+  return `${t.recenzije.localGuide} · ${guideReviews} ${noun}`;
+}
+
 const claim = fill(t.recenzije.claim, {
   count: String(site.reviewCount),
   score: formatScore(site.reviewScore, locale),
@@ -45,7 +57,7 @@ const claim = fill(t.recenzije.claim, {
             <figure class:list={['rev-item', review.featured && 'is-featured']}>
               <blockquote class="rev-quote">{review.quote}</blockquote>
               <figcaption class="rev-by">
-                <b>{review.author}</b> · {review.source}
+                <b>{review.author}</b> · {sourceLabel(review.source, review.guideReviews)}
                 {marker && (
                   <Fragment>
                     {' · '}

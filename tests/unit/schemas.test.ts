@@ -60,6 +60,22 @@ describe('reviews', () => {
     expect(() => reviewSchema.parse({ ...base, stars: 0 })).toThrow();
   });
 
+  // The source used to be free text and it was Serbian: "Google recenzija"
+  // rendered verbatim under an English quote on /en. It is a platform now,
+  // and the words come from the dictionary.
+  it('takes the source as a platform, not a sentence', () => {
+    expect(reviewSchema.parse(base).source).toBe('google');
+    expect(() => reviewSchema.parse({ ...base, source: 'localGuide' })).not.toThrow();
+    expect(() => reviewSchema.parse({ ...base, source: 'Google recenzija' })).toThrow();
+  });
+
+  // Local Guides show how many reviews they have written; nobody else does.
+  it('carries the guide review count only as a number', () => {
+    expect(reviewSchema.parse(base).guideReviews).toBeUndefined();
+    expect(reviewSchema.parse({ ...base, guideReviews: 45 }).guideReviews).toBe(45);
+    expect(() => reviewSchema.parse({ ...base, guideReviews: '45 recenzija' })).toThrow();
+  });
+
   // The language is a fact about the quote, not a preference, so there is no
   // default to fall back to: an untagged quote cannot be marked correctly.
   it('requires the language the quote was written in', () => {
