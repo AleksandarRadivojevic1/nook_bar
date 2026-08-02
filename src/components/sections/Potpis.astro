@@ -24,7 +24,8 @@ const drinks = (await getCollection('signature')).sort((a, b) => a.data.order - 
       drinks.map((drink, i) => (
         <article class:list={['p-drink', i % 2 === 1 && 'is-flipped']}>
           <div class="p-media">
-            <div class="p-media-img" style={`background:${drink.data.media}`} />
+            {/* No stand-in yet means an empty frame, not "background:undefined". */}
+            <div class="p-media-img" style={drink.data.media && `background:${drink.data.media}`} />
           </div>
           <div class="p-body">
             <div class="p-row">

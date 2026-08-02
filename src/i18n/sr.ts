@@ -85,6 +85,11 @@ export const sr = {
        hours ended up wrong on all seven days. */
     claim: '{count} ljudi je ostavilo recenziju. Svih {count} je dalo {score}.',
     note: 'Ostavljene onako kako su napisane.',
+    google: 'Google recenzija',
+    localGuide: 'Local Guide',
+    /* Lives here rather than under footer: the noun belongs to reviews, and
+       both the footer rating and the Local Guide count inflect it. */
+    reviewNoun: { one: 'recenzija', few: 'recenzije', other: 'recenzija' },
   },
   galerija: {
     eyebrow: 'Galerija',
@@ -125,7 +130,9 @@ export const sr = {
     locationCol: 'Lokacija',
     ratingCol: 'Ocena',
     location: 'Leskovac, Srbija',
-    rating: '5,0 — 20 recenzija',
+    /* Derived from site.json, never typed. The noun is inflected because
+       Serbian agreement changes at 22 — see pluralNoun. */
+    rating: '{score} — {count} {noun}',
     boundaries: 'Granice © OpenStreetMap contributors, ODbL',
     concept: 'Koncept — sadržaj ilustrativan',
     legal: 'Sva prava zadržana.',

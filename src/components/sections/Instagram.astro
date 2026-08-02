@@ -1,18 +1,24 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import { useTranslations, type Locale } from '../../i18n';
 import { recentPosts } from '../../lib/instagram';
 import { site } from '../../lib/site';
 
 interface Props {
   locale: Locale;
+  /**
+   * Passed in rather than fetched here. Page.astro already reads this
+   * collection to decide whether the section renders at all, and a second
+   * read is a second trip through the content layer for the same answer.
+   */
+  posts: CollectionEntry<'instagram'>[];
 }
 
-const { locale } = Astro.props;
+const { locale, posts: entries } = Astro.props;
 const t = useTranslations(locale);
 
-const posts = recentPosts((await getCollection('instagram')).map((entry) => entry.data));
+const posts = recentPosts(entries.map((entry) => entry.data));
 ---
 
 {

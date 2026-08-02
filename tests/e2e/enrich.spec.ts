@@ -1,12 +1,21 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 
+const DRINKS = readdirSync(
+  join(import.meta.dirname, '..', '..', 'src', 'content', 'signature'),
+).filter((f) => f.endsWith('.json')).length;
+
 test.describe('signature (potpis)', () => {
-  test('renders three signature drinks, one carrying the Syros name', async ({ page }) => {
+  test('renders every signature drink, and Siros carries its origin line', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('#potpis .p-drink')).toHaveCount(3);
+    // Count comes from the collection; the owners edit it through Keystatic.
+    await expect(page.locator('#potpis .p-drink')).toHaveCount(DRINKS);
     await expect(page.locator('#potpis')).toContainText('Siros');
-    // The Syros drink is the only one with an origin line.
-    await expect(page.locator('#potpis .p-origin')).toHaveCount(1);
+    // Assert the Syros drink HAS an origin line, rather than that nobody else
+    // does — whether another drink has one is the owners' editorial call.
+    const siros = page.locator('#potpis .p-drink').filter({ hasText: 'Siros' }).first();
+    await expect(siros.locator('.p-origin')).toHaveCount(1);
   });
 
   test('translates on /en', async ({ page }) => {

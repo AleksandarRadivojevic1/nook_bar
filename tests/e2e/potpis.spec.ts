@@ -1,8 +1,19 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
+
+/**
+ * Counted from the collection, not hardcoded. The owners add and remove
+ * drinks through Keystatic now, so a literal 3 in here is a test that fails
+ * the first time somebody does their job.
+ */
+const DRINKS = readdirSync(
+  join(import.meta.dirname, '..', '..', 'src', 'content', 'signature'),
+).filter((f) => f.endsWith('.json')).length;
 
 test('renders one full-width row per drink', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#potpis .p-drink')).toHaveCount(3);
+  await expect(page.locator('#potpis .p-drink')).toHaveCount(DRINKS);
   await expect(page.locator('#potpis .p-card')).toHaveCount(0);
 });
 
@@ -49,6 +60,7 @@ test.describe('reduced motion', () => {
     const opacities = await page
       .locator('#potpis .p-drink')
       .evaluateAll((els) => els.map((el) => Number(getComputedStyle(el).opacity)));
-    expect(opacities).toEqual([1, 1, 1]);
+    expect(opacities).toHaveLength(DRINKS);
+    expect(opacities.every((o) => o === 1)).toBe(true);
   });
 });

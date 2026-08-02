@@ -76,6 +76,9 @@ export const en: Dictionary = {
     title: 'Reviews',
     claim: '{count} people left a review. All {count} gave it {score}.',
     note: 'Left as they were written.',
+    google: 'Google review',
+    localGuide: 'Local Guide',
+    reviewNoun: { one: 'review', few: 'reviews', other: 'reviews' },
   },
   galerija: {
     eyebrow: 'Gallery',
@@ -111,7 +114,7 @@ export const en: Dictionary = {
     locationCol: 'Location',
     ratingCol: 'Rating',
     location: 'Leskovac, Serbia',
-    rating: '5.0 — 20 reviews',
+    rating: '{score} — {count} {noun}',
     boundaries: 'Boundaries © OpenStreetMap contributors, ODbL',
     concept: 'Concept — illustrative content',
     legal: 'All rights reserved.',

@@ -69,3 +69,27 @@ test.describe('reduced motion', () => {
     expect(opacities).toEqual([1, 1, 1]);
   });
 });
+
+// The source used to be free text and it was Serbian, so "Google recenzija"
+// and "45 recenzija" printed verbatim under English quotes on /en.
+test('names the source in the language being read', async ({ page }) => {
+  // .rev-by is uppercased in CSS, so compare case-insensitively rather than
+  // asserting the shouting.
+  await page.goto('/');
+  const sr = await page.locator('#recenzije .rev-by').first().innerText();
+  expect(sr).toMatch(/local guide · 45 recenzija/i);
+
+  await page.goto('/en');
+  const en = await page.locator('#recenzije .rev-by').first().innerText();
+  expect(en).toMatch(/local guide · 45 reviews/i);
+  expect(en).not.toMatch(/recenzij/i);
+});
+
+test('no Serbian leaks into any attribution on the English page', async ({ page }) => {
+  await page.goto('/en');
+  const lines = await page
+    .locator('#recenzije .rev-by')
+    .evaluateAll((els) => els.map((el) => el.textContent ?? ''));
+  expect(lines.length).toBeGreaterThan(0);
+  for (const line of lines) expect(line).not.toMatch(/recenzij/i);
+});
