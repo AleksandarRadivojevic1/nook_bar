@@ -16,6 +16,7 @@ for (const route of ROUTES) {
       'karta',
       'potpis',
       'galerija',
+      'ljudi',
       'recenzije',
       'kontakt',
     ]);

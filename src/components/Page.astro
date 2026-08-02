@@ -7,6 +7,7 @@ import Prostor from './sections/Prostor.astro';
 import Siros from './sections/Siros.astro';
 import Dan from './sections/Dan.astro';
 import Karta from './sections/Karta.astro';
+import Ljudi from './sections/Ljudi.astro';
 import Potpis from './sections/Potpis.astro';
 import Recenzije from './sections/Recenzije.astro';
 import Galerija from './sections/Galerija.astro';
@@ -36,6 +37,7 @@ const { locale } = Astro.props;
  * room, hear that other people agree, here is the address.
  */
 const siros = await getEntry('story', 'siros');
+const ljudi = await getEntry('story', 'ljudi');
 
 const present = new Set<SectionId>([
   'prostor',
@@ -47,6 +49,7 @@ const present = new Set<SectionId>([
   'kontakt',
 ]);
 if (siros) present.add('siros');
+if (ljudi) present.add('ljudi');
 ---
 
 <Nav locale={locale} sections={present} />
@@ -60,6 +63,7 @@ if (siros) present.add('siros');
   <Karta locale={locale} />
   <Potpis locale={locale} />
   <Galerija locale={locale} />
+  <Ljudi locale={locale} />
   <Recenzije locale={locale} />
   <Kontakt locale={locale} />
 </main>
