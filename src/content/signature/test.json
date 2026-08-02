@@ -1,0 +1,19 @@
+{
+  "name": "Test",
+  "tagline": {
+    "sr": "ovo je test",
+    "en": "this is a test"
+  },
+  "spec": {
+    "sr": "test / test / test",
+    "en": "test / test / test"
+  },
+  "origin": {
+    "sr": "Isto test",
+    "en": "Again test"
+  },
+  "notes": {},
+  "price": 700,
+  "order": 4,
+  "placeholder": true
+}
