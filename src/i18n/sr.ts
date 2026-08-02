@@ -107,6 +107,8 @@ export const sr = {
     priceValue: 'RSD 500 — 1.000|po osobi',
     hoursLabel: 'Radno vreme',
     socialLabel: 'Instagram',
+    mapLabel: 'Gde smo',
+    mapOpen: 'Otvori mapu',
   },
   status: {
     open: 'Otvoreno · do {close}',

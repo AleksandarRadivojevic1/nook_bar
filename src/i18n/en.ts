@@ -93,6 +93,8 @@ export const en: Dictionary = {
     priceValue: 'RSD 500 — 1,000|per person',
     hoursLabel: 'Hours',
     socialLabel: 'Instagram',
+    mapLabel: 'Where we are',
+    mapOpen: 'Open the map',
   },
   status: {
     open: 'Open · until {close}',

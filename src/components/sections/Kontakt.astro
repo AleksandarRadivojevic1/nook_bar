@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import MapFacade from '../MapFacade.astro';
 import { fill, useTranslations, type Locale } from '../../i18n';
 import { addressLines, site } from '../../lib/site';
 import {
@@ -95,6 +96,8 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
       </dd>
     </dl>
   </div>
+
+  <MapFacade locale={locale} />
 
   {
     questions.length > 0 && (
