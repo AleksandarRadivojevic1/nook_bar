@@ -4,8 +4,11 @@ import { hours, openingHoursSpecification } from '../lib/hours';
 // Runs the zod check against hours.json at build time. Astro frontmatter never
 // reaches the client, so the validator stays out of the browser bundle.
 import { assertHours } from '../lib/hours.schema';
+import { site } from '../lib/site';
+import { assertSite } from '../lib/site.schema';
 
 assertHours();
+assertSite();
 import '../styles/tokens.css';
 import '../styles/global.css';
 
@@ -16,9 +19,10 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-const site = Astro.site!;
-const srUrl = new URL('/', site).href;
-const enUrl = new URL('/en/', site).href;
+// Named `origin`, not `site`: `site` is the business-facts singleton.
+const origin = Astro.site!;
+const srUrl = new URL('/', origin).href;
+const enUrl = new URL('/en/', origin).href;
 const canonical = locale === 'sr' ? srUrl : enUrl;
 
 const jsonLd = {
@@ -29,10 +33,18 @@ const jsonLd = {
   url: canonical,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Koste Stamenkovića 23',
-    addressLocality: 'Leskovac',
-    addressCountry: 'RS',
+    streetAddress: site.streetAddress,
+    addressLocality: site.addressLocality,
+    postalCode: site.postalCode,
+    addressCountry: site.countryCode,
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: site.lat,
+    longitude: site.lng,
+  },
+  hasMap: site.mapsUrl,
+  sameAs: [site.instagramUrl],
   // One specification per group of identical days: 07-24 Mon-Thu, 07-01
   // Fri-Sat, 09-24 Sun. Derived from the same data the page renders.
   openingHoursSpecification: openingHoursSpecification(hours.week),
