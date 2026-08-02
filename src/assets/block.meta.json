@@ -1,0 +1,20 @@
+{
+  "centre": {
+    "lat": 42.9930343,
+    "lng": 21.9483644
+  },
+  "counts": {
+    "buildings": 122,
+    "streets": 47
+  },
+  "generated": "2026-08-02",
+  "generator": "scripts/generate-block-map.py",
+  "names": "name:sr-Latn where OSM has it, otherwise an explicit Serbian Cyrillic to Latin table in the generator. Not unicodedata.",
+  "projection": "local equirectangular, x scaled by cos(lat); units are metres from the frame's top-left corner. Error over this extent is far below a hairline's width.",
+  "query": "[out:json][timeout:60];(way(around:220,42.9930343,21.9483644)[\"highway\"];way(around:160,42.9930343,21.9483644)[\"building\"];);out geom;",
+  "radius": {
+    "buildings": 160,
+    "streets": 220
+  },
+  "source": "OpenStreetMap via Overpass API"
+}
