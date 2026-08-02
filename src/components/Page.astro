@@ -1,8 +1,10 @@
 ---
+import { getEntry } from 'astro:content';
 import type { Locale } from '../i18n';
 import type { SectionId } from '../lib/sections';
 import Hero from './sections/Hero.astro';
 import Prostor from './sections/Prostor.astro';
+import Siros from './sections/Siros.astro';
 import Dan from './sections/Dan.astro';
 import Karta from './sections/Karta.astro';
 import Potpis from './sections/Potpis.astro';
@@ -25,10 +27,16 @@ const { locale } = Astro.props;
  * something that is not here. Adding a section means adding its id here and
  * nothing else.
  *
+ * Sections backed by content are added only when that content exists — an
+ * empty collection removes the section AND its nav entry, with no placeholder
+ * in between.
+ *
  * Reviews sit directly before Kontakt on purpose: social proof does nothing
  * in the middle of a page. Before the decision point it builds — see the
  * room, hear that other people agree, here is the address.
  */
+const siros = await getEntry('story', 'siros');
+
 const present = new Set<SectionId>([
   'prostor',
   'dan',
@@ -38,6 +46,7 @@ const present = new Set<SectionId>([
   'recenzije',
   'kontakt',
 ]);
+if (siros) present.add('siros');
 ---
 
 <Nav locale={locale} sections={present} />
@@ -46,6 +55,7 @@ const present = new Set<SectionId>([
   <SyrosPath />
   <Hero locale={locale} />
   <Prostor locale={locale} />
+  <Siros locale={locale} />
   <Dan locale={locale} />
   <Karta locale={locale} />
   <Potpis locale={locale} />

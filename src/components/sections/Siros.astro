@@ -1,0 +1,125 @@
+---
+import { getEntry } from 'astro:content';
+import { localeTag, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const entry = await getEntry('story', 'siros');
+const story = entry?.data;
+
+/**
+ * Syros, 37.4° N 24.9° E. Formatted rather than written into the content so
+ * Serbian gets its decimal comma and English its point from one number, the
+ * same way the review score does.
+ */
+const number = new Intl.NumberFormat(localeTag(locale), {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const readout = `${number.format(37.4)}° N · ${number.format(24.9)}° E`;
+---
+
+{
+  story && (
+    <section class="siros" id="siros" data-section="siros" data-nav-surface="dark">
+      <div class="siros-isle" aria-hidden="true">
+        <svg viewBox="0 0 1000 1614.2" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="sirosFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#150E05" />
+              <stop offset="100%" stop-color="#3E2C16" />
+            </linearGradient>
+          </defs>
+          <use class="siros-coast" href="#syros" fill="url(#sirosFill)" />
+        </svg>
+      </div>
+
+      <div class="siros-in">
+        <p class="eyebrow">
+          {story.eyebrow[locale]} · {readout}
+        </p>
+        <h2 class="display">{story.title[locale]}</h2>
+        {story.body.map((paragraph) => (
+          <p class="siros-p">{paragraph[locale]}</p>
+        ))}
+      </div>
+
+      <div class="grain is-fine" />
+    </section>
+  )
+}
+
+<style is:global>
+/* ══════════════════════════════════════════════════════════════════════
+   ACT 3 — SIROS, the origin
+   The manifesto asserts something about plaster, wood and brass going dark.
+   This is where that assertion comes from. Assertion, then source.
+
+   The identity's central gesture is that the logo is DEBOSSED into plaster
+   rather than printed on it. Applying the same gesture to the island the
+   brand came from means nothing is added to the wall — something is taken
+   out of it. It also returns Syros to the warm dark it occupied in the hero,
+   closing a loop the page otherwise leaves open.
+
+   No script. The deboss is a gradient fill and two drop-shadows, so the
+   reduced-motion state and the finished state are the same thing.
+   ══════════════════════════════════════════════════════════════════════ */
+.siros{
+  position:relative;overflow:clip;
+  padding:22vh var(--gutter) 20vh;
+  background:
+    radial-gradient(90% 70% at 18% 42%, rgba(107,69,32,.34) 0%, rgba(27,20,9,0) 68%),
+    linear-gradient(176deg,#1B1409 0%,#241A0C 46%,#171006 100%);
+}
+
+/* The island bleeds off the right edge rather than sitting squarely inside
+   the frame. Only just, though: the hero crops Syros hard because it is a
+   mask being scaled through, but here the shape has to be READ as an island.
+   Cropped as hard as the hero's, its west coast is a ragged vertical line
+   that looks like a crack in the plaster. */
+.siros-isle{
+  position:absolute;z-index:1;pointer-events:none;
+  top:50%;right:-5%;translate:0 -50%;
+  height:104%;aspect-ratio:1000/1614.2;
+}
+.siros-isle svg{width:100%;height:100%;display:block}
+
+/* The same two-shadow recipe as .deboss — a light edge on one side, a dark
+   one on the other, so the shape reads as carved rather than printed. The
+   VALUES are dark-wall values: .deboss lights the lower edge with white at
+   .8 for bone plaster, and that same white on near-black would read as an
+   outline drawn around the island instead of light falling across it. */
+.siros-coast{
+  filter:
+    drop-shadow(0 1.5px 0 rgba(233,207,160,.16))
+    drop-shadow(0 -1.5px 2px rgba(0,0,0,.55));
+}
+
+.siros-in{position:relative;z-index:2;max-width:34ch}
+.siros .eyebrow{color:#B9A98C}
+.siros .display{
+  font-size:clamp(1.7rem,4vw,3.1rem);line-height:1.16;
+  color:#F7F2E8;margin:1.4rem 0 2.6rem;text-wrap:balance;
+}
+.siros-p{
+  font-family:var(--body);font-size:clamp(.95rem,1.25vw,1.06rem);line-height:1.72;
+  color:#D8CFBD;margin:0 0 1.5rem;text-wrap:pretty;
+}
+.siros-p:last-child{margin-bottom:0}
+
+@media(max-width:760px){
+  .siros{padding:16vh var(--gutter) 15vh}
+  /* Below the copy rather than beside it, and small. A narrow screen has no
+     room for the two side by side, and scaling the same placement down just
+     pushes the island off the edge entirely — which loses the one thing this
+     section is for. Small and complete beats large and absent. */
+  .siros-isle{
+    top:auto;bottom:5%;right:-6%;translate:0 0;
+    height:44%;
+  }
+  .siros-in{max-width:none}
+}
+</style>

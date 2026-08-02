@@ -11,6 +11,7 @@ for (const route of ROUTES) {
     expect(order).toEqual([
       'hero',
       'prostor',
+      'siros',
       'dan',
       'karta',
       'potpis',
