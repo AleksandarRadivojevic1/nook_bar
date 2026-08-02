@@ -85,9 +85,12 @@ const claim = fill(t.recenzije.claim, {
 .reviews{position:relative;background:var(--bone);padding:15vh var(--gutter) 12vh;overflow:hidden}
 .reviews-in{position:relative;z-index:2;max-width:54rem;margin:0 auto}
 
-.rev-head{max-width:30ch;margin-bottom:9vh}
-.rev-claim{font-family:var(--display);font-weight:300;font-size:clamp(1.3rem,2.9vw,2.3rem);
-  line-height:1.34;color:var(--olive-deep);margin:0;text-wrap:pretty}
+.rev-head{max-width:34ch;margin-bottom:9vh}
+/* Deliberately smaller than the pull-quote it introduces: the quotes are the
+   substance and the claim is the frame. At the same scale the eye cannot tell
+   which of the two is the heading. */
+.rev-claim{font-family:var(--display);font-weight:300;font-size:clamp(1.1rem,2.1vw,1.62rem);
+  line-height:1.42;color:var(--olive-deep);margin:0;text-wrap:pretty}
 .rev-note{font-family:var(--display);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
   color:var(--label);margin:1.5rem 0 0}
 
