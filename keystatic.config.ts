@@ -44,7 +44,15 @@ const dayHours = (label: string) =>
 
 export default config({
   // Local for a developer, GitHub for the owners. Never hardcoded: local mode
-  // in production would silently discard every edit on the next deploy.
+  // in production would silently discard every edit on the next deploy, and
+  // github mode in development would commit to the repo every time someone
+  // touches content on their own machine.
+  //
+  // Registering the GitHub App required forcing this to `github` briefly,
+  // because Keystatic's created-app callback refuses to run outside
+  // development and the setup screen only appears in github mode. If that
+  // ever has to happen again, flip it, run /keystatic/setup on localhost,
+  // then put this back.
   storage: import.meta.env.DEV
     ? { kind: 'local' }
     : { kind: 'github', repo: { owner: 'AleksandarRadivojevic1', name: 'nook_bar' } },
