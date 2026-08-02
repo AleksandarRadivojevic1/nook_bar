@@ -57,11 +57,6 @@ bar.
 
 A few things here look like they could be tidied up but shouldn't be.
 
-**The map of Serbia includes Kosovo.** That was a deliberate decision, and the
-outline is stitched together specifically to render as one landmass with no
-internal border. If you regenerate it from the original source without knowing
-that, you'll quietly redraw a politically loaded boundary on a Serbian
-business's website. Read `src/assets/ASSETS.md` first.
 
 **The animation numbers came from somewhere.** The hero scaling to exactly 14×,
 the odd-looking percentages, the route waypoints — those were arrived at by
