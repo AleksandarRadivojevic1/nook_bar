@@ -74,8 +74,8 @@ export const en: Dictionary = {
   },
   recenzije: {
     title: 'Reviews',
-    score: '5.0',
-    meta: '20 reviews · Google',
+    claim: '{count} people left a review. All {count} gave it {score}.',
+    note: 'Left as they were written.',
   },
   galerija: {
     eyebrow: 'Gallery',

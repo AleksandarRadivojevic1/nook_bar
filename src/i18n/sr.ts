@@ -80,8 +80,11 @@ export const sr = {
   },
   recenzije: {
     title: 'Recenzije',
-    score: '5,0',
-    meta: '20 recenzija · Google',
+    /* The figures are filled from site.json. Typed into this file they would
+       be two more facts nobody remembers to update, which is how the opening
+       hours ended up wrong on all seven days. */
+    claim: '{count} ljudi je ostavilo recenziju. Svih {count} je dalo {score}.',
+    note: 'Ostavljene onako kako su napisane.',
   },
   galerija: {
     eyebrow: 'Galerija',

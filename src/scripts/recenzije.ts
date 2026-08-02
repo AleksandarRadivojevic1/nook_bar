@@ -25,53 +25,20 @@ const CITRUS = `<svg width="150" height="150" viewBox="0 0 150 150">
   }).join('')}
   <circle cx="75" cy="75" r="9"/></svg>`;
 
-/** Dot navigation works with or without motion — it is navigation, not decoration. */
-function wireDots(dots: HTMLElement[], show: (n: number) => void): void {
-  dots.forEach((dot, i) => {
-    const go = () => show(i);
-    dot.addEventListener('click', go);
-    dot.addEventListener('keydown', (e) => {
-      const key = (e as KeyboardEvent).key;
-      if (key === 'Enter' || key === ' ') {
-        e.preventDefault();
-        go();
-      }
-    });
-  });
-}
-
-function markDots(dots: HTMLElement[], at: number): void {
-  dots.forEach((d, i) => {
-    d.classList.toggle('on', i === at);
-    d.setAttribute('aria-selected', String(i === at));
-  });
-}
-
+/**
+ * Ornaments only.
+ *
+ * This used to run a 4.2s auto-advancing carousel over the quotes. It was
+ * deleted rather than repaired: auto-advance with no pause control fails
+ * WCAG 2.2.2, the 5x5px dots failed 2.5.8, and the dot row was a role=tablist
+ * with no panels and no aria-controls. Showing every quote fixes all four at
+ * once and reads better, so there is nothing left here but the line-work.
+ */
 export function initRecenzije(root: HTMLElement): void {
-  const stack = root.querySelector<HTMLElement>('#revstack');
-  if (!stack) return;
-  const items = [...stack.querySelectorAll<HTMLElement>('.rev-item')];
-  const dots = [...root.querySelectorAll<HTMLElement>('#revdots i')];
-  if (!items.length) return;
-
-  let at = 0;
   const m = motion();
-
-  if (!m) {
-    // No motion: still switchable, just instant.
-    const show = (n: number) => {
-      items.forEach((el, i) => {
-        el.style.opacity = i === n ? '1' : '0';
-      });
-      at = n;
-      markDots(dots, at);
-    };
-    wireDots(dots, show);
-    return;
-  }
+  if (!m) return;
 
   const { gsap } = m;
-
   const ornaments = [...root.querySelectorAll<HTMLElement>('.rev-orn')];
   if (ornaments[0]) ornaments[0].innerHTML = OLIVE;
   if (ornaments[1]) ornaments[1].innerHTML = CITRUS;
@@ -94,35 +61,6 @@ export function initRecenzije(root: HTMLElement): void {
         scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: 1 },
       },
     );
-  });
-
-  let timer: ReturnType<typeof setInterval> | null = null;
-
-  // One quote at a time — a wall of testimonials reads as filler.
-  const show = (n: number) => {
-    gsap.to(items[at], { opacity: 0, y: -14, duration: 0.5, ease: 'power2.in' });
-    at = n;
-    gsap.fromTo(
-      items[at],
-      { opacity: 0, y: 16 },
-      { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.28 },
-    );
-    markDots(dots, at);
-  };
-
-  m.ScrollTrigger.create({
-    trigger: root,
-    start: 'top 70%',
-    end: 'bottom 30%',
-    onToggle: (self) => {
-      if (timer) clearInterval(timer);
-      if (self.isActive) timer = setInterval(() => show((at + 1) % items.length), 4200);
-    },
-  });
-
-  wireDots(dots, (i) => {
-    if (timer) clearInterval(timer);
-    show(i);
   });
 }
 

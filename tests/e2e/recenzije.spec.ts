@@ -1,61 +1,71 @@
 import { expect, test } from '@playwright/test';
 
-test('renders one quote per review with a dot each', async ({ page }) => {
+test('shows every review at once, with no carousel left behind', async ({ page }) => {
   await page.goto('/');
-  expect(await page.locator('.rev-item').count()).toBe(3);
-  expect(await page.locator('#revdots i').count()).toBe(3);
+  await expect(page.locator('#recenzije .rev-item')).toHaveCount(3);
+  await expect(page.locator('#revdots')).toHaveCount(0);
+  await expect(page.locator('#recenzije [role="tablist"]')).toHaveCount(0);
+});
+
+test('the claim is a sentence carrying the real count and score', async ({ page }) => {
+  await page.goto('/');
+  const claim = page.locator('#recenzije .rev-claim');
+  await expect(claim).toContainText('20');
+  // Serbian decimal comma, produced by Intl rather than typed into sr.ts.
+  await expect(claim).toContainText('5,0');
+  await page.goto('/en');
+  await expect(page.locator('#recenzije .rev-claim')).toContainText('5.0');
+});
+
+test('the score is a sentence, not a badge with stars', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#recenzije .rev-stars')).toHaveCount(0);
+  await expect(page.locator('#recenzije .rev-score')).toHaveCount(0);
+});
+
+// One idiom used once is a decision; used twice it is a tic. The debossed
+// wordmark is reserved for the Siros section.
+test('carries no debossed watermark', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#recenzije .deboss')).toHaveCount(0);
+});
+
+test('one quote is set as a pull-quote and the rest are not', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#recenzije .rev-item.is-featured')).toHaveCount(1);
+  const sizes = await page
+    .locator('#recenzije .rev-quote')
+    .evaluateAll((els) => els.map((el) => parseFloat(getComputedStyle(el).fontSize)));
+  expect(sizes[0]).toBeGreaterThan(sizes[1]);
 });
 
 test('shows the same verbatim quote in both locales', async ({ page }) => {
   await page.goto('/');
-  const sr = await page.locator('.rev-item').first().innerText();
+  const sr = await page.locator('#recenzije .rev-quote').first().innerText();
   await page.goto('/en');
-  const en = await page.locator('.rev-item').first().innerText();
+  const en = await page.locator('#recenzije .rev-quote').first().innerText();
   expect(sr).toBe(en);
   expect(sr).toContain('Amazing new spot in town');
 });
 
-test('shows exactly one quote at a time', async ({ page }) => {
+test('marks the English quotes on the Serbian page and not on the English one', async ({ page }) => {
   await page.goto('/');
-  await page.locator('[data-section="recenzije"]').scrollIntoViewIfNeeded();
-  await page.waitForTimeout(600);
-  const opacities = await page
-    .locator('.rev-item')
-    .evaluateAll((els) => els.map((el) => Number(getComputedStyle(el).opacity)));
-  expect(opacities.filter((o) => o > 0.5)).toHaveLength(1);
-});
-
-test('clicking a dot switches the quote', async ({ page }) => {
-  await page.goto('/');
-  await page.locator('[data-section="recenzije"]').scrollIntoViewIfNeeded();
-  await page.locator('#revdots i').nth(2).click();
-  await page.waitForTimeout(1200);
-  const third = await page
-    .locator('.rev-item')
-    .nth(2)
-    .evaluate((el) => Number(getComputedStyle(el).opacity));
-  expect(third).toBeGreaterThan(0.8);
+  await expect(page.locator('#recenzije .rev-lang')).toHaveCount(3);
+  await expect(page.locator('#recenzije .rev-lang').first()).toHaveText('EN');
+  await page.goto('/en');
+  await expect(page.locator('#recenzije .rev-lang')).toHaveCount(0);
 });
 
 test.describe('reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
-  test('does not stack every review on top of every other', async ({ page }) => {
+  // The old section hid two of three quotes and relied on a timer to reveal
+  // them. Nothing is hidden now, so there is nothing left to rewind.
+  test('every quote is fully visible with no script running', async ({ page }) => {
     await page.goto('/');
     const opacities = await page
-      .locator('.rev-item')
+      .locator('#recenzije .rev-item')
       .evaluateAll((els) => els.map((el) => Number(getComputedStyle(el).opacity)));
-    expect(opacities.filter((o) => o > 0.5)).toHaveLength(1);
-  });
-
-  test('dots remain clickable — switching quotes is navigation, not decoration', async ({ page }) => {
-    await page.goto('/');
-    await page.locator('#revdots i').nth(1).click();
-    await page.waitForTimeout(300);
-    const second = await page
-      .locator('.rev-item')
-      .nth(1)
-      .evaluate((el) => Number(getComputedStyle(el).opacity));
-    expect(second).toBeGreaterThan(0.8);
+    expect(opacities).toEqual([1, 1, 1]);
   });
 });
