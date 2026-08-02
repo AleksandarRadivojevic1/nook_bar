@@ -24,9 +24,19 @@ export function startClock(root: ParentNode, locale: Locale): () => void {
   const clockEl = root.querySelector<HTMLElement>('#fclock');
   const dateEl = root.querySelector<HTMLElement>('#fdate');
   const statusEl = root.querySelector<HTMLElement>('#status');
+  const weekEl = root.querySelector<HTMLElement>('#hours-week');
 
   const tick = () => {
     const now = new Date();
+    if (weekEl) {
+      // The build stamped ITS day onto a row. Correct it for this visitor —
+      // same reason the pill is recomputed here.
+      const today = weekdayInTz(now);
+      weekEl.querySelectorAll<HTMLElement>('.hrow').forEach((row) => {
+        if (row.dataset.day === today) row.setAttribute('aria-current', 'date');
+        else row.removeAttribute('aria-current');
+      });
+    }
     if (clockEl) clockEl.textContent = formatClock(now, locale);
     if (dateEl) dateEl.textContent = formatDate(now, locale);
     if (statusEl) {

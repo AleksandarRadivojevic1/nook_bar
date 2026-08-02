@@ -60,13 +60,13 @@ export const sr = {
   },
   hours: {
     days: {
-      mon: 'Pon',
-      tue: 'Uto',
-      wed: 'Sre',
-      thu: 'Čet',
-      fri: 'Pet',
-      sat: 'Sub',
-      sun: 'Ned',
+      mon: 'Ponedeljak',
+      tue: 'Utorak',
+      wed: 'Sreda',
+      thu: 'Četvrtak',
+      fri: 'Petak',
+      sat: 'Subota',
+      sun: 'Nedelja',
     },
   },
   potpis: {

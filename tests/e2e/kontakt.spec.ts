@@ -4,21 +4,37 @@ test('renders the address and hours from the data', async ({ page }) => {
   await page.goto('/');
   const section = page.locator('[data-section="kontakt"]');
   await expect(section).toContainText('Koste Stamenkovića 23');
-  // Three grouped rows, not one line: the week is not uniform.
-  await expect(section).toContainText('Pon — Čet');
-  await expect(section).toContainText('07h — 24h');
-  await expect(section).toContainText('Pet — Sub');
-  await expect(section).toContainText('07h — 01h');
-  await expect(section).toContainText('Ned');
-  await expect(section).toContainText('09h — 24h');
+  // One row per day, the way Google Maps lists them.
+  await expect(page.locator('#hours-week .hrow')).toHaveCount(7);
+  await expect(section).toContainText('Ponedeljak');
+  await expect(section).toContainText('Nedelja');
+  // The week is not uniform: 07-24 Mon-Thu, 07-01 Fri-Sat, 09-24 Sun.
+  await expect(page.locator('.hrow[data-day="mon"]')).toContainText('07h — 24h');
+  await expect(page.locator('.hrow[data-day="fri"]')).toContainText('07h — 01h');
+  await expect(page.locator('.hrow[data-day="sun"]')).toContainText('09h — 24h');
+});
+
+test('exactly one day is marked as today, and it is the real one', async ({ page }) => {
+  await page.goto('/');
+  const marked = page.locator('#hours-week .hrow[aria-current]');
+  await expect(marked).toHaveCount(1);
+  // The build stamped its own day; clock.ts corrects it for the visitor.
+  const expected = await page.evaluate(() => {
+    const short = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Belgrade',
+      weekday: 'short',
+    }).format(new Date());
+    return short.slice(0, 3).toLowerCase();
+  });
+  await expect(marked).toHaveAttribute('data-day', expected);
 });
 
 test('the hours are localised', async ({ page }) => {
   await page.goto('/en');
   const section = page.locator('[data-section="kontakt"]');
-  await expect(section).toContainText('Mon — Thu');
-  await expect(section).toContainText('Sun');
-  await expect(section).not.toContainText('Pon');
+  await expect(section).toContainText('Monday');
+  await expect(section).toContainText('Sunday');
+  await expect(section).not.toContainText('Ponedeljak');
 });
 
 test('the status pill says open or closed, never both and never blank', async ({ page }) => {

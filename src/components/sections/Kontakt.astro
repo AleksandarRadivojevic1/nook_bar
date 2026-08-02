@@ -1,7 +1,7 @@
 ---
 import { fill, useTranslations, type Locale } from '../../i18n';
 import {
-  groupedHours,
+  DAY_ORDER,
   hourLabel,
   hours,
   minuteOfDayInTz,
@@ -26,14 +26,17 @@ const statusLabel = openNow
   ? fill(t.status.open, { close: hourLabel(session.closesAt!) })
   : fill(t.status.closed, { open: hourLabel(session.opensAt!) });
 
-// Grouped rather than hand-typed: a hand-typed hours string is how the old
-// "Svakog dana | 08 — 24" ended up wrong on all seven days.
-const groups = groupedHours(hours.week).map((g) => ({
-  days:
-    g.days.length === 1
-      ? t.hours.days[g.days[0]]
-      : `${t.hours.days[g.days[0]]} — ${t.hours.days[g.days[g.days.length - 1]]}`,
-  span: `${hourLabel(g.open)} — ${hourLabel(g.close)}`,
+// One row per day, the way Google Maps lists them: you look for YOUR day, and
+// a collapsed "Pon — Čet" makes you work out whether today is inside the range.
+// Monday-first and 24-hour, though — this is a Serbian bar, not an American one.
+//
+// `today` is the BUILD's day on a prerendered page, so clock.ts re-marks it on
+// the first frame, exactly as it re-computes the status pill.
+const today = weekdayInTz(now);
+const schedule = DAY_ORDER.map((day) => ({
+  day,
+  name: t.hours.days[day],
+  span: `${hourLabel(hours.week[day].open)} — ${hourLabel(hours.week[day].close)}`,
 }));
 
 const [addressLine1, addressLine2] = t.kontakt.addressLines.split('|');
@@ -49,10 +52,12 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
     </dl>
     <dl class="fact">
       <dt>{t.kontakt.hoursLabel}</dt>
-      <dd>
+      <dd id="hours-week">
         {
-          groups.map((g) => (
-            <span class="hrow"><span class="hdays">{g.days}</span><span>{g.span}</span></span>
+          schedule.map((row) => (
+            <span class="hrow" data-day={row.day} aria-current={row.day === today ? 'date' : undefined}>
+              <span class="hdays">{row.name}</span><span>{row.span}</span>
+            </span>
           ))
         }
       </dd>
@@ -93,10 +98,14 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
   color:var(--label);margin-bottom:.7rem}
 .fact dd{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(1rem,1.4vw,1.22rem);
   line-height:1.5;color:var(--olive-deep)}
-/* Three grouped rows rather than one line, because the week is not uniform:
-   07-24 Mon-Thu, 07-01 Fri-Sat, 09-24 Sun. */
-.fact .hrow{display:flex;gap:.9rem;justify-content:space-between;max-width:12rem}
+/* Seven rows, one per day. The week is not uniform — 07-24 Mon-Thu, 07-01
+   Fri-Sat, 09-24 Sun — and a reader is looking for one specific day. */
+.fact .hrow{display:flex;gap:1.2rem;justify-content:space-between;max-width:15rem;
+  font-size:.86em;line-height:1.85}
 .fact .hdays{color:var(--label)}
+/* Today, the one row anyone is actually looking for. */
+.fact .hrow[aria-current]{color:var(--olive-deep)}
+.fact .hrow[aria-current] .hdays{color:var(--olive-deep);font-weight:500}
 .status{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--display);
   font-size:11px;letter-spacing:.18em;text-transform:uppercase}
 .status i{width:6px;height:6px;border-radius:50%;background:var(--olive);display:block}
