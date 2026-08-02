@@ -5,6 +5,21 @@ export function initKarta(root: HTMLElement): void {
   if (!m) return;
   const { gsap } = m;
 
+  // The rows settle in as the list is reached — a quiet stagger, not a
+  // performance. Finished state is the plain CSS, so reduced motion (which
+  // returns above) leaves the whole menu legible.
+  const list = root.querySelector('.list');
+  if (list) {
+    gsap.from(root.querySelectorAll('.row'), {
+      y: 18,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: 0.05,
+      scrollTrigger: { trigger: list, start: 'top 82%' },
+    });
+  }
+
   // The crop is a fixed-position sibling of the section, not a child of it.
   const crop = document.getElementById('crop');
   if (!crop) return;

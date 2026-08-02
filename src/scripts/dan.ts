@@ -1,5 +1,15 @@
 import { motion, onSection } from './motion';
 
+/**
+ * The route is ONE continuous draw, matching the reference implementation:
+ * a single strokeDashoffset tween with ease 'none' and scrub, spanning the
+ * whole section.
+ *
+ * It is deliberately NOT a timeline of "travel to card, hold, travel to next".
+ * That version drew in bursts — fast between cards, frozen at them — which is
+ * what made it feel unnatural. The cards now come in on their own as they are
+ * reached, and the line simply keeps going.
+ */
 export function initDan(root: HTMLElement): void {
   const m = motion();
   if (!m) return;
@@ -7,102 +17,63 @@ export function initDan(root: HTMLElement): void {
 
   const route = root.querySelector<SVGPathElement>('#jroute');
   const stage = root.querySelector<HTMLElement>('#jstage');
-  const tip = root.querySelector<SVGCircleElement>('#jtip');
-  const halo = root.querySelector<SVGCircleElement>('#jtiphalo');
-  const anchorsEl = root.querySelector<HTMLScriptElement>('#janchors');
-  if (!route || !stage || !tip || !halo || !anchorsEl) return;
+  if (!route || !stage) return;
 
-  const cardAnchors: Array<[number, number]> = JSON.parse(anchorsEl.textContent ?? '[]');
-  // The pin's own coordinate closes the route — it is not a card.
-  const ANCHORS: Array<[number, number]> = [...cardAnchors, [747.1, 1059.2]];
-
+  // There is no travelling dot and no dashed preview of the route — the
+  // reference has neither. The only dot is the pin already sitting on
+  // Leskovac, which the line grows towards and meets at the end.
   const len = route.getTotalLength();
   gsap.set(route, { strokeDasharray: len, strokeDashoffset: len });
 
-  // Find where each anchor falls along the path. The anchors are exact
-  // waypoints of the curve, so scanning for the nearest sampled point is
-  // accurate to well under a pixel.
-  const SAMPLES = 3000;
-  const atLen = ANCHORS.map(([ax, ay]) => {
-    let best = 0;
-    let bestD = Infinity;
-    for (let i = 0; i <= SAMPLES; i++) {
-      const l = (len * i) / SAMPLES;
-      const p = route.getPointAtLength(l);
-      const d = (p.x - ax) ** 2 + (p.y - ay) ** 2;
-      if (d < bestD) {
-        bestD = d;
-        best = l;
-      }
-    }
-    return best;
+  gsap.to(route, {
+    strokeDashoffset: 0,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: stage,
+      start: 'top 40%',
+      // Ends while the stage bottom is still BELOW the fold (>100%), which
+      // puts the pin around the middle of the viewport at the moment the line
+      // lands. At 'bottom 90%' the arrival happened with the pin ~150px from
+      // the top of the screen — you were almost past it before it finished.
+      end: 'bottom 125%',
+      scrub: true,
+    },
   });
 
-  const prog = { v: 0 };
-  const paint = () => {
-    const drawn = len * prog.v;
-    route.style.strokeDashoffset = (len - drawn).toFixed(1);
-    const p = route.getPointAtLength(Math.min(drawn, len));
-    tip.setAttribute('cx', p.x.toFixed(1));
-    tip.setAttribute('cy', p.y.toFixed(1));
-    halo.setAttribute('cx', p.x.toFixed(1));
-    halo.setAttribute('cy', p.y.toFixed(1));
-  };
-
-  // One scrubbed timeline: travel to a picture, HOLD there while that card
-  // comes up, then set off for the next. The holds are what make it read as a
-  // journey between the pictures rather than one continuous sweep.
-  const items = gsap.utils.toArray<HTMLElement>(root.querySelectorAll('.j-item'));
-  const tl = gsap.timeline({
-    defaults: { ease: 'none' },
-    scrollTrigger: { trigger: stage, start: 'top 78%', end: 'bottom 48%', scrub: 0.55 },
-    onUpdate: paint,
-  });
-
-  atLen.forEach((l, i) => {
-    tl.to(prog, { v: l / len, duration: 1.15 }, 'leg' + i);
-    const card = items[i];
-    if (card) {
-      // The picture develops in as the line touches it.
-      tl.to(card.querySelector('.j-media-veil'), { opacity: 0, duration: 0.5 }, 'leg' + i + '+=1.12');
-      tl.fromTo(
-        card,
-        { y: 34, opacity: 0.25 },
-        { y: 0, opacity: 1, duration: 0.55 },
-        'leg' + i + '+=1.05',
-      );
-      tl.fromTo(
-        card.querySelector('.j-num'),
+  // Cards develop in as they are reached — their own trigger, played at their
+  // own speed, not welded to the scroll position of the line.
+  root.querySelectorAll<HTMLElement>('.j-item').forEach((card) => {
+    const veil = card.querySelector('.j-media-veil');
+    const num = card.querySelector('.j-num');
+    const tl = gsap.timeline({
+      defaults: { ease: 'power2.out' },
+      scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' },
+    });
+    tl.fromTo(card, { y: 34, opacity: 0.25 }, { y: 0, opacity: 1, duration: 0.7 })
+      .to(veil, { opacity: 0, duration: 0.9 }, 0.05)
+      .fromTo(
+        num,
         { scale: 0.35, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2.2)' },
-        'leg' + i + '+=1.30',
+        { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(2.2)' },
+        0.25,
       );
-    }
-    tl.to(prog, { v: l / len, duration: 0.5 }); // hold at the picture
   });
 
-  // The pin lands only once the line has actually arrived.
-  tl.fromTo(
-    root.querySelector('.j-pin'),
-    { scale: 0 },
-    { scale: 1, duration: 0.4, ease: 'back.out(2.4)', transformOrigin: 'center' },
-  )
-    .fromTo(
-      root.querySelector('.j-pin-ring'),
-      { scale: 0.3, opacity: 0 },
-      { scale: 1, opacity: 0.55, duration: 0.6, transformOrigin: 'center' },
-      '<',
-    )
-    .fromTo(root.querySelector('#jarrive'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, '<0.1')
-    .to([tip, halo], { opacity: 0, duration: 0.3 }, '<0.2');
-
-  gsap.set([tip, halo], { opacity: 0 });
-  m.ScrollTrigger.create({
-    trigger: stage,
-    start: 'top 78%',
-    end: 'bottom 48%',
-    onToggle: (self) => gsap.to([tip, halo], { opacity: self.isActive ? 1 : 0, duration: 0.3 }),
-  });
+  // The pin is not animated in: it sits on Leskovac the whole time, and the
+  // line arrives at it. Only the closing line of copy fades up.
+  const arrive = root.querySelector('#jarrive');
+  if (arrive) {
+    gsap.fromTo(
+      arrive,
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.55,
+        scrollTrigger: { trigger: stage, start: 'bottom 118%', toggleActions: 'play none none reverse' },
+      },
+    );
+  }
 }
 
 onSection('dan', initDan);

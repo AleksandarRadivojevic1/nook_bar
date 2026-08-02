@@ -27,19 +27,22 @@ test.describe('with motion', () => {
     );
   });
 
-  test('the boundary keeps its own aspect ratio at every width', async ({ page }, testInfo) => {
+  test('the stage and viewBox share an aspect so the map is undistorted', async ({ page }, testInfo) => {
     await page.goto('/');
     const aspect = (selector: string) =>
       page.locator(selector).evaluate((el) => getComputedStyle(el).aspectRatio.replace(/\s/g, ''));
 
+    // The viewBox is 1000x1520 — the boundary itself only reaches y≈1437, the
+    // rest is bottom breathing room so the southern tip clears the frame. What
+    // keeps preserveAspectRatio="none" distortion-free is the STAGE matching
+    // that viewBox aspect, not the boundary's own aspect.
     if (testInfo.project.name === 'mobile') {
       // The stage grows to hold four stacked cards, so it cannot also carry
-      // the boundary's aspect — .journey-art gets its own box instead.
+      // that aspect — .journey-art gets its own box instead.
       expect(await aspect('.journey-stage')).toBe('auto');
-      expect(await aspect('.journey-art')).toBe('1000/1435.4');
+      expect(await aspect('.journey-art')).toBe('1000/1520');
     } else {
-      // Equal aspects are what make preserveAspectRatio="none" distortion-free.
-      expect(await aspect('.journey-stage')).toBe('1000/1435.4');
+      expect(await aspect('.journey-stage')).toBe('1000/1520');
     }
   });
 
