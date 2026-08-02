@@ -99,11 +99,14 @@ export const sr = {
     addressLabel: 'Adresa',
     priceLabel: 'Cena',
     nowLabel: 'Sada',
-    addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
+    /* The address is NOT here. It is the same street in both languages, so it
+       was never translation — it was one fact stored in three places. It comes
+       from site.json now, through addressLines(). A price RANGE per person is
+       an editorial statement about the bar rather than a stored fact, and it
+       genuinely formats differently per locale, so it stays. */
     priceValue: 'RSD 500 — 1.000|po osobi',
     hoursLabel: 'Radno vreme',
     socialLabel: 'Instagram',
-    address: 'Koste Stamenkovića 23, Leskovac',
   },
   status: {
     open: 'Otvoreno · do {close}',

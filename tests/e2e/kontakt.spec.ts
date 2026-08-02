@@ -67,3 +67,25 @@ test('the pill is already correct in the served HTML, before any script runs', a
   const html = await (await request.get('/')).text();
   expect(html).toMatch(/id="status"[^>]*class="status is-(open|shut)"|class="status is-(open|shut)"[^>]*id="status"/);
 });
+
+test('the address is a link to the real map listing', async ({ page }) => {
+  await page.goto('/');
+  const link = page.locator('#kontakt .fact-link').first();
+  await expect(link).toContainText('Koste Stamenkovića 23');
+  await expect(link).toHaveAttribute('href', /^https:\/\/www\.google\.com\/maps\//);
+});
+
+test('the Instagram fact points at the real profile', async ({ page }) => {
+  await page.goto('/');
+  const link = page.locator('#kontakt a[href*="instagram.com"]');
+  await expect(link).toHaveText('@nookbar__');
+  await expect(link).toHaveAttribute('rel', /noopener/);
+});
+
+test('the same address renders on both locales, because it is one fact', async ({ page }) => {
+  await page.goto('/');
+  const sr = await page.locator('#kontakt .fact-link').first().innerText();
+  await page.goto('/en');
+  const en = await page.locator('#kontakt .fact-link').first().innerText();
+  expect(sr).toBe(en);
+});

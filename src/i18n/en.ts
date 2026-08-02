@@ -90,11 +90,9 @@ export const en: Dictionary = {
     addressLabel: 'Address',
     priceLabel: 'Price',
     nowLabel: 'Now',
-    addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
     priceValue: 'RSD 500 — 1,000|per person',
     hoursLabel: 'Hours',
     socialLabel: 'Instagram',
-    address: 'Koste Stamenkovića 23, Leskovac',
   },
   status: {
     open: 'Open · until {close}',

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatScore, site } from '../../src/lib/site';
+import { addressLines, formatScore, site } from '../../src/lib/site';
 import { assertSite, siteSchema } from '../../src/lib/site.schema';
 
 describe('the site singleton', () => {
@@ -54,5 +54,22 @@ describe('formatScore', () => {
   });
   it('always shows one decimal', () => {
     expect(formatScore(4.5, 'en')).toBe('4.5');
+  });
+});
+
+describe('addressLines', () => {
+  // The old version of this lived in sr.ts and en.ts as the string
+  // "Koste Stamenkovića 23|Leskovac 16000", split on a pipe in the template.
+  // A delimiter inside a translated string is a schema nobody validates, and
+  // the address was duplicated in three places besides.
+  it('puts the street on the first line and the town on the second', () => {
+    expect(addressLines()).toEqual(['Koste Stamenkovića 23', '16000 Leskovac']);
+  });
+
+  it('is built from the config, not from a dictionary', () => {
+    const [street, town] = addressLines();
+    expect(street).toBe(site.streetAddress);
+    expect(town).toContain(site.postalCode);
+    expect(town).toContain(site.addressLocality);
   });
 });

@@ -40,3 +40,15 @@ export function formatScore(score: number, locale: Locale): string {
     maximumFractionDigits: 1,
   }).format(score);
 }
+
+/**
+ * The address as two display lines, derived rather than typed.
+ *
+ * This replaces `addressLines: 'Koste Stamenkovića 23|Leskovac 16000'` in both
+ * dictionaries, which the template split on a pipe. The address is the same in
+ * Serbian and English, so it was never translation — it was one fact stored
+ * twice, in the format most likely to drift.
+ */
+export function addressLines(): [string, string] {
+  return [site.streetAddress, `${site.postalCode} ${site.addressLocality}`];
+}

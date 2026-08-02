@@ -1,5 +1,6 @@
 ---
 import { fill, useTranslations, type Locale } from '../../i18n';
+import { addressLines, site } from '../../lib/site';
 import {
   DAY_ORDER,
   timeLabel,
@@ -40,7 +41,7 @@ const schedule = DAY_ORDER.map((day) => ({
   span: `${timeLabel(hours.week[day].open, t.hours.midnight)} — ${timeLabel(hours.week[day].close, t.hours.midnight)}`,
 }));
 
-const [addressLine1, addressLine2] = t.kontakt.addressLines.split('|');
+const [street, town] = addressLines();
 const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
 ---
 
@@ -49,7 +50,11 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
   <div class="prakt-grid">
     <dl class="fact">
       <dt>{t.kontakt.addressLabel}</dt>
-      <dd>{addressLine1}<br />{addressLine2}</dd>
+      <dd>
+        <a class="fact-link" href={site.mapsUrl} target="_blank" rel="noopener noreferrer">
+          {street}<br />{town}
+        </a>
+      </dd>
     </dl>
     <dl class="fact">
       <dt>{t.kontakt.hoursLabel}</dt>
@@ -75,6 +80,14 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
         </span>
       </dd>
     </dl>
+    <dl class="fact">
+      <dt>{t.kontakt.socialLabel}</dt>
+      <dd>
+        <a class="fact-link" href={site.instagramUrl} target="_blank" rel="noopener noreferrer">
+          {site.instagramHandle}
+        </a>
+      </dd>
+    </dl>
   </div>
   <div class="grain is-fine"></div>
 </section>
@@ -92,7 +105,15 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
    ACT 6 — PRAKTIČNO
    ══════════════════════════════════════════════════════════════════════ */
 .prakt{padding:14vh var(--gutter) 18vh;background:var(--bone);position:relative}
-.prakt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(1.5rem,3vw,3rem);margin-top:5vh}
+/* auto-fit rather than a hardcoded four: the row holds five facts now, and a
+   sixth appears the day the owners confirm a phone number. */
+.prakt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
+  gap:clamp(1.5rem,3vw,3rem);margin-top:5vh}
+
+.fact-link{color:inherit;text-decoration:none;background-image:linear-gradient(currentColor,currentColor);
+  background-size:0% 1px;background-repeat:no-repeat;background-position:0 100%;
+  transition:background-size .4s cubic-bezier(.2,.7,.2,1),color .4s ease}
+.fact-link:hover{color:var(--amber-text);background-size:100% 1px}
 @media(max-width:860px){.prakt-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.prakt-grid{grid-template-columns:1fr}}
 .fact dt{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
