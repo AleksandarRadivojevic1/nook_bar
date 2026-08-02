@@ -1,4 +1,16 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+/**
+ * Read from the config, not hardcoded. The owners change the review count in
+ * Keystatic — a literal in here is a test that fails the first time they do.
+ */
+const COUNT = String(
+  JSON.parse(
+    readFileSync(join(import.meta.dirname, '..', '..', 'src', 'content', 'site.json'), 'utf8'),
+  ).reviewCount,
+);
 
 test('shows every review at once, with no carousel left behind', async ({ page }) => {
   await page.goto('/');
@@ -10,7 +22,7 @@ test('shows every review at once, with no carousel left behind', async ({ page }
 test('the claim is a sentence carrying the real count and score', async ({ page }) => {
   await page.goto('/');
   const claim = page.locator('#recenzije .rev-claim');
-  await expect(claim).toContainText('20');
+  await expect(claim).toContainText(COUNT);
   // Serbian decimal comma, produced by Intl rather than typed into sr.ts.
   await expect(claim).toContainText('5,0');
   await page.goto('/en');

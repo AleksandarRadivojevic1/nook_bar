@@ -1,4 +1,16 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+/**
+ * Read from the config, not hardcoded. The owners change the review count in
+ * Keystatic — a literal in here is a test that fails the first time they do.
+ */
+const COUNT = String(
+  JSON.parse(
+    readFileSync(join(import.meta.dirname, '..', '..', 'src', 'content', 'site.json'), 'utf8'),
+  ).reviewCount,
+);
 
 test('renders the wordmark and a live clock', async ({ page }) => {
   await page.goto('/');
@@ -79,7 +91,7 @@ test('the footer rating and the reviews claim cannot disagree', async ({ page })
   await page.goto('/');
   const rating = await page.locator('.footer .fcol').filter({ hasText: 'Ocena' }).innerText();
   const claim = await page.locator('#recenzije .rev-claim').innerText();
-  for (const figure of ['20', '5,0']) {
+  for (const figure of [COUNT, '5,0']) {
     expect(rating, `footer is missing ${figure}`).toContain(figure);
     expect(claim, `claim is missing ${figure}`).toContain(figure);
   }
