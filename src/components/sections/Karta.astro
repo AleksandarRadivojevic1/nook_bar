@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { backgrounds } from '../../lib/media';
 import { useTranslations, type Locale } from '../../i18n';
 
 interface Props {
@@ -10,6 +11,7 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 
 const items = (await getCollection('menu')).sort((a, b) => a.data.order - b.data.order);
+const crops = await backgrounds(items, 640);
 ---
 
 <section class="karta" id="karta" data-section="karta" data-nav-surface="bone">
@@ -20,7 +22,7 @@ const items = (await getCollection('menu')).sort((a, b) => a.data.order - b.data
   <div class="list">
     {
       items.map((item) => (
-        <div class="row" data-crop={item.data.crop}>
+        <div class="row" data-crop={crops.get(item.id)}>
           <div>
             <h4>{item.data.name}</h4>
             <p>{item.data.desc[locale]}</p>

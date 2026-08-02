@@ -1,7 +1,14 @@
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { z } from 'astro/zod';
 import config from '../../keystatic.config';
+import {
+  danCardSchema,
+  menuItemSchema,
+  personSchema,
+  reviewSchema,
+} from '../../src/content/schemas';
 
 /**
  * The content directory is the source of truth here rather than
@@ -47,5 +54,50 @@ describe('the editing model', () => {
   // deploy, which is the worst possible failure for a non-technical owner.
   it('stores locally in development and on GitHub in production', () => {
     expect(['local', 'github']).toContain(config.storage.kind);
+  });
+});
+
+/**
+ * Keystatic rewrites an entry from its own schema, so a field it does not
+ * know about is DROPPED on save. Anything hidden from the editor therefore
+ * has to survive being absent — otherwise the first edit an owner makes
+ * breaks the build, which is exactly what happened with tasting notes.
+ */
+describe('fields hidden from the editor survive being dropped', () => {
+  const stub = (() => z.string()) as unknown as Parameters<typeof personSchema>[0];
+
+  it('a review saved without stars or placeholder still parses', () => {
+    const saved = {
+      quote: 'The best bar in town.',
+      author: 'M. P.',
+      lang: 'en',
+      source: 'google',
+      order: 1,
+    };
+    const parsed = reviewSchema.parse(saved);
+    expect(parsed.stars).toBe(5);
+    expect(parsed.placeholder).toBe(false);
+  });
+
+  it('a menu item saved without crop or placeholder still parses', () => {
+    expect(() =>
+      menuItemSchema(stub).parse({
+        name: 'Negroni',
+        price: 650,
+        order: 1,
+        desc: { sr: 'Džin.', en: 'Gin.' },
+      }),
+    ).not.toThrow();
+  });
+
+  it('a journey card saved without media or placeholder still parses', () => {
+    expect(() =>
+      danCardSchema(stub).parse({
+        n: 1,
+        title: { sr: 'Jutro', en: 'Morning' },
+        body: { sr: 'a', en: 'a' },
+        when: { sr: 'b', en: 'b' },
+      }),
+    ).not.toThrow();
   });
 });

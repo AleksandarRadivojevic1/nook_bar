@@ -36,12 +36,15 @@ export const optional = <T extends z.ZodTypeAny>(schema: T) =>
     return value;
   }, schema.optional());
 
-export const menuItemSchema = z.object({
+export const menuItemSchema = (image: SchemaContext['image']) =>
+  z.object({
   name: z.string().min(1),
   price: z.number().int().nonnegative(),
   desc: localized,
   order: z.number().int(),
-  /** CSS background shorthand for the cursor-trailing crop in the Karta section. */
+  /** The photograph that trails the cursor. Uploaded by the owners. */
+  photo: optional(image()),
+  /** CSS gradient stand-in, used until a photo exists. Not owner-editable. */
   crop: optional(z.string().min(1)),
   placeholder: z.boolean().default(false),
 });
@@ -65,7 +68,13 @@ export const reviewSchema = z.object({
   source: z.enum(['google', 'localGuide']).default('google'),
   /** Local Guides show how many reviews they have written. Nobody else does. */
   guideReviews: optional(z.number().int().positive()),
-  stars: z.number().int().min(1).max(5),
+  /**
+   * Defaulted, and not shown in the editor: every review this bar has is five
+   * stars, and a field Keystatic does not write is a field dropped from the
+   * JSON on save. Anything hidden from the editor must have a default here or
+   * the next edit breaks the build.
+   */
+  stars: z.number().int().min(1).max(5).default(5),
   /**
    * The language the review was written in, which is not necessarily the
    * language it is being read in. Drives the small marker on quotes that are
@@ -82,7 +91,8 @@ export const reviewSchema = z.object({
   placeholder: z.boolean().default(false),
 });
 
-export const signatureSchema = z.object({
+export const signatureSchema = (image: SchemaContext['image']) =>
+  z.object({
   name: z.string().min(1),
   /** Short evocative line under the name. */
   tagline: localized,
@@ -99,11 +109,8 @@ export const signatureSchema = z.object({
    * square has nowhere to put it.
    */
   notes: optional(localized),
-  /**
-   * CSS background standing in for the drink's photograph. Optional: a drink
-   * added before anyone has shot it renders as an empty frame rather than
-   * failing the build.
-   */
+  photo: optional(image()),
+  /** CSS gradient stand-in, used until a photo exists. Not owner-editable. */
   media: optional(z.string().min(1)),
   order: z.number().int(),
   placeholder: z.boolean().default(false),
@@ -123,22 +130,15 @@ export const galleryTileSchema = (image: SchemaContext['image']) =>
     order: z.number().int(),
   });
 
-export const danCardSchema = z.object({
+export const danCardSchema = (image: SchemaContext['image']) =>
+  z.object({
   n: z.number().int().min(1).max(4),
   title: localized,
   body: localized,
   when: localized,
-  /**
-   * Waypoint in the boundary SVG's own viewBox coordinates (0 0 1000 1435.4).
-   * These are the route anchors. Do not eyeball them; the route is drawn
-   * through these exact points. See src/assets/ASSETS.md.
-   */
-  anchor: z.tuple([z.number(), z.number()]),
-  /**
-   * CSS background standing in for the card's photograph. Replaced by a real
-   * image path once the bar supplies photography.
-   */
-  media: z.string(),
+  photo: optional(image()),
+  /** CSS gradient stand-in, used until a photo exists. Not owner-editable. */
+  media: optional(z.string().min(1)),
   placeholder: z.boolean().default(false),
 });
 
@@ -210,12 +210,12 @@ export const instagramPostSchema = (image: SchemaContext['image']) =>
     postedAt: z.coerce.date(),
   });
 
-export type MenuItem = z.infer<typeof menuItemSchema>;
+export type MenuItem = z.infer<ReturnType<typeof menuItemSchema>>;
 export type InstagramPost = z.infer<ReturnType<typeof instagramPostSchema>>;
 export type Practical = z.infer<typeof practicalSchema>;
 export type Story = z.infer<typeof storySchema>;
 export type Person = z.infer<ReturnType<typeof personSchema>>;
 export type Review = z.infer<typeof reviewSchema>;
-export type DanCard = z.infer<typeof danCardSchema>;
-export type Signature = z.infer<typeof signatureSchema>;
+export type DanCard = z.infer<ReturnType<typeof danCardSchema>>;
+export type Signature = z.infer<ReturnType<typeof signatureSchema>>;
 export type GalleryTile = z.infer<ReturnType<typeof galleryTileSchema>>;

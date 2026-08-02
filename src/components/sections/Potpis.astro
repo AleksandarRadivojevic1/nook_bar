@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { backgrounds } from '../../lib/media';
 import { useTranslations, type Locale } from '../../i18n';
 
 interface Props {
@@ -10,6 +11,7 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 
 const drinks = (await getCollection('signature')).sort((a, b) => a.data.order - b.data.order);
+const backgroundValues = await backgrounds(drinks);
 ---
 
 <section class="potpis" id="potpis" data-section="potpis" data-nav-surface="bone">
@@ -24,8 +26,7 @@ const drinks = (await getCollection('signature')).sort((a, b) => a.data.order - 
       drinks.map((drink, i) => (
         <article class:list={['p-drink', i % 2 === 1 && 'is-flipped']}>
           <div class="p-media">
-            {/* No stand-in yet means an empty frame, not "background:undefined". */}
-            <div class="p-media-img" style={drink.data.media && `background:${drink.data.media}`} />
+            <div class="p-media-img" style={backgroundValues.get(drink.id) && `background:${backgroundValues.get(drink.id)}`} />
           </div>
           <div class="p-body">
             <div class="p-row">

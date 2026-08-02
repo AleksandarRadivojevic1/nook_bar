@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { backgrounds } from '../../lib/media';
 import { useTranslations, type Locale } from '../../i18n';
 import serbiaPath from '../../assets/serbia.path.txt?raw';
 import routePath from '../../assets/route.path.txt?raw';
@@ -12,6 +13,7 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 
 const cards = (await getCollection('dan')).sort((a, b) => a.data.n - b.data.n);
+const backgroundValues = await backgrounds(cards);
 ---
 
 <section class="journey" id="dan" data-section="dan" data-nav-surface="bone">
@@ -47,7 +49,7 @@ const cards = (await getCollection('dan')).sort((a, b) => a.data.n - b.data.n);
         <article class:list={['j-item', `is-${card.data.n}`]}>
           <div class="j-num">{String(card.data.n).padStart(2, '0')}</div>
           <div class="j-media">
-            <div class="j-media-img" style={`background:${card.data.media}`} />
+            <div class="j-media-img" style={backgroundValues.get(card.id) && `background:${backgroundValues.get(card.id)}`} />
             <div class="j-media-veil" />
           </div>
           <h3>{card.data.title[locale]}</h3>

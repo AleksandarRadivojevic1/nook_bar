@@ -141,8 +141,12 @@ export default config({
         price: fields.integer({ label: 'Price (RSD)' }),
         desc: localized('Description'),
         order,
-        crop: fields.text({ label: 'Crop', description: 'CSS background for the hover crop.' }),
-        placeholder: fields.checkbox({ label: 'Placeholder content', defaultValue: false }),
+        photo: fields.image({
+          label: 'Photograph',
+          directory: 'src/assets/menu',
+          publicPath: '../../assets/menu/',
+          description: 'Shown next to the cursor as you move down the menu.',
+        }),
       },
     }),
 
@@ -158,9 +162,12 @@ export default config({
         origin: localized('Origin note'),
         notes: localized('Tasting note', true),
         price: fields.integer({ label: 'Price (RSD)' }),
-        media: fields.text({ label: 'Image stand-in', description: 'CSS background.' }),
+        photo: fields.image({
+          label: 'Photograph',
+          directory: 'src/assets/signature',
+          publicPath: '../../assets/signature/',
+        }),
         order,
-        placeholder: fields.checkbox({ label: 'Placeholder content', defaultValue: false }),
       },
     }),
 
@@ -250,9 +257,7 @@ export default config({
           label: 'Reviews this Local Guide has written',
           description: 'Only for Local Guides. A number, not "45 recenzija" — the site writes the word.',
         }),
-        stars: fields.integer({ label: 'Stars', defaultValue: 5 }),
         order,
-        placeholder: fields.checkbox({ label: 'Placeholder content', defaultValue: false }),
       },
     }),
 
@@ -267,12 +272,11 @@ export default config({
         title: localized('Title'),
         body: localized('Body', true),
         when: localized('Time of day'),
-        anchor: fields.array(fields.number({ label: 'Coordinate' }), {
-          label: 'Route anchor',
-          description: 'Do NOT eyeball these. See src/assets/ASSETS.md.',
+        photo: fields.image({
+          label: 'Photograph',
+          directory: 'src/assets/dan',
+          publicPath: '../../assets/dan/',
         }),
-        media: fields.text({ label: 'Image stand-in', description: 'CSS background.' }),
-        placeholder: fields.checkbox({ label: 'Placeholder content', defaultValue: false }),
       },
     }),
   },

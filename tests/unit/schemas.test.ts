@@ -13,6 +13,13 @@ import {
   storySchema,
 } from '../../src/content/schemas';
 
+// image() only exists inside Astro's content-config context; a plain string
+// schema stands in, cast to the factory's parameter type.
+const imageStub = (() => z.string()) as unknown as Parameters<typeof galleryTileSchema>[0];
+const menuItem = menuItemSchema(imageStub);
+const signature = signatureSchema(imageStub);
+const danCard = danCardSchema(imageStub);
+
 describe('localized fields', () => {
   it('requires both languages', () => {
     expect(() => localized.parse({ sr: 'Rakija', en: 'Rakija' })).not.toThrow();
@@ -31,17 +38,17 @@ describe('menu items', () => {
   };
 
   it('accepts a complete entry', () => {
-    expect(() => menuItemSchema.parse(valid)).not.toThrow();
+    expect(() => menuItem.parse(valid)).not.toThrow();
   });
   it('rejects a missing English description', () => {
-    expect(() => menuItemSchema.parse({ ...valid, desc: { sr: 'Džin.' } })).toThrow();
+    expect(() => menuItem.parse({ ...valid, desc: { sr: 'Džin.' } })).toThrow();
   });
   it('rejects a negative price', () => {
-    expect(() => menuItemSchema.parse({ ...valid, price: -1 })).toThrow();
+    expect(() => menuItem.parse({ ...valid, price: -1 })).toThrow();
   });
   it('defaults placeholder to false', () => {
     const { placeholder, ...rest } = valid;
-    expect(menuItemSchema.parse(rest).placeholder).toBe(false);
+    expect(menuItem.parse(rest).placeholder).toBe(false);
   });
 });
 
@@ -129,13 +136,10 @@ describe('dan cards', () => {
   };
 
   it('accepts a card anchored on the route', () => {
-    expect(() => danCardSchema.parse(base)).not.toThrow();
+    expect(() => danCard.parse(base)).not.toThrow();
   });
   it('numbers cards 1 to 4 only', () => {
-    expect(() => danCardSchema.parse({ ...base, n: 5 })).toThrow();
-  });
-  it('requires an [x, y] anchor pair', () => {
-    expect(() => danCardSchema.parse({ ...base, anchor: [740] })).toThrow();
+    expect(() => danCard.parse({ ...base, n: 5 })).toThrow();
   });
 });
 
@@ -251,17 +255,17 @@ describe('signature tasting notes', () => {
   // required field would mean inventing three tasting notes for a bar whose
   // drinks nobody on this side of the screen has tasted.
   it('accepts a drink with no note yet', () => {
-    expect(() => signatureSchema.parse(base)).not.toThrow();
-    expect(signatureSchema.parse(base).notes).toBeUndefined();
+    expect(() => signature.parse(base)).not.toThrow();
+    expect(signature.parse(base).notes).toBeUndefined();
   });
 
   it('takes a note in both languages once it exists', () => {
     const notes = { sr: 'Slano, pa medeno.', en: 'Saline, then honeyed.' };
-    expect(signatureSchema.parse({ ...base, notes }).notes).toEqual(notes);
+    expect(signature.parse({ ...base, notes }).notes).toEqual(notes);
   });
 
   it('will not take a note in only one', () => {
-    expect(() => signatureSchema.parse({ ...base, notes: { sr: 'Samo srpski.' } })).toThrow();
+    expect(() => signature.parse({ ...base, notes: { sr: 'Samo srpski.' } })).toThrow();
   });
 });
 
@@ -343,25 +347,25 @@ describe('what Keystatic writes for fields nobody filled in', () => {
   };
 
   it('accepts an untouched tasting note written as {}', () => {
-    const parsed = signatureSchema.parse({ ...drink, notes: {} });
+    const parsed = signature.parse({ ...drink, notes: {} });
     expect(parsed.notes).toBeUndefined();
   });
 
   it('accepts an untouched origin note written as empty strings', () => {
-    const parsed = signatureSchema.parse({ ...drink, origin: { sr: '', en: '' } });
+    const parsed = signature.parse({ ...drink, origin: { sr: '', en: '' } });
     expect(parsed.origin).toBeUndefined();
   });
 
   // A drink with no image stand-in is fine; the row renders without one.
   it('accepts a drink with no image stand-in at all', () => {
-    expect(() => signatureSchema.parse(drink)).not.toThrow();
-    expect(signatureSchema.parse({ ...drink, media: '' }).media).toBeUndefined();
+    expect(() => signature.parse(drink)).not.toThrow();
+    expect(signature.parse({ ...drink, media: '' }).media).toBeUndefined();
   });
 
   // Half-filled is NOT the same as untouched. Someone who wrote the Serbian
   // and forgot the English should be told, not silently have both dropped.
   it('still rejects a note filled in only one language', () => {
-    expect(() => signatureSchema.parse({ ...drink, notes: { sr: 'Slano.', en: '' } })).toThrow();
+    expect(() => signature.parse({ ...drink, notes: { sr: 'Slano.', en: '' } })).toThrow();
   });
 
   it('accepts an untouched story signature', () => {

@@ -43,7 +43,7 @@ function optionalGlob(options: Parameters<typeof glob>[0]) {
 
 const menu = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/menu' }),
-  schema: menuItemSchema,
+  schema: ({ image }) => menuItemSchema(image),
 });
 
 const reviews = defineCollection({
@@ -53,12 +53,12 @@ const reviews = defineCollection({
 
 const dan = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/dan' }),
-  schema: danCardSchema,
+  schema: ({ image }) => danCardSchema(image),
 });
 
 const signature = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/signature' }),
-  schema: signatureSchema,
+  schema: ({ image }) => signatureSchema(image),
 });
 
 const gallery = defineCollection({

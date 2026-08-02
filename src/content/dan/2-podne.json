@@ -12,10 +12,6 @@
     "sr": "11 — 15",
     "en": "11 — 15"
   },
-  "anchor": [
-    170,
-    516.7
-  ],
   "media": "radial-gradient(54% 40% at 60% 30%,rgba(255,222,168,.9),rgba(110,80,42,0) 68%),linear-gradient(188deg,#E0C99C,#9A6D38 56%,#33240F)",
   "placeholder": true
 }
