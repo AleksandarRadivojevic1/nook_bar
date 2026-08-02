@@ -1,3 +1,4 @@
+import type { SchemaContext } from 'astro:content';
 import { z } from 'astro/zod';
 
 /**
@@ -33,9 +34,50 @@ export const reviewSchema = z.object({
   author: z.string().min(1),
   source: z.string().default('Google'),
   stars: z.number().int().min(1).max(5),
+  /**
+   * The language the review was written in, which is not necessarily the
+   * language it is being read in. Drives the small marker on quotes that are
+   * foreign to the current locale. No default: an untagged quote would be
+   * silently mislabelled, and there is no honest guess to make.
+   */
+  lang: z.enum(['sr', 'en']),
+  /**
+   * Set large as a pull-quote. Two or three out of roughly ten is the intended
+   * editorial shape; the layout survives any number, including none.
+   */
+  featured: z.boolean().default(false),
   order: z.number().int(),
   placeholder: z.boolean().default(false),
 });
+
+export const signatureSchema = z.object({
+  name: z.string().min(1),
+  /** Short evocative line under the name. */
+  tagline: localized,
+  /** The build — spirits and botanicals, one line. */
+  spec: localized,
+  price: z.number().int().nonnegative(),
+  /** Optional provenance note, e.g. the Syros drink names its island. */
+  origin: localized.optional(),
+  /** CSS background standing in for the drink's photograph. */
+  media: z.string(),
+  order: z.number().int(),
+  placeholder: z.boolean().default(false),
+});
+
+/**
+ * Gallery tiles are image-backed. `image` is injected by the content config
+ * (Astro's `image()` helper) so paths resolve and emit width/height; a plain
+ * string stands in for it in unit tests. The caption doubles as the image alt,
+ * so one localized string per photo covers both the hover label and assistive
+ * text.
+ */
+export const galleryTileSchema = (image: SchemaContext['image']) =>
+  z.object({
+    src: image(),
+    caption: localized,
+    order: z.number().int(),
+  });
 
 export const danCardSchema = z.object({
   n: z.number().int().min(1).max(4),
@@ -59,3 +101,5 @@ export const danCardSchema = z.object({
 export type MenuItem = z.infer<typeof menuItemSchema>;
 export type Review = z.infer<typeof reviewSchema>;
 export type DanCard = z.infer<typeof danCardSchema>;
+export type Signature = z.infer<typeof signatureSchema>;
+export type GalleryTile = z.infer<ReturnType<typeof galleryTileSchema>>;
