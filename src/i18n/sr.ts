@@ -125,7 +125,10 @@ export const sr = {
     locationCol: 'Lokacija',
     ratingCol: 'Ocena',
     location: 'Leskovac, Srbija',
-    rating: '5,0 — 20 recenzija',
+    /* Derived from site.json, never typed. The noun is inflected because
+       Serbian agreement changes at 22 — see pluralNoun. */
+    rating: '{score} — {count} {noun}',
+    reviewNoun: { one: 'recenzija', few: 'recenzije', other: 'recenzija' },
     boundaries: 'Granice © OpenStreetMap contributors, ODbL',
     concept: 'Koncept — sadržaj ilustrativan',
     legal: 'Sva prava zadržana.',

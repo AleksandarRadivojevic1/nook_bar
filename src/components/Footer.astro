@@ -1,8 +1,8 @@
 ---
-import { useTranslations, type Locale } from '../i18n';
+import { fill, pluralNoun, useTranslations, type Locale } from '../i18n';
 import { formatClock, formatDate } from '../lib/hours';
 import { visibleSections, type SectionId } from '../lib/sections';
-import { site } from '../lib/site';
+import { formatScore, site } from '../lib/site';
 
 interface Props {
   locale: Locale;
@@ -14,6 +14,15 @@ const t = useTranslations(locale);
 
 // The complete index, same list the overlay menu renders.
 const index = visibleSections(sections, 'menu');
+
+// Derived, not typed. This line read "5,0 — 20 recenzija" in both
+// dictionaries: the same two facts the Recenzije section already takes from
+// site.json, stored a second and third time in the place nobody looks.
+const rating = fill(t.footer.rating, {
+  score: formatScore(site.reviewScore, locale),
+  count: String(site.reviewCount),
+  noun: pluralNoun(site.reviewCount, locale, t.footer.reviewNoun),
+});
 
 // Build-time values so nothing renders as a dash; clock.ts corrects them on
 // the first frame — the page is prerendered, so this is the build's clock.
@@ -55,7 +64,7 @@ const year = now.getFullYear();
         </dl>
         <dl class="fcol">
           <dt>{t.footer.ratingCol}</dt>
-          <div>{t.footer.rating}</div>
+          <div>{rating}</div>
           <div style="color:rgba(247,242,232,.55)">Google</div>
         </dl>
       </div>

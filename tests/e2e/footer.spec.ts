@@ -71,3 +71,23 @@ test.describe('reduced motion', () => {
     expect(width).toBeGreaterThan(20);
   });
 });
+
+// Both of these render the same two numbers from site.json. Before this they
+// were typed independently — the footer in two dictionaries, the section from
+// config — which is exactly how the opening hours drifted.
+test('the footer rating and the reviews claim cannot disagree', async ({ page }) => {
+  await page.goto('/');
+  const rating = await page.locator('.footer .fcol').filter({ hasText: 'Ocena' }).innerText();
+  const claim = await page.locator('#recenzije .rev-claim').innerText();
+  for (const figure of ['20', '5,0']) {
+    expect(rating, `footer is missing ${figure}`).toContain(figure);
+    expect(claim, `claim is missing ${figure}`).toContain(figure);
+  }
+});
+
+test('the English footer uses a decimal point, not a comma', async ({ page }) => {
+  await page.goto('/en');
+  const rating = await page.locator('.footer .fcol').filter({ hasText: 'Rating' }).innerText();
+  expect(rating).toContain('5.0');
+  expect(rating).toContain('reviews');
+});
