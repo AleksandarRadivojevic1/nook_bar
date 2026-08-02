@@ -98,7 +98,24 @@ export const danCardSchema = z.object({
   placeholder: z.boolean().default(false),
 });
 
+/**
+ * Long-form prose for a section that is mostly words: Siros now, Ljudi next.
+ *
+ * Entries are looked up by id (`siros`, `ljudi`) rather than sorted, because
+ * there is no meaningful order between two unrelated sections — so there is
+ * no `order` field to keep in sync. A section whose entry is missing does not
+ * render at all.
+ */
+export const storySchema = z.object({
+  eyebrow: localized,
+  title: localized,
+  /** One entry per paragraph. A delimiter inside a single string is a schema
+   * nobody validates; an array is one zod already checks. */
+  body: z.array(localized).min(1),
+});
+
 export type MenuItem = z.infer<typeof menuItemSchema>;
+export type Story = z.infer<typeof storySchema>;
 export type Review = z.infer<typeof reviewSchema>;
 export type DanCard = z.infer<typeof danCardSchema>;
 export type Signature = z.infer<typeof signatureSchema>;

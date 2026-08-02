@@ -6,6 +6,7 @@ import {
   localized,
   menuItemSchema,
   reviewSchema,
+  storySchema,
 } from '../../src/content/schemas';
 
 describe('localized fields', () => {
@@ -115,5 +116,49 @@ describe('dan cards', () => {
   });
   it('requires an [x, y] anchor pair', () => {
     expect(() => danCardSchema.parse({ ...base, anchor: [740] })).toThrow();
+  });
+});
+
+describe('story entries', () => {
+  const base = {
+    eyebrow: { sr: 'Poreklo', en: 'Origin' },
+    title: { sr: 'Zašto grčko ostrvo', en: 'Why a Greek island' },
+    body: [{ sr: 'Prvi pasus.', en: 'First paragraph.' }],
+  };
+
+  it('accepts a complete entry', () => {
+    expect(() => storySchema.parse(base)).not.toThrow();
+  });
+
+  // Paragraphs are an array rather than one string split on a delimiter. The
+  // addressLines.split('|') hack in the old Kontakt is the pattern being
+  // avoided: a delimiter is a schema nobody validates.
+  it('keeps paragraphs as separate entries', () => {
+    const parsed = storySchema.parse({
+      ...base,
+      body: [
+        { sr: 'Prvi.', en: 'First.' },
+        { sr: 'Drugi.', en: 'Second.' },
+      ],
+    });
+    expect(parsed.body).toHaveLength(2);
+  });
+
+  it('requires both languages in every paragraph', () => {
+    expect(() =>
+      storySchema.parse({ ...base, body: [{ sr: 'Samo srpski.' }] }),
+    ).toThrow();
+  });
+
+  // A section with no words is not a section. There is no empty state here:
+  // Page.astro simply does not render it.
+  it('rejects an entry with no paragraphs', () => {
+    expect(() => storySchema.parse({ ...base, body: [] })).toThrow();
+  });
+
+  // There is no meaningful order between Siros and Ljudi, so there is no
+  // order field to get wrong. Entries are looked up by id.
+  it('has no order field to sort by', () => {
+    expect('order' in storySchema.parse(base)).toBe(false);
   });
 });

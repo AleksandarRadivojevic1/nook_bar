@@ -1,6 +1,13 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { danCardSchema, menuItemSchema, reviewSchema } from './content/schemas';
+import {
+  danCardSchema,
+  galleryTileSchema,
+  menuItemSchema,
+  reviewSchema,
+  signatureSchema,
+  storySchema,
+} from './content/schemas';
 
 const menu = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/menu' }),
@@ -17,4 +24,19 @@ const dan = defineCollection({
   schema: danCardSchema,
 });
 
-export const collections = { menu, reviews, dan };
+const signature = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/signature' }),
+  schema: signatureSchema,
+});
+
+const gallery = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/gallery' }),
+  schema: ({ image }) => galleryTileSchema(image),
+});
+
+const story = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/story' }),
+  schema: storySchema,
+});
+
+export const collections = { menu, reviews, dan, signature, gallery, story };
