@@ -15,6 +15,8 @@ export const sr = {
     karta: 'Karta',
     kontakt: 'Kontakt',
     cta: 'Pronađi nas',
+    menu: 'Meni',
+    menuClose: 'Zatvori meni',
   },
   hero: {
     eyebrow: 'Bar · Leskovac',
@@ -45,10 +47,34 @@ export const sr = {
     note: 'Kratka namerno. Menja se kad se promeni sezona.',
     currency: 'RSD',
   },
+  hours: {
+    days: {
+      mon: 'Pon',
+      tue: 'Uto',
+      wed: 'Sre',
+      thu: 'Čet',
+      fri: 'Pet',
+      sat: 'Sub',
+      sun: 'Ned',
+    },
+  },
+  potpis: {
+    eyebrow: 'Potpis',
+    title: 'Tri koja pamtiš',
+    note: 'Karta se menja. Ova tri ostaju — po njima nas prepoznaju.',
+  },
   recenzije: {
     title: 'Recenzije',
     score: '5,0',
     meta: '20 recenzija · Google',
+  },
+  galerija: {
+    eyebrow: 'Galerija',
+    title: 'Prostor u slikama',
+    note: 'Nekoliko trenutaka iz prostora.',
+    close: 'Zatvori',
+    prev: 'Prethodna',
+    next: 'Sledeća',
   },
   kontakt: {
     title: 'Praktično',
@@ -56,7 +82,6 @@ export const sr = {
     priceLabel: 'Cena',
     nowLabel: 'Sada',
     addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
-    hoursValue: 'Svakog dana|08 — 24',
     priceValue: 'RSD 500 — 1.000|po osobi',
     hoursLabel: 'Radno vreme',
     phoneLabel: 'Telefon',

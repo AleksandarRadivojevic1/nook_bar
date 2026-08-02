@@ -1,5 +1,12 @@
 {
-  "open": "08:00",
-  "close": "24:00",
-  "placeholder": true
+  "placeholder": false,
+  "week": {
+    "mon": { "open": "07:00", "close": "24:00" },
+    "tue": { "open": "07:00", "close": "24:00" },
+    "wed": { "open": "07:00", "close": "24:00" },
+    "thu": { "open": "07:00", "close": "24:00" },
+    "fri": { "open": "07:00", "close": "01:00" },
+    "sat": { "open": "07:00", "close": "01:00" },
+    "sun": { "open": "09:00", "close": "24:00" }
+  }
 }

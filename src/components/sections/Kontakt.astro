@@ -1,6 +1,13 @@
 ---
 import { fill, useTranslations, type Locale } from '../../i18n';
-import { displayTime, hours, isOpenAt, minuteOfDayInTz } from '../../lib/hours';
+import {
+  groupedHours,
+  hourLabel,
+  hours,
+  minuteOfDayInTz,
+  statusAt,
+  weekdayInTz,
+} from '../../lib/hours';
 
 interface Props {
   locale: Locale;
@@ -12,13 +19,24 @@ const t = useTranslations(locale);
 // Rendered at build time so the pill is never blank on first paint. The page
 // is prerendered, so this reflects the build, not the visitor — clock.ts
 // corrects it on the first frame.
-const openNow = isOpenAt(minuteOfDayInTz(new Date()), hours);
+const now = new Date();
+const session = statusAt(weekdayInTz(now), minuteOfDayInTz(now), hours.week);
+const openNow = session.open;
 const statusLabel = openNow
-  ? fill(t.status.open, { close: displayTime(hours.close) })
-  : fill(t.status.closed, { open: hours.open });
+  ? fill(t.status.open, { close: hourLabel(session.closesAt!) })
+  : fill(t.status.closed, { open: hourLabel(session.opensAt!) });
+
+// Grouped rather than hand-typed: a hand-typed hours string is how the old
+// "Svakog dana | 08 — 24" ended up wrong on all seven days.
+const groups = groupedHours(hours.week).map((g) => ({
+  days:
+    g.days.length === 1
+      ? t.hours.days[g.days[0]]
+      : `${t.hours.days[g.days[0]]} — ${t.hours.days[g.days[g.days.length - 1]]}`,
+  span: `${hourLabel(g.open)} — ${hourLabel(g.close)}`,
+}));
 
 const [addressLine1, addressLine2] = t.kontakt.addressLines.split('|');
-const [hoursLine1, hoursLine2] = t.kontakt.hoursValue.split('|');
 const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
 ---
 
@@ -31,7 +49,13 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
     </dl>
     <dl class="fact">
       <dt>{t.kontakt.hoursLabel}</dt>
-      <dd>{hoursLine1}<br />{hoursLine2}</dd>
+      <dd>
+        {
+          groups.map((g) => (
+            <span class="hrow"><span class="hdays">{g.days}</span><span>{g.span}</span></span>
+          ))
+        }
+      </dd>
     </dl>
     <dl class="fact">
       <dt>{t.kontakt.priceLabel}</dt>
@@ -66,9 +90,13 @@ const [priceLine1, priceLine2] = t.kontakt.priceValue.split('|');
 @media(max-width:860px){.prakt-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.prakt-grid{grid-template-columns:1fr}}
 .fact dt{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--olive);margin-bottom:.7rem}
+  color:var(--label);margin-bottom:.7rem}
 .fact dd{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(1rem,1.4vw,1.22rem);
   line-height:1.5;color:var(--olive-deep)}
+/* Three grouped rows rather than one line, because the week is not uniform:
+   07-24 Mon-Thu, 07-01 Fri-Sat, 09-24 Sun. */
+.fact .hrow{display:flex;gap:.9rem;justify-content:space-between;max-width:12rem}
+.fact .hdays{color:var(--label)}
 .status{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--display);
   font-size:11px;letter-spacing:.18em;text-transform:uppercase}
 .status i{width:6px;height:6px;border-radius:50%;background:var(--olive);display:block}

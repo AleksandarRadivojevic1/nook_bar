@@ -14,6 +14,8 @@ export const en: Dictionary = {
     karta: 'Menu',
     kontakt: 'Visit',
     cta: 'Find us',
+    menu: 'Menu',
+    menuClose: 'Close menu',
   },
   hero: {
     eyebrow: 'Bar · Leskovac',
@@ -44,10 +46,34 @@ export const en: Dictionary = {
     note: 'Deliberately short. It changes when the season does.',
     currency: 'RSD',
   },
+  hours: {
+    days: {
+      mon: 'Mon',
+      tue: 'Tue',
+      wed: 'Wed',
+      thu: 'Thu',
+      fri: 'Fri',
+      sat: 'Sat',
+      sun: 'Sun',
+    },
+  },
+  potpis: {
+    eyebrow: 'Signature',
+    title: 'Three you remember',
+    note: 'The menu changes. These three stay — they are how people know us.',
+  },
   recenzije: {
     title: 'Reviews',
     score: '5.0',
     meta: '20 reviews · Google',
+  },
+  galerija: {
+    eyebrow: 'Gallery',
+    title: 'The room in pictures',
+    note: 'A few moments from the room.',
+    close: 'Close',
+    prev: 'Previous',
+    next: 'Next',
   },
   kontakt: {
     title: 'Practical',
@@ -55,7 +81,6 @@ export const en: Dictionary = {
     priceLabel: 'Price',
     nowLabel: 'Now',
     addressLines: 'Koste Stamenkovića 23|Leskovac 16000',
-    hoursValue: 'Every day|08 — 24',
     priceValue: 'RSD 500 — 1,000|per person',
     hoursLabel: 'Hours',
     phoneLabel: 'Phone',
