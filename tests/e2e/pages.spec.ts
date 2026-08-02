@@ -39,7 +39,22 @@ test.describe('both locales', () => {
     expect(data.name).toBe('Nook');
     expect(data.address.streetAddress).toContain('Koste Stamenkovića 23');
     expect(data.address.addressLocality).toBe('Leskovac');
-    expect(data.openingHoursSpecification[0].opens).toBe('08:00');
+    expect(data.address.postalCode).toBe('16000');
+    expect(data.geo.latitude).toBeCloseTo(42.9930343, 5);
+    expect(data.hasMap).toMatch(/^https:\/\//);
+
+    // One specification per run of identical days: Mon-Thu, Fri-Sat, Sun.
+    const spec = data.openingHoursSpecification;
+    expect(spec).toHaveLength(3);
+    expect(spec[0].dayOfWeek).toEqual(['Monday', 'Tuesday', 'Wednesday', 'Thursday']);
+    expect(spec[0].opens).toBe('07:00');
+    // schema.org has no 24:00; 23:59 is the conventional stand-in.
+    expect(spec[0].closes).toBe('23:59');
+    // A close earlier than the open is how a past-midnight session is expressed.
+    expect(spec[1].dayOfWeek).toEqual(['Friday', 'Saturday']);
+    expect(spec[1].closes).toBe('01:00');
+    expect(spec[2].dayOfWeek).toEqual(['Sunday']);
+    expect(spec[2].opens).toBe('09:00');
   });
 
   test('no console errors on either page', async ({ page }) => {

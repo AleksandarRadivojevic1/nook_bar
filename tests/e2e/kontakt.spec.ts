@@ -4,7 +4,21 @@ test('renders the address and hours from the data', async ({ page }) => {
   await page.goto('/');
   const section = page.locator('[data-section="kontakt"]');
   await expect(section).toContainText('Koste Stamenkovića 23');
-  await expect(section).toContainText('08 — 24');
+  // Three grouped rows, not one line: the week is not uniform.
+  await expect(section).toContainText('Pon — Čet');
+  await expect(section).toContainText('07h — 24h');
+  await expect(section).toContainText('Pet — Sub');
+  await expect(section).toContainText('07h — 01h');
+  await expect(section).toContainText('Ned');
+  await expect(section).toContainText('09h — 24h');
+});
+
+test('the hours are localised', async ({ page }) => {
+  await page.goto('/en');
+  const section = page.locator('[data-section="kontakt"]');
+  await expect(section).toContainText('Mon — Thu');
+  await expect(section).toContainText('Sun');
+  await expect(section).not.toContainText('Pon');
 });
 
 test('the status pill says open or closed, never both and never blank', async ({ page }) => {

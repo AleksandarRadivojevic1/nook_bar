@@ -1,19 +1,25 @@
 ---
 import { useTranslations, type Locale } from '../i18n';
+import { visibleSections, type SectionId } from '../lib/sections';
 
 interface Props {
   locale: Locale;
+  sections: ReadonlySet<SectionId>;
 }
 
-const { locale } = Astro.props;
+const { locale, sections } = Astro.props;
 const t = useTranslations(locale);
+
+// The bar is a deliberate subset; the overlay menu is the complete index.
+const primary = visibleSections(sections, 'primary');
+const menu = visibleSections(sections, 'menu');
 
 const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { href: '/', label: 'SR', tag: 'sr' };
 ---
 
 <nav class="nav" id="nav">
   <div class="nav-links">
-    <a href="#karta">{t.nav.karta}</a><a href="#dan">{t.nav.dan}</a><a href="#kontakt">{t.nav.kontakt}</a>
+    {primary.map((s) => <a href={`#${s.id}`} data-nav-link={s.id}>{t.nav[s.id]}</a>)}
   </div>
   <a class="nav-mark" href={locale === 'sr' ? '/' : '/en/'}>Nook</a>
   <!-- Outside .nav-links on purpose: that is hidden below 720px, and the
@@ -21,8 +27,23 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
   <div class="nav-right">
     <a class="nav-cta nav-hide-sm" href="#kontakt">{t.nav.cta}</a>
     <a class="nav-cta nav-lang" href={other.href} hreflang={other.tag} lang={other.tag}>{other.label}</a>
+    <!-- The counterpart to `.nav-links` being hidden below 720px: without this
+         the menu simply vanishes on phones. Shown only where those links are not. -->
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navmenu">
+      <span class="nav-toggle-label">{t.nav.menu}</span>
+      <span class="nav-toggle-bars" aria-hidden="true"><i></i><i></i></span>
+    </button>
   </div>
 </nav>
+
+<div class="nav-menu" id="navmenu" hidden>
+  {
+    menu.map((s, i) => (
+      <a href={`#${s.id}`} data-nav-link={s.id} style={`--i:${i + 1}`}>{t.nav[s.id]}</a>
+    ))
+  }
+  <a class="nav-menu-cta" href="#kontakt">{t.nav.cta}</a>
+</div>
 
 <script>
   import '../scripts/nav';
@@ -55,11 +76,78 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
 .nav.is-solid .nav-mark{color:var(--olive-deep)}
 .nav-mark.on-dark{color:#F7F2E8}
 .nav-links{display:flex;gap:1.6rem}
-.nav-cta{border:1px solid currentColor;border-radius:2rem;padding:.5rem 1.15rem;opacity:.85}
+/* underline grows in from the left on hover */
+.nav-links a{position:relative}
+.nav-links a::after{
+  content:'';position:absolute;left:0;right:0;bottom:-4px;height:1px;background:currentColor;
+  transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1);opacity:.75;
+}
+.nav-links a:hover::after{transform:scaleX(1)}
+/* The section you are currently looking at. */
+.nav-links a[aria-current='true']{opacity:1}
+.nav-links a[aria-current='true']::after{transform:scaleX(1)}
+.nav-cta{border:1px solid currentColor;border-radius:2rem;padding:.5rem 1.15rem;opacity:.85;
+  transition:opacity .3s,transform .3s ease,background-color .3s}
+.nav-cta:hover{opacity:1;transform:translateY(-1px)}
 .nav.is-dark{color:#F7F2E8}
 @media(max-width:720px){.nav-links{display:none}}
 
   .nav-right { display: flex; align-items: center; gap: .6rem; }
   .nav-lang { font-variant-numeric: tabular-nums; }
   @media (max-width: 720px) { .nav-hide-sm { display: none; } }
+
+/* ── mobile menu ─────────────────────────────────────────────────────────
+   Mirrors `.nav-links`: the toggle exists exactly where those links do not. */
+.nav-toggle{
+  display:none;align-items:center;gap:.55rem;
+  font:inherit;color:inherit;letter-spacing:.24em;text-transform:uppercase;
+  background:none;border:1px solid currentColor;border-radius:2rem;
+  padding:.5rem 1.05rem;cursor:pointer;opacity:.85;
+  min-height:44px; /* the CTAs beside it are shorter; this one sets the floor */
+}
+.nav-toggle-bars{display:block;width:14px}
+.nav-toggle-bars i{
+  display:block;height:1px;background:currentColor;
+  transition:transform .4s cubic-bezier(.2,.7,.2,1),opacity .3s ease;
+}
+.nav-toggle-bars i:first-child{margin-bottom:4px}
+.nav-toggle[aria-expanded='true'] .nav-toggle-bars i:first-child{transform:translateY(2.5px) rotate(45deg)}
+.nav-toggle[aria-expanded='true'] .nav-toggle-bars i:last-child{transform:translateY(-2.5px) rotate(-45deg)}
+
+.nav-menu[hidden]{display:none}
+.nav-menu{
+  position:fixed;inset:0;z-index:39;
+  display:flex;flex-direction:column;justify-content:center;
+  gap:.35rem;padding:0 var(--gutter);
+  background:var(--bone);
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(1.6rem,7vw,2.4rem);letter-spacing:.01em;
+  color:var(--olive-deep);
+}
+.nav-menu a{
+  padding:.45rem 0;
+  opacity:0;transform:translateY(14px);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.2,.7,.2,1);
+}
+.nav-menu.is-open a{opacity:1;transform:none}
+/* Staggered only on the way in; closing is immediate so it never feels sticky.
+   Driven by --i set per link rather than nth-child rules: the index is now
+   registry-length, and hardcoded rules would have left later links popping in
+   with no delay at all. */
+.nav-menu.is-open a{transition-delay:calc(var(--i,0) * .04s)}
+.nav-menu-cta{
+  margin-top:1.6rem;align-self:start;
+  font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  border:1px solid currentColor;border-radius:2rem;padding:.85rem 1.6rem;
+  color:var(--label);
+}
+body.nav-menu-open{overflow:hidden}
+
+@media(max-width:720px){ .nav-toggle{display:inline-flex} }
+@media(min-width:721px){ .nav-menu{display:none} }
+
+@media (prefers-reduced-motion: reduce){
+  .nav-menu a{transition:none;opacity:1;transform:none}
+  .nav-toggle-bars i{transition:none}
+}
 </style>

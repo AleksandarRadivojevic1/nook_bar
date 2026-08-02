@@ -1,13 +1,19 @@
 ---
 import { useTranslations, type Locale } from '../i18n';
 import { formatClock, formatDate } from '../lib/hours';
+import { visibleSections, type SectionId } from '../lib/sections';
+import { site } from '../lib/site';
 
 interface Props {
   locale: Locale;
+  sections: ReadonlySet<SectionId>;
 }
 
-const { locale } = Astro.props;
+const { locale, sections } = Astro.props;
 const t = useTranslations(locale);
+
+// The complete index, same list the overlay menu renders.
+const index = visibleSections(sections, 'menu');
 
 // Build-time values so nothing renders as a dash; clock.ts corrects them on
 // the first frame — the page is prerendered, so this is the build's clock.
@@ -17,28 +23,29 @@ const date = formatDate(now, locale);
 const year = now.getFullYear();
 ---
 
-<!-- The footer has no scroll effects by design: it scrolls at page rate and
-     its only scripted behaviour is the nav flip, which lives in nav.ts. -->
+<!-- The panel itself does not move on scroll. The one scripted thing here is
+     the frame painting in when the page ends — see scripts/footer.ts. -->
 <div class="footer-wrap" data-nav-surface="ink">
-  <div class="footer-bg">
-    <div class="footer-bg-art"></div>
-    <div class="footer-counter"></div>
-  </div>
+  <!-- The panel sticks for the last stretch of the page, so it is fully
+       visible and full-bleed for a while before you actually reach the end.
+       Without that runway there is nowhere for the frame to paint in. -->
+  <div class="footer-stage">
+    <div class="footer-bg">
+      <div class="footer-bg-art"></div>
+      <div class="footer-counter"></div>
+    </div>
 
-  <footer class="footer" id="footer">
+    <footer class="footer" id="footer">
     <div class="footer-inner">
       <div class="footer-grid">
         <dl class="fcol">
           <dt>{t.footer.menuCol}</dt>
-          <a href="#karta">{t.nav.karta}</a>
-          <a href="#dan">{t.nav.dan}</a>
-          <a href="#recenzije">{t.recenzije.title}</a>
-          <a href="#kontakt">{t.nav.kontakt}</a>
+          {index.map((s) => <a href={`#${s.id}`}>{t.nav[s.id]}</a>)}
         </dl>
         <dl class="fcol">
           <dt>{t.footer.socialCol}</dt>
-          <a href="#">Instagram</a>
-          <a href="#">Google Maps</a>
+          <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer">Google Maps</a>
         </dl>
         <dl class="fcol">
           <dt>{t.footer.locationCol}</dt>
@@ -61,23 +68,29 @@ const year = now.getFullYear();
     </div>
 
     <div class="footer-mark">
-      <svg viewBox="0 0 1200 172" aria-label="Nook">
+      <svg viewBox="0 0 1200 236" aria-label="Nook">
+        <!-- Each glyph is placed on an even centre-to-centre rhythm rather than
+             stretched with textLength. Equal edge-gaps read as uneven here
+             because K is much narrower than N and the O's — the eye tracks the
+             centres, so the K looked pinched against the last O. Fixed centres
+             (305 apart) give an even rhythm; the leading centre is nudged so the
+             INK, not the geometry, sits centred on the panel. -->
         <text
-          x="600"
-          y="168"
+          y="230"
           text-anchor="middle"
           font-family="Jost, sans-serif"
-          font-weight="200"
-          font-size="212"
-          letter-spacing="26"
-          fill="#F7F2E8">NOOK</text>
+          font-weight="400"
+          font-size="300"
+          fill="#F7F2E8"><tspan x="158">N</tspan><tspan x="463">O</tspan><tspan x="768">O</tspan><tspan x="1073">K</tspan></text>
       </svg>
-    </div>
-  </footer>
+      </div>
+    </footer>
+  </div>
 </div>
 
 <script>
   import { startClock } from '../scripts/clock';
+  import '../scripts/footer';
 
   const root = document.querySelector('.footer-wrap');
   const locale = document.querySelector('main')?.getAttribute('data-locale');
@@ -94,7 +107,8 @@ const year = now.getFullYear();
    The artwork is a sibling behind it spanning the full width; the border
    paints the page colour back over its edges. The wordmark is clipped by just
    ~5px (their margin-bottom:-4.8px), not deeply cropped. */
-.footer-wrap{position:relative;background:var(--bone)}
+.footer-wrap{position:relative;background:var(--bone);height:170vh}
+.footer-stage{position:sticky;top:0;height:100vh;overflow:hidden}
 .footer-bg{position:absolute;inset:0;z-index:1;overflow:hidden}
 /* stand-in for the photograph: light pooled along the lower half, mirroring
    Flyward's object-position:50% 100%. Drop-in slot for a real image. */
@@ -114,6 +128,9 @@ const year = now.getFullYear();
   box-shadow:0 10px 30px rgba(255,190,110,.20);
 }
 .footer{
+  /* The border is painted in the PAGE colour, so it reads as a frame and the
+     panel appears inset. footer.ts rewinds it to 0 and plays it in on
+     reaching the end of the page; these values are the finished state. */
   position:relative;z-index:3;height:100vh;width:100%;box-sizing:border-box;
   border:solid var(--bone);
   border-width:clamp(2.4rem,6.1vh,3.45rem) clamp(.9rem,2.71vw,2.45rem) clamp(.9rem,2.71vw,2.45rem);
@@ -126,7 +143,8 @@ const year = now.getFullYear();
 .fcol dt{font-family:var(--display);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
   color:rgba(247,242,232,.55);margin-bottom:1rem}
 .fcol a,.fcol div{display:block;font-size:.92rem;line-height:2;color:rgba(247,242,232,.9)}
-.fcol a:hover{color:#fff}
+.fcol a{width:fit-content;transition:color .3s ease,transform .3s cubic-bezier(.2,.7,.2,1)}
+.fcol a:hover{color:#fff;transform:translateX(5px)}
 .clock{font-variant-numeric:tabular-nums}
 /* legal sits INSIDE the panel, above the wordmark, as on Flyward */
 .footer-legal{
