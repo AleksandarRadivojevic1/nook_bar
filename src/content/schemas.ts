@@ -112,10 +112,33 @@ export const storySchema = z.object({
   /** One entry per paragraph. A delimiter inside a single string is a schema
    * nobody validates; an array is one zod already checks. */
   body: z.array(localized).min(1),
+  /**
+   * A name written by hand, set in Caveat. Not localized: a signature is the
+   * same in both languages. Optional because Siros has nobody to sign it.
+   */
+  signature: z.string().min(1).optional(),
 });
+
+/**
+ * The founders. `photo` and `instagram` are BOTH optional, which is what lets
+ * the Ljudi section ship as a finished thing before either of them has been
+ * photographed: with no entries at all it is a signed statement, and portraits
+ * are additive rather than a hole in the page.
+ *
+ * `image()` comes from the content config the same way the gallery's does, so
+ * paths resolve and width/height are emitted.
+ */
+export const personSchema = (image: SchemaContext['image']) =>
+  z.object({
+    name: z.string().min(1),
+    photo: image().optional(),
+    instagram: z.url().optional(),
+    order: z.number().int(),
+  });
 
 export type MenuItem = z.infer<typeof menuItemSchema>;
 export type Story = z.infer<typeof storySchema>;
+export type Person = z.infer<ReturnType<typeof personSchema>>;
 export type Review = z.infer<typeof reviewSchema>;
 export type DanCard = z.infer<typeof danCardSchema>;
 export type Signature = z.infer<typeof signatureSchema>;

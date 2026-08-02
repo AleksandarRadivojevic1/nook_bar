@@ -5,6 +5,7 @@ import {
   galleryTileSchema,
   localized,
   menuItemSchema,
+  personSchema,
   reviewSchema,
   storySchema,
 } from '../../src/content/schemas';
@@ -160,5 +161,59 @@ describe('story entries', () => {
   // order field to get wrong. Entries are looked up by id.
   it('has no order field to sort by', () => {
     expect('order' in storySchema.parse(base)).toBe(false);
+  });
+});
+
+describe('people', () => {
+  // The real image() helper only exists in Astro's content-config context; a
+  // plain string schema stands in, cast to the factory's parameter type.
+  const schema = personSchema(
+    (() => z.string()) as unknown as Parameters<typeof personSchema>[0],
+  );
+  const base = { name: 'Anđela', order: 1 };
+
+  // This is the whole point of the collection's shape: the section has to be
+  // finishable before anyone has been photographed.
+  it('accepts a person with no photograph', () => {
+    expect(() => schema.parse(base)).not.toThrow();
+    expect(schema.parse(base).photo).toBeUndefined();
+  });
+
+  it('accepts a person with one', () => {
+    expect(() => schema.parse({ ...base, photo: '../../assets/people/a.jpg' })).not.toThrow();
+  });
+
+  it('requires a name', () => {
+    expect(() => schema.parse({ order: 1 })).toThrow();
+    expect(() => schema.parse({ ...base, name: '' })).toThrow();
+  });
+
+  // Optional, and deliberately unset for now: which of the two known handles
+  // belongs to which founder is inferred, and linking a personal account from
+  // a business page needs the person's agreement.
+  it('leaves the Instagram link optional but rejects a non-URL', () => {
+    expect(() => schema.parse(base)).not.toThrow();
+    expect(() => schema.parse({ ...base, instagram: 'callme_angelique' })).toThrow();
+    expect(() =>
+      schema.parse({ ...base, instagram: 'https://www.instagram.com/callme_angelique/' }),
+    ).not.toThrow();
+  });
+});
+
+describe('story signatures', () => {
+  const base = {
+    eyebrow: { sr: 'Ljudi', en: 'The people' },
+    title: { sr: 'Naslov', en: 'Title' },
+    body: [{ sr: 'Pasus.', en: 'Paragraph.' }],
+  };
+
+  // A signature is a name written by hand, so it is the same in both
+  // languages. Siros has none, which is why it is optional rather than
+  // required with an empty default.
+  it('is optional and not localized', () => {
+    expect(storySchema.parse(base).signature).toBeUndefined();
+    expect(storySchema.parse({ ...base, signature: 'Anđela i Dimitrije' }).signature).toBe(
+      'Anđela i Dimitrije',
+    );
   });
 });

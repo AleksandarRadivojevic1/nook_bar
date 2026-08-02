@@ -4,6 +4,7 @@ import {
   danCardSchema,
   galleryTileSchema,
   menuItemSchema,
+  personSchema,
   reviewSchema,
   signatureSchema,
   storySchema,
@@ -39,4 +40,9 @@ const story = defineCollection({
   schema: storySchema,
 });
 
-export const collections = { menu, reviews, dan, signature, gallery, story };
+const people = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/people' }),
+  schema: ({ image }) => personSchema(image),
+});
+
+export const collections = { menu, reviews, dan, signature, gallery, story, people };
