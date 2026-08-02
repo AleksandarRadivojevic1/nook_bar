@@ -2,7 +2,7 @@ import { fill, useTranslations, type Locale } from '../i18n';
 import {
   formatClock,
   formatDate,
-  hourLabel,
+  timeLabel,
   hours,
   minuteOfDayInTz,
   statusAt,
@@ -44,8 +44,8 @@ export function startClock(root: ParentNode, locale: Locale): () => void {
       statusEl.className = 'status ' + (session.open ? 'is-open' : 'is-shut');
       const label = statusEl.lastElementChild ?? statusEl;
       label.textContent = session.open
-        ? fill(t.status.open, { close: hourLabel(session.closesAt!) })
-        : fill(t.status.closed, { open: hourLabel(session.opensAt!) });
+        ? fill(t.status.open, { close: timeLabel(session.closesAt!, t.hours.midnightUntil) })
+        : fill(t.status.closed, { open: timeLabel(session.opensAt!, t.hours.midnight) });
     }
   };
 

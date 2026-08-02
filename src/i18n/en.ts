@@ -62,6 +62,10 @@ export const en: Dictionary = {
       sat: 'Saturday',
       sun: 'Sunday',
     },
+    // English does not inflect these, but the two keys have to exist because
+    // Serbian does: nominative "ponoć" in a list, genitive "ponoći" after "do".
+    midnight: 'midnight',
+    midnightUntil: 'midnight',
   },
   potpis: {
     eyebrow: 'Signature',

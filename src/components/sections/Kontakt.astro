@@ -2,7 +2,7 @@
 import { fill, useTranslations, type Locale } from '../../i18n';
 import {
   DAY_ORDER,
-  hourLabel,
+  timeLabel,
   hours,
   minuteOfDayInTz,
   statusAt,
@@ -23,12 +23,13 @@ const now = new Date();
 const session = statusAt(weekdayInTz(now), minuteOfDayInTz(now), hours.week);
 const openNow = session.open;
 const statusLabel = openNow
-  ? fill(t.status.open, { close: hourLabel(session.closesAt!) })
-  : fill(t.status.closed, { open: hourLabel(session.opensAt!) });
+  ? fill(t.status.open, { close: timeLabel(session.closesAt!, t.hours.midnightUntil) })
+  : fill(t.status.closed, { open: timeLabel(session.opensAt!, t.hours.midnight) });
 
 // One row per day, the way Google Maps lists them: you look for YOUR day, and
 // a collapsed "Pon — Čet" makes you work out whether today is inside the range.
 // Monday-first and 24-hour, though — this is a Serbian bar, not an American one.
+// Midnight is spelled out: "24h" was accurate and read like a database value.
 //
 // `today` is the BUILD's day on a prerendered page, so clock.ts re-marks it on
 // the first frame, exactly as it re-computes the status pill.
@@ -36,7 +37,7 @@ const today = weekdayInTz(now);
 const schedule = DAY_ORDER.map((day) => ({
   day,
   name: t.hours.days[day],
-  span: `${hourLabel(hours.week[day].open)} — ${hourLabel(hours.week[day].close)}`,
+  span: `${timeLabel(hours.week[day].open, t.hours.midnight)} — ${timeLabel(hours.week[day].close, t.hours.midnight)}`,
 }));
 
 const [addressLine1, addressLine2] = t.kontakt.addressLines.split('|');

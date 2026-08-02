@@ -167,12 +167,20 @@ export function openingHoursSpecification(week: Record<DayKey, DayHours>) {
 }
 
 /**
- * "24:00" and "00:00" are the same instant but not the same statement: the old
- * code rendered a midnight close as "do 00:00", which reads as already-closed
- * to anyone looking at it in the afternoon. Bars close at 24h, not at 00:00.
+ * A time as a person would say it.
+ *
+ * "24:00" and "00:00" are the same instant but not the same statement: the
+ * original code rendered a midnight close as "do 00:00", which reads as
+ * already-closed to anyone looking at it in the afternoon. "24h" was accurate
+ * but reads as a database value, so midnight is spelled out instead.
+ *
+ * The word is passed in rather than looked up here, because it is inflected:
+ * Serbian wants nominative "ponoć" in a list and genitive "ponoći" after "do".
+ * Keeping the grammar in the dictionary keeps this module free of i18n.
  */
-export function hourLabel(hhmm: string): string {
-  return hhmm.endsWith(':00') ? `${hhmm.slice(0, 2)}h` : hhmm;
+export function timeLabel(hhmm: string, midnightWord: string): string {
+  if (hhmm === '24:00' || hhmm === '00:00') return midnightWord;
+  return hhmm.endsWith(':00') ? hhmm.slice(0, 2) : hhmm;
 }
 
 const clockFormatters = new Map<string, Intl.DateTimeFormat>();

@@ -9,9 +9,9 @@ test('renders the address and hours from the data', async ({ page }) => {
   await expect(section).toContainText('Ponedeljak');
   await expect(section).toContainText('Nedelja');
   // The week is not uniform: 07-24 Mon-Thu, 07-01 Fri-Sat, 09-24 Sun.
-  await expect(page.locator('.hrow[data-day="mon"]')).toContainText('07h — 24h');
-  await expect(page.locator('.hrow[data-day="fri"]')).toContainText('07h — 01h');
-  await expect(page.locator('.hrow[data-day="sun"]')).toContainText('09h — 24h');
+  await expect(page.locator('.hrow[data-day="mon"]')).toContainText('07 — ponoć');
+  await expect(page.locator('.hrow[data-day="fri"]')).toContainText('07 — 01');
+  await expect(page.locator('.hrow[data-day="sun"]')).toContainText('09 — ponoć');
 });
 
 test('exactly one day is marked as today, and it is the real one', async ({ page }) => {

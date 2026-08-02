@@ -68,6 +68,10 @@ export const sr = {
       sat: 'Subota',
       sun: 'Nedelja',
     },
+    /** Nominative — a value in the hours list: "07 — ponoć". */
+    midnight: 'ponoć',
+    /** Genitive — after "do" in the status pill: "Otvoreno · do ponoći". */
+    midnightUntil: 'ponoći',
   },
   potpis: {
     eyebrow: 'Potpis',

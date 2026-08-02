@@ -4,7 +4,7 @@ import {
   formatClock,
   formatDate,
   groupedHours,
-  hourLabel,
+  timeLabel,
   hours,
   minuteOfDayInTz,
   openingHoursSpecification,
@@ -133,17 +133,24 @@ describe('openingHoursSpecification', () => {
   });
 });
 
-describe('hourLabel', () => {
+describe('timeLabel', () => {
   it('drops the empty minutes a bar never has', () => {
-    expect(hourLabel('07:00')).toBe('07h');
-    expect(hourLabel('01:00')).toBe('01h');
+    expect(timeLabel('07:00', 'ponoć')).toBe('07');
+    expect(timeLabel('01:00', 'ponoć')).toBe('01');
   });
-  it('keeps 24 rather than showing midnight as 00:00', () => {
-    // "Otvoreno · do 00:00" reads as already-closed at 13:00. It is not.
-    expect(hourLabel('24:00')).toBe('24h');
+  it('spells midnight out rather than showing 24h or 00:00', () => {
+    // "do 00:00" reads as already-closed at 13:00; "24h" reads as a database
+    // value. Both are the same instant and neither is what a person says.
+    expect(timeLabel('24:00', 'ponoć')).toBe('ponoć');
+    expect(timeLabel('00:00', 'ponoć')).toBe('ponoć');
+  });
+  it('takes the word so the caller controls the grammatical case', () => {
+    // Serbian: nominative in a list, genitive after "do".
+    expect(timeLabel('24:00', 'ponoći')).toBe('ponoći');
+    expect(timeLabel('24:00', 'midnight')).toBe('midnight');
   });
   it('keeps real minutes when there are any', () => {
-    expect(hourLabel('07:30')).toBe('07:30');
+    expect(timeLabel('07:30', 'ponoć')).toBe('07:30');
   });
 });
 
