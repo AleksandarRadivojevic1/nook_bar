@@ -27,7 +27,7 @@ function hasWebGL(): boolean {
  */
 export function initGalerija(root: HTMLElement): void {
   const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('.g-open'));
-  const modalEl = document.querySelector<HTMLElement>('.g-modal');
+  const modalEl = document.querySelector<HTMLElement>('#galerija-modal');
   if (buttons.length === 0 || !modalEl) return;
 
   const items: ModalItem[] = buttons.map((btn) => ({

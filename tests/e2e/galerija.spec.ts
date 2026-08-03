@@ -79,13 +79,13 @@ test.describe('lightbox', () => {
 
   test('opens from a tile, shows the caption, and closes on Escape', async ({ page }) => {
     await page.goto('/');
-    const modal = page.locator('.g-modal');
+    const modal = page.locator('#galerija-modal');
     await expect(modal).toBeHidden();
 
     await openFirstTile(page);
     await expect(modal).toBeVisible();
-    await expect(page.locator('.g-modal-img')).toHaveAttribute('src', /\S/);
-    await expect(page.locator('.g-modal-caption')).toContainText(/\S/);
+    await expect(page.locator('#galerija-modal .g-modal-img')).toHaveAttribute('src', /\S/);
+    await expect(page.locator('#galerija-modal .g-modal-caption')).toContainText(/\S/);
 
     await page.keyboard.press('Escape');
     await expect(modal).toBeHidden();
@@ -94,7 +94,7 @@ test.describe('lightbox', () => {
   test('steps through photos with the arrow keys', async ({ page }) => {
     await page.goto('/');
     await openFirstTile(page);
-    const src = () => page.locator('.g-modal-img').getAttribute('src');
+    const src = () => page.locator('#galerija-modal .g-modal-img').getAttribute('src');
 
     const first = await src();
     await page.keyboard.press('ArrowRight');
@@ -109,11 +109,11 @@ test.describe('lightbox', () => {
     await expect(page.locator('body')).toHaveClass(/g-modal-open/);
 
     // Stepping back from the first photo lands on the last one.
-    const first = await page.locator('.g-modal-img').getAttribute('src');
-    await page.locator('.g-modal-prev').click();
-    await expect.poll(() => page.locator('.g-modal-img').getAttribute('src')).not.toBe(first);
+    const first = await page.locator('#galerija-modal .g-modal-img').getAttribute('src');
+    await page.locator('#galerija-modal .g-modal-prev').click();
+    await expect.poll(() => page.locator('#galerija-modal .g-modal-img').getAttribute('src')).not.toBe(first);
 
-    await page.locator('.g-modal-close').click();
+    await page.locator('#galerija-modal .g-modal-close').click();
     await expect(page.locator('body')).not.toHaveClass(/g-modal-open/);
   });
 
@@ -123,7 +123,7 @@ test.describe('lightbox', () => {
     await first.focus();
     await expect(first).toBeFocused();
     await page.keyboard.press('Enter');
-    await expect(page.locator('.g-modal')).toBeVisible();
+    await expect(page.locator('#galerija-modal')).toBeVisible();
   });
 });
 
