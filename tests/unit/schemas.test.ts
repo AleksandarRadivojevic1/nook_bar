@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   danCardSchema,
   galleryTileSchema,
-  instagramPostSchema,
   localized,
   menuGroupSchema,
   personSchema,
@@ -301,44 +300,6 @@ describe('practical questions', () => {
   it('has no place to put a fact', () => {
     const parsed = practicalSchema.parse(base);
     expect(Object.keys(parsed).sort()).toEqual(['answer', 'order', 'question']);
-  });
-});
-
-describe('instagram posts', () => {
-  const schema = instagramPostSchema(
-    (() => z.string()) as unknown as Parameters<typeof instagramPostSchema>[0],
-  );
-  const base = {
-    image: '../../assets/instagram/1.jpg',
-    caption: { sr: 'Jutro u baru.', en: 'Morning at the bar.' },
-    permalink: 'https://www.instagram.com/p/Cabcdefghij/',
-    postedAt: '2026-07-14',
-  };
-
-  it('accepts a complete post', () => {
-    expect(() => schema.parse(base)).not.toThrow();
-  });
-
-  it('reads the date as a date, not a string', () => {
-    expect(schema.parse(base).postedAt).toBeInstanceOf(Date);
-  });
-
-  // Every tile links to the real post. That is what makes the section honest
-  // without it pretending to be live.
-  it('requires a real permalink', () => {
-    expect(() => schema.parse({ ...base, permalink: 'nookbar__' })).toThrow();
-  });
-
-  // The caption doubles as the image's alt text, so it cannot be missing in
-  // one language and present in the other.
-  it('requires the caption in both languages', () => {
-    expect(() => schema.parse({ ...base, caption: { sr: 'Samo srpski.' } })).toThrow();
-  });
-
-  // Ordering comes from postedAt. An order field beside a date is two sources
-  // of truth for one sequence.
-  it('has no order field', () => {
-    expect('order' in schema.parse(base)).toBe(false);
   });
 });
 

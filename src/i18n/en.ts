@@ -18,7 +18,6 @@ export const en: Dictionary = {
     ljudi: 'The people',
     recenzije: 'Reviews',
     kontakt: 'Visit',
-    instagram: 'Instagram',
     cta: 'Find us',
     menu: 'Menu',
     menuClose: 'Close menu',
@@ -102,11 +101,6 @@ export const en: Dictionary = {
     socialLabel: 'Instagram',
     mapLabel: 'Where we are',
     mapOpen: 'Open the map',
-  },
-  instagram: {
-    eyebrow: 'Instagram',
-    title: 'Where we keep talking',
-    follow: 'Follow',
   },
   status: {
     open: 'Open · until {close}',

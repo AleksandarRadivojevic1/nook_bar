@@ -62,7 +62,7 @@ export default config({
     navigation: {
       'Tekst na sajtu': ['story', 'people', 'practical'],
       Piće: ['menu', 'signature'],
-      Slike: ['gallery', 'instagram'],
+      Slike: ['gallery'],
       Ostalo: ['reviews', 'dan', 'hours', 'site'],
     },
   },
@@ -209,31 +209,6 @@ export default config({
         }),
         caption: localized('Caption'),
         order,
-      },
-    }),
-
-    instagram: collection({
-      label: 'Instagram posts',
-      path: 'src/content/instagram/*',
-      slugField: 'slug',
-      format: { data: 'json' },
-      schema: {
-        slug: fields.slug({ name: { label: 'Id' } }),
-        image: fields.image({
-          label: 'Image',
-          directory: 'src/assets/instagram',
-          publicPath: '../../assets/instagram/',
-          validation: { isRequired: true },
-        }),
-        caption: localized('Caption'),
-        permalink: fields.url({
-          label: 'Link to the post',
-          description: 'The real instagram.com/p/... address. Every tile links to its own post.',
-        }),
-        postedAt: fields.date({
-          label: 'Posted on',
-          description: 'The four most recent show. There is no manual order.',
-        }),
       },
     }),
 

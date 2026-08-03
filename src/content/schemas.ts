@@ -125,20 +125,8 @@ export const practicalSchema = z.object({
   order: z.number().int(),
 });
 
-/** Curated, not fetched: the Instagram API needs a token refreshed every 60 days. */
-export const instagramPostSchema = (image: SchemaContext['image']) =>
-  z.object({
-    image: image(),
-    /** Doubles as the alt text. */
-    caption: localized,
-    permalink: z.url(),
-    /** Sorted by this. There is no order field. */
-    postedAt: z.coerce.date(),
-  });
-
 export type MenuGroup = z.infer<ReturnType<typeof menuGroupSchema>>;
 export type MenuItem = MenuGroup['items'][number];
-export type InstagramPost = z.infer<ReturnType<typeof instagramPostSchema>>;
 export type Practical = z.infer<typeof practicalSchema>;
 export type Story = z.infer<typeof storySchema>;
 export type Person = z.infer<ReturnType<typeof personSchema>>;

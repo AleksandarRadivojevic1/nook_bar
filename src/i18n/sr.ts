@@ -24,7 +24,6 @@ export const sr = {
     ljudi: 'Ljudi',
     recenzije: 'Recenzije',
     kontakt: 'Kontakt',
-    instagram: 'Instagram',
     cta: 'Pronađi nas',
     menu: 'Meni',
     menuClose: 'Zatvori meni',
@@ -118,11 +117,6 @@ export const sr = {
     socialLabel: 'Instagram',
     mapLabel: 'Gde smo',
     mapOpen: 'Otvori mapu',
-  },
-  instagram: {
-    eyebrow: 'Instagram',
-    title: 'Odavde nastavljamo',
-    follow: 'Zaprati',
   },
   status: {
     open: 'Otvoreno · do {close}',

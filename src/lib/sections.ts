@@ -23,7 +23,6 @@ export type SectionId = keyof Pick<
   | 'ljudi'
   | 'recenzije'
   | 'kontakt'
-  | 'instagram'
 >;
 
 export interface SectionDef {
@@ -53,7 +52,6 @@ export const SECTIONS: readonly SectionDef[] = [
   { id: 'ljudi', navSurface: 'bone', nav: 'menu' },
   { id: 'recenzije', navSurface: 'bone', nav: 'menu' },
   { id: 'kontakt', navSurface: 'bone', nav: 'primary' },
-  { id: 'instagram', navSurface: 'ink', nav: 'menu' },
 ] as const;
 
 /**
