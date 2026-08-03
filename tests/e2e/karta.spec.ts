@@ -1,42 +1,40 @@
 import { expect, test } from '@playwright/test';
 
-test('renders every menu item from the collection, in order', async ({ page }) => {
+test('the card lists every group, closed', async ({ page }) => {
   await page.goto('/');
-  const rows = page.locator('[data-section="karta"] .row');
-  expect(await rows.count()).toBe(6);
-  await expect(rows.first()).toContainText('Bela nedelja');
-  await expect(rows.first()).toContainText('520');
+  const groups = page.locator('#karta .k-group');
+  await expect(groups).toHaveCount(25);
+  expect(await groups.first().evaluate((el: HTMLDetailsElement) => el.open)).toBe(false);
 });
 
-test('shows Serbian descriptions on / and English on /en', async ({ page }) => {
+test('opening a group shows its items and prices', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('[data-section="karta"]')).toContainText('Džin, kamilica');
+  const group = page.locator('#karta .k-group').first();
+  await group.locator('.k-summary').click();
+  await expect(group.locator('.k-row')).toHaveCount(18);
+  await expect(group.locator('.k-price').first()).toHaveText(/220/);
+});
+
+test('kokteli says where the list is and has no rows', async ({ page }) => {
+  await page.goto('/');
+  const kokteli = page.locator('#karta .k-group', { hasText: 'Kokteli' });
+  await expect(kokteli.locator('.k-note')).toContainText(/u lokalu/i);
+  await expect(kokteli.locator('.k-row')).toHaveCount(0);
+});
+
+test('shows Serbian titles on / and English on /en', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#karta')).toContainText('Kafa i još nešto');
   await page.goto('/en');
-  await expect(page.locator('[data-section="karta"]')).toContainText('Gin, chamomile');
+  await expect(page.locator('#karta')).toContainText('Coffee and then some');
 });
 
-test.describe('with motion', () => {
-  test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name === 'reduced-motion', 'the crop is hidden when motion is reduced');
-    test.skip(testInfo.project.name === 'mobile', 'there is no cursor to trail on touch');
-  });
-
-  test('the crop follows the cursor on hover', async ({ page }) => {
-    await page.goto('/');
-    const crop = page.locator('#crop');
-    expect(await crop.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(0);
-    await page.locator('[data-section="karta"] .row').first().hover();
-    await page.waitForTimeout(600);
-    expect(await crop.evaluate((el) => Number(getComputedStyle(el).opacity))).toBeGreaterThan(0.8);
-  });
-});
-
-test.describe('reduced motion', () => {
-  test.use({ contextOptions: { reducedMotion: 'reduce' } });
-
-  test('the menu is fully readable and the crop stays hidden', async ({ page }) => {
-    await page.goto('/');
-    expect(await page.locator('[data-section="karta"] .row').count()).toBe(6);
-    expect(await page.locator('#crop').evaluate((el) => getComputedStyle(el).display)).toBe('none');
-  });
+test('the card never scrolls sideways on a phone', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'narrow layout only');
+  await page.goto('/');
+  await page.locator('#karta .k-summary').first().click();
+  const overflows = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+  );
+  expect(overflows).toBe(false);
 });

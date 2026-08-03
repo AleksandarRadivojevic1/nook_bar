@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import { backgrounds } from '../../lib/media';
 import { useTranslations, type Locale } from '../../i18n';
 
 interface Props {
@@ -10,59 +9,142 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-const items = (await getCollection('menu')).sort((a, b) => a.data.order - b.data.order);
-const crops = await backgrounds(items, 640);
+const groups = (await getCollection('menu')).sort((a, b) => a.data.order - b.data.order);
+const cards = [
+  { id: 'pice', label: t.karta.cardDrinks, groups: groups.filter((g) => g.data.card === 'pice') },
+  { id: 'kuhinja', label: t.karta.cardKitchen, groups: groups.filter((g) => g.data.card === 'kuhinja') },
+];
+
+// One flat index across the whole card, so the lightbox can step through it in
+// DOM order. Incremented as each openable row renders, top to bottom.
+let openable = 0;
+const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
 ---
 
 <section class="karta" id="karta" data-section="karta" data-nav-surface="bone">
   <div class="karta-head">
     <h2 class="display is-wide" style="font-size:clamp(1rem,1.5vw,1.3rem)">{t.karta.title}</h2>
-    <p class="sub" style="max-width:28ch">{t.karta.note}</p>
+    <p class="sub" style="max-width:32ch">{t.karta.note}</p>
   </div>
-  <div class="list">
-    {
-      items.map((item) => (
-        <div class="row" data-crop={crops.get(item.id)}>
-          <div>
-            <h4>{item.data.name}</h4>
-            <p>{item.data.desc[locale]}</p>
-          </div>
-          <div class="price">{t.karta.currency} {item.data.price}</div>
+
+  {
+    cards.map((card) => (
+      <div class="k-card">
+        <h3 class="k-card-label">{card.label}</h3>
+        <div class="k-groups">
+          {card.groups.map((g) => {
+            const empty = g.data.items.length === 0;
+            return (
+              <details class:list={['k-group', empty && 'is-static']} open={empty}>
+                <summary class="k-summary">
+                  <span class="k-title">{g.data.title[locale]}</span>
+                  <span class="k-meta">
+                    {g.data.measures.map((m) => (
+                      <em>{m}</em>
+                    ))}
+                    {!empty && <b>{g.data.items.length}</b>}
+                  </span>
+                </summary>
+                {g.data.note && <p class="k-note">{g.data.note[locale]}</p>}
+                {g.data.items.map((item, i) => {
+                  const prev = g.data.items[i - 1];
+                  const showSub = item.subgroup && item.subgroup !== prev?.subgroup;
+                  const openableItem = Boolean(item.photo || item.desc);
+                  const Tag = openableItem ? 'button' : 'div';
+                  return (
+                    <>
+                      {showSub && <p class="k-subgroup">{item.subgroup}</p>}
+                      <Tag
+                        class:list={['k-row', openableItem && 'is-openable']}
+                        data-karta-index={openableItem ? openable++ : undefined}
+                        type={openableItem ? 'button' : undefined}
+                      >
+                        <span class="k-name">
+                          {item.name}
+                          {item.note && <em class="k-mark">{item.note[locale]}</em>}
+                          {item.desc && <span class="k-desc">{item.desc[locale]}</span>}
+                        </span>
+                        <span class="k-price">
+                          {item.prices.map((p) => (
+                            <b>{money(p)}</b>
+                          ))}
+                        </span>
+                      </Tag>
+                    </>
+                  );
+                })}
+              </details>
+            );
+          })}
         </div>
-      ))
-    }
-  </div>
+      </div>
+    ))
+  }
   <div class="grain is-fine"></div>
 </section>
-<div class="row-crop" id="crop"><div class="inner"></div></div>
-
-<script>
-  import '../../scripts/karta';
-</script>
 
 <style is:global>
 /* ══════════════════════════════════════════════════════════════════════
    ACT 4 — KARTA
+   The card is <details>/<summary> accordions: it works with no JavaScript and
+   is keyboard- and screen-reader-native. The lightbox (karta.ts) is progressive
+   enhancement layered on the openable rows.
    ══════════════════════════════════════════════════════════════════════ */
 .karta{padding:16vh var(--gutter) 9vh;position:relative;background:var(--bone)}
 .karta-head{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;margin-bottom:6vh;flex-wrap:wrap}
-.list{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(2rem,6vw,7rem)}
-@media(max-width:820px){.list{grid-template-columns:1fr}}
-.row{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:1rem;
-  padding:1.35rem 0;border-bottom:1px solid var(--hair);position:relative}
-.row h4{font-family:var(--display);font-weight:400;font-size:clamp(1rem,1.35vw,1.2rem);
-  color:var(--olive-deep);margin:0;transition:color .35s}
-.row p{margin:.3rem 0 0;font-size:.83rem;line-height:1.6;color:var(--ink-soft);max-width:34ch}
-.row .price{font-family:var(--display);font-weight:400;font-size:.86rem;letter-spacing:.1em;
-  color:var(--label);font-variant-numeric:tabular-nums}
-.row:hover h4{color:var(--amber-text)}
-.row-crop{position:fixed;width:190px;height:240px;pointer-events:none;z-index:30;
-  opacity:0;translate:-50% -50%;overflow:hidden;box-shadow:0 18px 50px rgba(58,54,40,.28)}
-.row-crop .inner{position:absolute;inset:0}
 
+.k-card{max-width:56ch;margin:0 auto 8vh}
+.k-card:last-of-type{margin-bottom:0}
+.k-card-label{font-family:var(--display);font-weight:400;font-size:.72rem;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--label);margin:0 0 .4rem;padding-bottom:1rem;
+  border-bottom:1px solid var(--olive-deep)}
 
-  @media (prefers-reduced-motion: reduce) {
-    /* No cursor-trailing crop when motion is reduced. */
-    .row-crop { display: none; }
-  }
+.k-group{border-bottom:1px solid var(--hair)}
+.k-summary{list-style:none;cursor:pointer;
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding:1.15rem 0;position:relative}
+.k-summary::-webkit-details-marker{display:none}
+.k-title{font-family:var(--display);font-weight:400;font-size:clamp(1rem,1.35vw,1.18rem);
+  color:var(--olive-deep);transition:color .35s}
+.k-summary:hover .k-title,.k-group[open] .k-title{color:var(--amber-text)}
+.k-meta{display:flex;align-items:baseline;gap:.7rem;flex-shrink:0;
+  font-family:var(--display);font-variant-numeric:tabular-nums}
+.k-meta em{font-style:normal;font-size:.66rem;letter-spacing:.14em;color:var(--label);opacity:.75}
+.k-meta b{font-weight:400;font-size:.72rem;letter-spacing:.1em;color:var(--label);
+  min-width:2.4ch;text-align:right}
+/* The +/− affordance, drawn in CSS so it needs no markup and no script. */
+.k-meta::after{content:'+';font-family:var(--display);font-size:.9rem;line-height:1;
+  color:var(--label);opacity:.6;width:1ch;text-align:center;transition:opacity .3s}
+.k-group[open] .k-meta::after{content:'−'}
+.k-summary:hover .k-meta::after{opacity:1}
+
+.k-note{margin:0 0 1.1rem;font-size:.86rem;line-height:1.6;color:var(--ink-soft);max-width:40ch}
+
+.k-subgroup{margin:1.2rem 0 .3rem;font-family:var(--display);font-size:.64rem;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--label)}
+
+.k-row{width:100%;text-align:left;background:none;border:0;font:inherit;color:inherit;
+  display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:1rem;
+  padding:.62rem 0;border-bottom:1px solid color-mix(in srgb,var(--hair) 55%,transparent)}
+.k-row:last-child{border-bottom:0;padding-bottom:1.1rem}
+.k-row.is-openable{cursor:pointer}
+.k-name{font-size:.92rem;line-height:1.45;color:var(--ink);min-width:0}
+.k-row.is-openable .k-name{transition:color .3s}
+.k-row.is-openable:hover .k-name{color:var(--amber-text)}
+.k-mark{font-style:normal;margin-left:.5rem;font-family:var(--display);font-size:.6rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--amber-text)}
+.k-desc{display:block;margin-top:.2rem;font-size:.78rem;line-height:1.55;color:var(--ink-soft);
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.k-price{display:flex;gap:.9rem;flex-shrink:0;
+  font-family:var(--display);font-variant-numeric:tabular-nums}
+.k-price b{font-weight:400;font-size:.84rem;letter-spacing:.06em;color:var(--label);
+  min-width:3.5ch;text-align:right}
+
+/* Kokteli: a header and a note, nothing to reveal, so it does not toggle. */
+.k-group.is-static > .k-summary{cursor:default;pointer-events:none}
+.k-group.is-static .k-meta::after{content:''}
+
+@media(max-width:520px){
+  .k-desc{-webkit-line-clamp:2}
+}
 </style>

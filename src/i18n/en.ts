@@ -51,6 +51,8 @@ export const en: Dictionary = {
     title: 'Menu',
     note: 'Deliberately short. It changes when the season does.',
     currency: 'RSD',
+    cardDrinks: 'Drinks',
+    cardKitchen: 'Kitchen',
   },
   hours: {
     days: {

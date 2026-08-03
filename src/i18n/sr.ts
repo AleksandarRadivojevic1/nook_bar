@@ -57,6 +57,8 @@ export const sr = {
     title: 'Karta',
     note: 'Kratka namerno. Menja se kad se promeni sezona.',
     currency: 'RSD',
+    cardDrinks: 'Piće',
+    cardKitchen: 'Kuhinja',
   },
   hours: {
     days: {
