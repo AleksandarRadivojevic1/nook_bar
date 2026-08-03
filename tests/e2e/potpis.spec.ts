@@ -11,6 +11,13 @@ const DRINKS = readdirSync(
   join(import.meta.dirname, '..', '..', 'src', 'content', 'signature'),
 ).filter((f) => f.endsWith('.json')).length;
 
+// Potpis is held off the page until the cocktail sheet is photographed and the
+// signature collection is filled — see the karta suite for that assertion.
+// These render tests come back to life the moment a real drink lands.
+test.beforeEach(() => {
+  test.skip(DRINKS === 0, 'potpis is absent until the signature collection has real cocktails');
+});
+
 test('renders one full-width row per drink', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#potpis .p-drink')).toHaveCount(DRINKS);

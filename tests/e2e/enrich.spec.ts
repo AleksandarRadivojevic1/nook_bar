@@ -7,6 +7,12 @@ const DRINKS = readdirSync(
 ).filter((f) => f.endsWith('.json')).length;
 
 test.describe('signature (potpis)', () => {
+  // Held off the page until the cocktail sheet is photographed; the karta suite
+  // asserts its absence. These return when the signature collection is filled.
+  test.beforeEach(() => {
+    test.skip(DRINKS === 0, 'potpis is absent until the signature collection has real cocktails');
+  });
+
   test('renders every signature drink, and Siros carries its origin line', async ({ page }) => {
     await page.goto('/');
     // Count comes from the collection; the owners edit it through Keystatic.

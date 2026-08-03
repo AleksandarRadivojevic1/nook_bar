@@ -60,3 +60,9 @@ test('a bare row is not a button', async ({ page }) => {
   const espresso = group.locator('.k-row', { hasText: 'Espresso' }).first();
   expect(await espresso.evaluate((el) => el.tagName)).toBe('DIV');
 });
+
+test('potpis stays off the page while there are no real cocktails', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('[data-section="potpis"]')).toHaveCount(0);
+  await expect(page.locator('a[data-nav-link="potpis"]')).toHaveCount(0);
+});

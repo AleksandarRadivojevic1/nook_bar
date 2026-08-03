@@ -14,6 +14,8 @@ const drinks = (await getCollection('signature')).sort((a, b) => a.data.order - 
 const backgroundValues = await backgrounds(drinks);
 ---
 
+{
+  drinks.length > 0 && (
 <section class="potpis" id="potpis" data-section="potpis" data-nav-surface="bone">
   <div class="potpis-head">
     <p class="eyebrow">{t.potpis.eyebrow}</p>
@@ -46,6 +48,8 @@ const backgroundValues = await backgrounds(drinks);
   </div>
   <div class="grain is-fine"></div>
 </section>
+  )
+}
 
 <script>
   import '../../scripts/potpis';

@@ -1,0 +1,10 @@
+# The signature collection is registered and deliberately empty.
+#
+# Potpis — the short list of house cocktails — is held off the page until this
+# collection has real drinks. The cocktail sheet was never photographed, so
+# nothing invented ships beside the real karta. One JSON file per drink:
+#
+#   { "name": "...", "tagline": { "sr": "...", "en": "..." },
+#     "spec": { "sr": "...", "en": "..." }, "price": 0, "order": 1 }
+#
+# The moment one lands, Page.astro adds the section and its nav entry back.

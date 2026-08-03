@@ -14,7 +14,6 @@ for (const route of ROUTES) {
       'siros',
       'dan',
       'karta',
-      'potpis',
       'galerija',
       'ljudi',
       'recenzije',

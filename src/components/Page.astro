@@ -40,18 +40,21 @@ const { locale } = Astro.props;
 const siros = await getEntry('story', 'siros');
 const ljudi = await getEntry('story', 'ljudi');
 const instagram = await getCollection('instagram');
+const signature = await getCollection('signature');
 
 const present = new Set<SectionId>([
   'prostor',
   'dan',
   'karta',
-  'potpis',
   'galerija',
   'recenzije',
   'kontakt',
 ]);
 if (siros) present.add('siros');
 if (ljudi) present.add('ljudi');
+// Potpis returns on its own once the cocktail sheet is shot and the signature
+// collection is filled; until then the real karta stands alone.
+if (signature.length > 0) present.add('potpis');
 if (instagram.length > 0) present.add('instagram');
 ---
 
