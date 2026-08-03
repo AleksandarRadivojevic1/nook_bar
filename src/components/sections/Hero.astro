@@ -220,6 +220,12 @@ const bottles: Array<[number, number]> = [
   height:152vh;aspect-ratio:1000/1614.2;
 }
 .matte svg{width:100%;height:100%;overflow:visible}
+/* the phone's wall: a finished texture, scaled by the compositor rather than
+   re-rastered per frame. Centred on the same point the SVG scaled from. */
+.matte-raster{
+  position:absolute;left:50%;top:50%;translate:-50% -50%;
+  transform-origin:50% 50%;will-change:transform;
+}
 .matte .wall{fill:var(--bone)}
 /* the coastline itself, drawn on by scrubbed dashoffset — the one thing
    Flyward also scrubs. non-scaling-stroke keeps it hairline at any scale. */

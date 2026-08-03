@@ -1,4 +1,8 @@
+import { createBitmapMatte } from './hero-matte';
 import { motion, onSection } from './motion';
+
+/** Matches the breakpoint where the matte is sized by width rather than height. */
+const PHONE = '(max-width: 760px)';
 
 export function initHero(root: HTMLElement): void {
   const m = motion();
@@ -27,35 +31,52 @@ export function initHero(root: HTMLElement): void {
   // Grow the hole, not the picture. Syros is centred, so 14x clears the far
   // corner of a 1920x900 viewport — a narrow shape needs more than a wide one.
   //
-  // This scales the island inside the SVG rather than the .matte element:
-  // scaling the element scales the masked wall with it, and at 14x that is a
-  // raster surface the compositor will not allocate — which is what left the
-  // wall in fragments after a scroll to the bottom and back. svgOrigin is the
-  // viewBox centre, which is where the element used to scale from.
-  gsap.fromTo(
-    isle,
-    { scale: 1 },
-    {
-      scale: 14,
-      svgOrigin: '500 807.1',
-      ease: 'power1.in',
-      scrollTrigger: { trigger: hero, start: 'top top', end: '42% top', scrub: 0.6 },
-    },
-  );
+  // On a phone the wall is a bitmap instead, and the reveal scales that: see
+  // hero-matte.ts for the measurements behind the split. Everything else in the
+  // section is identical either way.
+  const bitmap = window.matchMedia(PHONE).matches ? createBitmapMatte(matte) : null;
 
-  // The coastline draws itself on, then rides out with the wall.
-  const len = source.getTotalLength();
-  gsap.set(coast, { strokeDasharray: len, strokeDashoffset: len });
-  gsap.to(coast, {
-    strokeDashoffset: 0,
-    ease: 'none',
-    scrollTrigger: { trigger: hero, start: 'top top', end: '13% top', scrub: 0.7 },
-  });
-  gsap.to(coast, {
-    opacity: 0,
-    ease: 'none',
-    scrollTrigger: { trigger: hero, start: '23% top', end: '36% top', scrub: 0.5 },
-  });
+  if (bitmap) {
+    const reveal = { scale: 1 };
+    gsap.to(reveal, {
+      scale: 14,
+      ease: 'power1.in',
+      onUpdate: () => bitmap.setScale(reveal.scale),
+      scrollTrigger: { trigger: hero, start: 'top top', end: '42% top', scrub: 0.6 },
+    });
+  } else {
+    // This scales the island inside the SVG rather than the .matte element:
+    // scaling the element scales the masked wall with it, and at 14x that is a
+    // raster surface the compositor will not allocate — which is what left the
+    // wall in fragments after a scroll to the bottom and back. svgOrigin is the
+    // viewBox centre, which is where the element used to scale from.
+    gsap.fromTo(
+      isle,
+      { scale: 1 },
+      {
+        scale: 14,
+        svgOrigin: '500 807.1',
+        ease: 'power1.in',
+        scrollTrigger: { trigger: hero, start: 'top top', end: '42% top', scrub: 0.6 },
+      },
+    );
+
+    // The coastline draws itself on, then rides out with the wall. Baked into
+    // the bitmap this would only thicken as it scaled, so the phone does without
+    // it — there, the edge of the hole is the coastline.
+    const len = source.getTotalLength();
+    gsap.set(coast, { strokeDasharray: len, strokeDashoffset: len });
+    gsap.to(coast, {
+      strokeDashoffset: 0,
+      ease: 'none',
+      scrollTrigger: { trigger: hero, start: 'top top', end: '13% top', scrub: 0.7 },
+    });
+    gsap.to(coast, {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: { trigger: hero, start: '23% top', end: '36% top', scrub: 0.5 },
+    });
+  }
 
   // The survey field fades as the wall opens past it.
   gsap.to(survey, {
@@ -80,12 +101,13 @@ export function initHero(root: HTMLElement): void {
     scrollTrigger: { trigger: hero, start: '38% top', end: '48% top', scrub: 0.4 },
   });
 
-  // Block 1 clears out well before the room is open.
+  // Block 1 clears out well before the room is open — and before it reaches the
+  // nav, which it used to slide up through at half opacity.
   gsap.to(hb1, {
     y: -90,
     opacity: 0,
     ease: 'none',
-    scrollTrigger: { trigger: hero, start: 'top top', end: '20% top', scrub: 0.5 },
+    scrollTrigger: { trigger: hero, start: 'top top', end: '11% top', scrub: 0.5 },
   });
 
   // Block 2 arrives once there is a room to sit in.

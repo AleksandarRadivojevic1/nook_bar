@@ -79,12 +79,10 @@ const CAMERA_Z = 4.2;
 const REST_WIDTH = 0.93;
 /**
  * Peak displacement toward the camera, as a fraction of the visible height.
- * The reference sits at 0.23, but its grid runs edge-to-edge at rest so that is
- * already enough to throw tiles off-screen. Ours rests inside the frame, so it
- * needs a deeper push to clear the edges — this is what makes the photos leave
- * the frame mid-scroll and draw back in as the bulge relaxes.
+ * Halved from 0.36: at that depth the tiles left the frame on every flick,
+ * which read as thrashing on a phone rather than as a swell.
  */
-const BULGE_PEAK = 0.36;
+const BULGE_PEAK = 0.18;
 /**
  * Vertical reach of the swell, as a fraction of the visible height. Rows this
  * far above or below the centre line sit flat, which is what keeps the effect

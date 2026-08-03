@@ -37,7 +37,8 @@ test.describe('with motion', () => {
     test.skip(testInfo.project.name === 'reduced-motion', 'the WebGL layer is off under reduced motion');
   });
 
-  test('boots the WebGL layer and gives the canvas real size', async ({ page }) => {
+  test('boots the WebGL layer and gives the canvas real size', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === 'mobile', 'phones stay on the markup grid');
     await page.goto('/');
     const section = page.locator('[data-section="galerija"]');
     await section.scrollIntoViewIfNeeded();
@@ -51,6 +52,20 @@ test.describe('with motion', () => {
     expect(box.w).toBeGreaterThan(200);
     expect(box.h).toBeGreaterThan(200);
     expect(box.backing).toBeGreaterThan(200);
+  });
+
+  test('a phone gets the grid, not a pinned canvas', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile', 'this is the narrow-layout path');
+    await page.goto('/');
+    const section = page.locator('[data-section="galerija"]');
+    await section.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1200);
+    await expect(section).not.toHaveClass(/is-webgl/);
+    // The stage is what pins; left displayed it would add screens of travel.
+    await expect(page.locator('.g-stage')).toBeHidden();
+    // And the section stays close to its own content height, not 4+ screens.
+    const screens = await section.evaluate((el) => el.getBoundingClientRect().height / window.innerHeight);
+    expect(screens).toBeLessThan(3);
   });
 
   test('the photos still carry their alt text once WebGL takes over', async ({ page }) => {

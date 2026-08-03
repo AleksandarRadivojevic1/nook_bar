@@ -55,6 +55,14 @@ export function initGalerija(root: HTMLElement): void {
   });
 
   if (!m) return;
+
+  // Phones get the markup grid. The WebGL layer measured as 93% of the
+  // section's frame cost there, and its pinned stage runs 4.1 screens on a
+  // narrow layout while the grid inside it drifts less than one — which is what
+  // made scrolling feel stuck. The masonry grid below is the same photos, the
+  // same lightbox, and it scrolls like a page.
+  if (window.matchMedia('(max-width: 640px)').matches) return;
+
   const { ScrollTrigger, lenis } = m;
 
   const canvas = root.querySelector<HTMLCanvasElement>('.g-canvas');
