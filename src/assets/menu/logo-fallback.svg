@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Nook">
+  <rect width="800" height="600" fill="#F2ECE1"/>
+  <rect x="28" y="28" width="744" height="544" fill="none" stroke="#D3C3A3" stroke-width="2"/>
+  <!-- Wordmark, centres 305 apart as in the footer, scaled and centred here. -->
+  <g transform="translate(400 340) scale(0.52) translate(-600 0)">
+    <text y="0" text-anchor="middle" font-family="Jost, 'Helvetica Neue', Arial, sans-serif"
+      font-weight="400" font-size="300" fill="#454534"
+      ><tspan x="158">N</tspan><tspan x="463">O</tspan><tspan x="768">O</tspan><tspan x="1073">K</tspan></text>
+  </g>
+  <text x="400" y="410" text-anchor="middle" font-family="Jost, 'Helvetica Neue', Arial, sans-serif"
+    font-weight="400" font-size="26" letter-spacing="10" fill="#6A6A4B">BAR · LESKOVAC</text>
+</svg>

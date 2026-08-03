@@ -38,3 +38,25 @@ test('the card never scrolls sideways on a phone', async ({ page }, testInfo) =>
   );
   expect(overflows).toBe(false);
 });
+
+test('a described row opens the popup with its description', async ({ page }) => {
+  await page.goto('/');
+  const group = page.locator('#karta .k-group', { hasText: 'Breakfast' });
+  await group.locator('.k-summary').click();
+  await group.locator('.k-row.is-openable').first().click();
+
+  const modal = page.locator('#karta-modal');
+  await expect(modal).toBeVisible();
+  await expect(modal.locator('.g-modal-title')).toContainText(/\S/);
+  await expect(modal.locator('.g-modal-caption')).toContainText(/semenke|granola|brioche/i);
+  await page.keyboard.press('Escape');
+  await expect(modal).toBeHidden();
+});
+
+test('a bare row is not a button', async ({ page }) => {
+  await page.goto('/');
+  const group = page.locator('#karta .k-group').first();
+  await group.locator('.k-summary').click();
+  const espresso = group.locator('.k-row', { hasText: 'Espresso' }).first();
+  expect(await espresso.evaluate((el) => el.tagName)).toBe('DIV');
+});

@@ -3,6 +3,9 @@ import type gsapType from 'gsap';
 export interface ModalItem {
   full: string;
   caption: string;
+  /** Optional, filled only when the modal markup has the slots for them. */
+  title?: string;
+  meta?: string;
 }
 
 export interface GalleryModal {
@@ -27,6 +30,9 @@ export function createGalleryModal(
 ): GalleryModal {
   const img = modal.querySelector<HTMLImageElement>('.g-modal-img');
   const caption = modal.querySelector<HTMLElement>('.g-modal-caption');
+  // Optional: present in the karta lightbox, absent in the gallery's own.
+  const titleEl = modal.querySelector<HTMLElement>('.g-modal-title');
+  const metaEl = modal.querySelector<HTMLElement>('.g-modal-meta');
   const closeBtn = modal.querySelector<HTMLButtonElement>('.g-modal-close');
   const prevBtn = modal.querySelector<HTMLButtonElement>('.g-modal-prev');
   const nextBtn = modal.querySelector<HTMLButtonElement>('.g-modal-next');
@@ -59,6 +65,8 @@ export function createGalleryModal(
     const item = items[index];
     img!.src = item.full;
     img!.alt = item.caption;
+    if (titleEl) titleEl.textContent = item.title ?? '';
+    if (metaEl) metaEl.textContent = item.meta ?? '';
 
     const words = setCaption(item.caption);
     if (still) return;

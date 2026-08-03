@@ -1,6 +1,8 @@
 ---
+import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { useTranslations, type Locale } from '../../i18n';
+import logoFallback from '../../assets/menu/logo-fallback.svg';
 
 interface Props {
   locale: Locale;
@@ -15,10 +17,31 @@ const cards = [
   { id: 'kuhinja', label: t.karta.cardKitchen, groups: groups.filter((g) => g.data.card === 'kuhinja') },
 ];
 
+const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
+
+// A row is interactive iff it has a photo or a description. Precompute its
+// thumbnail and large crop here — the logo stands in until a photo exists — so
+// the template can stay declarative. Keyed by the item object itself.
+type Media = { thumb: string; full: string };
+const mediaOf = new Map<object, Media>();
+for (const g of groups) {
+  for (const item of g.data.items) {
+    if (!item.photo && !item.desc) continue;
+    if (!item.photo) {
+      mediaOf.set(item, { thumb: logoFallback.src, full: logoFallback.src });
+      continue;
+    }
+    const [thumb, full] = await Promise.all([
+      getImage({ src: item.photo, width: 60, height: 60, fit: 'cover', format: 'webp' }),
+      getImage({ src: item.photo, width: 1000, format: 'webp' }),
+    ]);
+    mediaOf.set(item, { thumb: thumb.src, full: full.src });
+  }
+}
+
 // One flat index across the whole card, so the lightbox can step through it in
 // DOM order. Incremented as each openable row renders, top to bottom.
 let openable = 0;
-const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
 ---
 
 <section class="karta" id="karta" data-section="karta" data-nav-surface="bone">
@@ -49,7 +72,12 @@ const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
                 {g.data.items.map((item, i) => {
                   const prev = g.data.items[i - 1];
                   const showSub = item.subgroup && item.subgroup !== prev?.subgroup;
-                  const openableItem = Boolean(item.photo || item.desc);
+                  const media = mediaOf.get(item);
+                  const openableItem = Boolean(media);
+                  const priceText = item.prices.filter((p) => p > 0).map(money).join(' / ');
+                  const meta = [priceText && `${priceText} ${t.karta.currency}`, item.note?.[locale]]
+                    .filter(Boolean)
+                    .join(' · ');
                   const Tag = openableItem ? 'button' : 'div';
                   return (
                     <>
@@ -57,8 +85,11 @@ const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
                       <Tag
                         class:list={['k-row', openableItem && 'is-openable']}
                         data-karta-index={openableItem ? openable++ : undefined}
+                        data-full={media?.full}
+                        data-meta={openableItem ? meta : undefined}
                         type={openableItem ? 'button' : undefined}
                       >
+                        {media && <img class="k-thumb" src={media.thumb} alt="" width="30" height="30" loading="lazy" />}
                         <span class="k-name">
                           {item.name}
                           {item.note && <em class="k-mark">{item.note[locale]}</em>}
@@ -83,12 +114,38 @@ const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
   <div class="grain is-fine"></div>
 </section>
 
+<div
+  class="g-modal k-modal"
+  id="karta-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-label={t.karta.title}
+  hidden
+>
+  <button class="g-modal-close" type="button">{t.galerija.close}</button>
+  <div class="g-modal-center">
+    <img class="g-modal-img" src="" alt="" />
+    <h4 class="g-modal-title"></h4>
+    <p class="g-modal-meta"></p>
+    <p class="g-modal-caption"></p>
+  </div>
+  <div class="g-modal-nav">
+    <button class="g-modal-prev" type="button">{t.galerija.prev}</button>
+    <button class="g-modal-next" type="button">{t.galerija.next}</button>
+  </div>
+</div>
+
+<script>
+  import '../../scripts/karta';
+</script>
+
 <style is:global>
 /* ══════════════════════════════════════════════════════════════════════
    ACT 4 — KARTA
    The card is <details>/<summary> accordions: it works with no JavaScript and
    is keyboard- and screen-reader-native. The lightbox (karta.ts) is progressive
-   enhancement layered on the openable rows.
+   enhancement layered on the openable rows — those that carry a photo or a
+   description. The logo stands in until a photo is shot.
    ══════════════════════════════════════════════════════════════════════ */
 .karta{padding:16vh var(--gutter) 9vh;position:relative;background:var(--bone)}
 .karta-head{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;margin-bottom:6vh;flex-wrap:wrap}
@@ -124,18 +181,20 @@ const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
   letter-spacing:.24em;text-transform:uppercase;color:var(--label)}
 
 .k-row{width:100%;text-align:left;background:none;border:0;font:inherit;color:inherit;
-  display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:1rem;
+  display:flex;align-items:baseline;gap:1rem;
   padding:.62rem 0;border-bottom:1px solid color-mix(in srgb,var(--hair) 55%,transparent)}
 .k-row:last-child{border-bottom:0;padding-bottom:1.1rem}
 .k-row.is-openable{cursor:pointer}
-.k-name{font-size:.92rem;line-height:1.45;color:var(--ink);min-width:0}
+.k-thumb{flex:0 0 auto;width:30px;height:30px;object-fit:cover;align-self:flex-start;
+  margin-top:.15rem;background:var(--bone);box-shadow:inset 0 0 0 1px var(--hair)}
+.k-name{flex:1 1 auto;min-width:0;font-size:.92rem;line-height:1.45;color:var(--ink)}
 .k-row.is-openable .k-name{transition:color .3s}
 .k-row.is-openable:hover .k-name{color:var(--amber-text)}
 .k-mark{font-style:normal;margin-left:.5rem;font-family:var(--display);font-size:.6rem;
   letter-spacing:.16em;text-transform:uppercase;color:var(--amber-text)}
 .k-desc{display:block;margin-top:.2rem;font-size:.78rem;line-height:1.55;color:var(--ink-soft);
   overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
-.k-price{display:flex;gap:.9rem;flex-shrink:0;
+.k-price{flex:0 0 auto;display:flex;gap:.9rem;
   font-family:var(--display);font-variant-numeric:tabular-nums}
 .k-price b{font-weight:400;font-size:.84rem;letter-spacing:.06em;color:var(--label);
   min-width:3.5ch;text-align:right}
@@ -143,6 +202,15 @@ const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
 /* Kokteli: a header and a note, nothing to reveal, so it does not toggle. */
 .k-group.is-static > .k-summary{cursor:default;pointer-events:none}
 .k-group.is-static .k-meta::after{content:''}
+
+/* The item popup reuses the gallery lightbox (.g-modal, styled globally in
+   Galerija.astro). These two slots exist only here. */
+.k-modal .g-modal-title{margin:0;text-align:center;
+  font-family:var(--display);font-weight:400;font-size:clamp(1.1rem,2.6vw,1.6rem);color:#F7F2E8}
+.k-modal .g-modal-title:empty{display:none}
+.k-modal .g-modal-meta{margin:0;text-align:center;
+  font-family:var(--display);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C7B79A}
+.k-modal .g-modal-meta:empty{display:none}
 
 @media(max-width:520px){
   .k-desc{-webkit-line-clamp:2}
