@@ -1,0 +1,31 @@
+{
+  "order": 20,
+  "card": "pice",
+  "title": {
+    "sr": "Džin",
+    "en": "Gin"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Bombay Sapphire",
+      "prices": [
+        300
+      ]
+    },
+    {
+      "name": "Bobby's",
+      "prices": [
+        500
+      ]
+    },
+    {
+      "name": "Gin Mare",
+      "prices": [
+        550
+      ]
+    }
+  ]
+}

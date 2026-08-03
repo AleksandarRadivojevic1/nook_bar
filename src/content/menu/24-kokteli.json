@@ -1,0 +1,14 @@
+{
+  "order": 24,
+  "card": "pice",
+  "title": {
+    "sr": "Kokteli",
+    "en": "Cocktails"
+  },
+  "measures": [],
+  "note": {
+    "sr": "Karta koktela je u lokalu.",
+    "en": "The cocktail list is in the bar."
+  },
+  "items": []
+}

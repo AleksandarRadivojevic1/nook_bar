@@ -1,0 +1,51 @@
+{
+  "order": 12,
+  "card": "pice",
+  "title": {
+    "sr": "Točeno pivo",
+    "en": "On tap"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Estrella DAMM 0.33l",
+      "prices": [
+        280
+      ]
+    },
+    {
+      "name": "Estrella DAMM 0.5l",
+      "prices": [
+        390
+      ]
+    },
+    {
+      "name": "Niško nefiltrirano 0.33l",
+      "prices": [
+        240
+      ],
+      "note": {
+        "sr": "Nook's fav",
+        "en": "Nook's fav"
+      }
+    },
+    {
+      "name": "Niško nefiltrirano 0.5l",
+      "prices": [
+        360
+      ]
+    },
+    {
+      "name": "Brka Kabinet 0.33l",
+      "prices": [
+        410
+      ]
+    },
+    {
+      "name": "Brka Kabinet 0.5l",
+      "prices": [
+        650
+      ]
+    }
+  ]
+}

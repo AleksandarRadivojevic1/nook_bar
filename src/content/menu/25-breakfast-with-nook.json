@@ -1,0 +1,95 @@
+{
+  "order": 25,
+  "card": "kuhinja",
+  "title": {
+    "sr": "Breakfast with Nook",
+    "en": "Breakfast with Nook"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Proteinski chia puding",
+      "prices": [
+        550
+      ],
+      "desc": {
+        "sr": "Čia semenke, kakao, kokosovo mleko, kokos, protein od čokolade, banana i sezonsko voće.",
+        "en": "Chia seeds, cocoa, coconut milk, coconut, chocolate protein, banana and seasonal fruit."
+      }
+    },
+    {
+      "name": "Granola sa borovnicom i malinom",
+      "prices": [
+        500
+      ],
+      "desc": {
+        "sr": "Domaća granola, grčki jogurt, med, čia semenke, džem od borovnice i maline.",
+        "en": "Homemade granola, Greek yoghurt, honey, chia seeds, blueberry and raspberry jam."
+      }
+    },
+    {
+      "name": "Proteinska ovsena kaša sa kokosom",
+      "prices": [
+        650
+      ],
+      "desc": {
+        "sr": "Ovsene pahuljice, proteinsko ovseno mleko, protein od čokolade, kakao, kikiriki puter, banane, urme, kokos, sezonsko voće.",
+        "en": "Oat flakes, protein oat milk, chocolate protein, cocoa, peanut butter, banana, dates, coconut, seasonal fruit."
+      }
+    },
+    {
+      "name": "Benedict jaja",
+      "prices": [
+        670
+      ],
+      "note": {
+        "sr": "Nook's fav",
+        "en": "Nook's fav"
+      },
+      "desc": {
+        "sr": "Brioche hleb tostiran na maslacu, punomasni grčki jogurt sa aromatičnim biljem, avokado slice, pečena slanina, poširano jaje, holandez sos, parmezan.",
+        "en": "Brioche toasted in butter, full-fat Greek yoghurt with herbs, avocado, roasted bacon, poached egg, hollandaise, parmesan."
+      }
+    },
+    {
+      "name": "Avokado tost",
+      "prices": [
+        650
+      ],
+      "desc": {
+        "sr": "Sour dough hleb, avokado slice, kremasta kajgana, kozji sir. Opciono: losos, pršuta, slaninica.",
+        "en": "Sourdough, avocado, creamy scrambled eggs, goat cheese. Optional: salmon, prosciutto, bacon."
+      }
+    },
+    {
+      "name": "Bagel doručak",
+      "prices": [
+        590
+      ],
+      "desc": {
+        "sr": "Bagel, mix zelene salate, slanina, jaje na oko, punomasni grčki jogurt sa aromatičnim biljem, holandez sos.",
+        "en": "Bagel, mixed greens, bacon, fried egg, full-fat Greek yoghurt with herbs, hollandaise."
+      }
+    },
+    {
+      "name": "Ciabatta sendvič 1",
+      "prices": [
+        740
+      ],
+      "desc": {
+        "sr": "Ciabatta, pesto sos, mortadela, paradajz, burata.",
+        "en": "Ciabatta, pesto, mortadella, tomato, burrata."
+      }
+    },
+    {
+      "name": "Ciabatta sendvič 2",
+      "prices": [
+        770
+      ],
+      "desc": {
+        "sr": "Piletina u soya sosu, kuvano jaje, majonez, rukola, sušeni paradajz, Grana Padano, pečena slaninica.",
+        "en": "Chicken in soy sauce, boiled egg, mayonnaise, rocket, sun-dried tomato, Grana Padano, roasted bacon."
+      }
+    }
+  ]
+}

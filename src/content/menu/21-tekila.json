@@ -1,0 +1,25 @@
+{
+  "order": 21,
+  "card": "pice",
+  "title": {
+    "sr": "Tekila",
+    "en": "Tequila"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Olmeca blanco",
+      "prices": [
+        250
+      ]
+    },
+    {
+      "name": "El Jimador",
+      "prices": [
+        370
+      ]
+    }
+  ]
+}

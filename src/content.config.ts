@@ -4,7 +4,7 @@ import {
   danCardSchema,
   galleryTileSchema,
   instagramPostSchema,
-  menuItemSchema,
+  menuGroupSchema,
   personSchema,
   practicalSchema,
   reviewSchema,
@@ -34,7 +34,7 @@ function optionalGlob(options: Parameters<typeof glob>[0]) {
 
 const menu = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/menu' }),
-  schema: ({ image }) => menuItemSchema(image),
+  schema: ({ image }) => menuGroupSchema(image),
 });
 
 const reviews = defineCollection({

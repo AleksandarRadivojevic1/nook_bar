@@ -1,0 +1,23 @@
+{
+  "order": 10,
+  "card": "pice",
+  "title": {
+    "sr": "For kids",
+    "en": "For kids"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Baby capuccino (Nesquik)",
+      "prices": [
+        200
+      ]
+    },
+    {
+      "name": "Baby affogato",
+      "prices": [
+        230
+      ]
+    }
+  ]
+}

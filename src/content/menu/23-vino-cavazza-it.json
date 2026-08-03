@@ -1,0 +1,56 @@
+{
+  "order": 23,
+  "card": "pice",
+  "title": {
+    "sr": "Vino — Cavazza (IT)",
+    "en": "Wine — Cavazza (IT)"
+  },
+  "measures": [
+    "0.15",
+    "0.75"
+  ],
+  "items": [
+    {
+      "name": "Pinot Grigio (belo)",
+      "prices": [
+        590,
+        0
+      ]
+    },
+    {
+      "name": "Tai rosso (crveno)",
+      "prices": [
+        590,
+        0
+      ]
+    },
+    {
+      "name": "Garganega (belo)",
+      "prices": [
+        590,
+        2800
+      ]
+    },
+    {
+      "name": "Durello (penušavo)",
+      "prices": [
+        500,
+        3300
+      ]
+    },
+    {
+      "name": "Bocara (belo)",
+      "prices": [
+        0,
+        3500
+      ]
+    },
+    {
+      "name": "Fornetto (crveno)",
+      "prices": [
+        0,
+        4100
+      ]
+    }
+  ]
+}

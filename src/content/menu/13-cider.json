@@ -1,0 +1,21 @@
+{
+  "order": 13,
+  "card": "pice",
+  "title": {
+    "sr": "Cider",
+    "en": "Cider"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Somersby",
+      "prices": [
+        350
+      ],
+      "desc": {
+        "sr": "Jabuka, kruška, borovnica, breskva.",
+        "en": "Apple, pear, blueberry, peach."
+      }
+    }
+  ]
+}

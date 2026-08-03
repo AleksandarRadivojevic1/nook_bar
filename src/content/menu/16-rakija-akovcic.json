@@ -1,0 +1,49 @@
+{
+  "order": 16,
+  "card": "pice",
+  "title": {
+    "sr": "Rakija akovčić",
+    "en": "Rakija — akovčić"
+  },
+  "measures": [
+    "0.05"
+  ],
+  "items": [
+    {
+      "name": "Šargarepa",
+      "prices": [
+        500
+      ]
+    },
+    {
+      "name": "Šljiva",
+      "prices": [
+        550
+      ]
+    },
+    {
+      "name": "Dunja",
+      "prices": [
+        550
+      ]
+    },
+    {
+      "name": "Kruška",
+      "prices": [
+        500
+      ]
+    },
+    {
+      "name": "Grožđe",
+      "prices": [
+        500
+      ]
+    },
+    {
+      "name": "Medunja liker",
+      "prices": [
+        500
+      ]
+    }
+  ]
+}

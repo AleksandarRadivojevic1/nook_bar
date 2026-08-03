@@ -1,0 +1,29 @@
+{
+  "order": 3,
+  "card": "pice",
+  "title": {
+    "sr": "Obogati svoju kafu",
+    "en": "Enrich your coffee"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Ovseno mleko",
+      "prices": [
+        50
+      ]
+    },
+    {
+      "name": "Bademovo mleko",
+      "prices": [
+        50
+      ]
+    },
+    {
+      "name": "Šlag",
+      "prices": [
+        30
+      ]
+    }
+  ]
+}

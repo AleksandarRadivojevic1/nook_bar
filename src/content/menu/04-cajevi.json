@@ -1,0 +1,57 @@
+{
+  "order": 4,
+  "card": "pice",
+  "title": {
+    "sr": "Čajevi",
+    "en": "Teas"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Nana",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Kamilica",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Crni",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Zeleni",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Hibiskus šipurak",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Šumsko voće",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Breskva 1L",
+      "prices": [
+        850
+      ],
+      "desc": {
+        "sr": "Domaći ledeni čaj.",
+        "en": "Homemade iced tea."
+      }
+    }
+  ]
+}

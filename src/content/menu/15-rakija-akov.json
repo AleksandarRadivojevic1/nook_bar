@@ -1,0 +1,49 @@
+{
+  "order": 15,
+  "card": "pice",
+  "title": {
+    "sr": "Rakija akov",
+    "en": "Rakija — akov"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Šargarepa",
+      "prices": [
+        300
+      ]
+    },
+    {
+      "name": "Šljiva",
+      "prices": [
+        350
+      ]
+    },
+    {
+      "name": "Dunja",
+      "prices": [
+        350
+      ]
+    },
+    {
+      "name": "Kruška",
+      "prices": [
+        300
+      ]
+    },
+    {
+      "name": "Grožđe",
+      "prices": [
+        300
+      ]
+    },
+    {
+      "name": "Medunja liker",
+      "prices": [
+        300
+      ]
+    }
+  ]
+}

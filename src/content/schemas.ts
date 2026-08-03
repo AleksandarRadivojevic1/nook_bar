@@ -23,16 +23,29 @@ export const optional = <T extends z.ZodTypeAny>(schema: T) =>
     return value;
   }, schema.optional());
 
-export const menuItemSchema = (image: SchemaContext['image']) =>
+export const menuGroupSchema = (image: SchemaContext['image']) =>
   z.object({
-    name: z.string().min(1),
-    price: z.number().int().nonnegative(),
-    desc: localized,
+    title: localized,
+    card: z.enum(['pice', 'kuhinja']),
+    /** Column labels, e.g. ['0.15','0.75'] for wine. Empty for most groups. */
+    measures: z.array(z.string()).default([]),
+    /** Kokteli carries one and no items. */
+    note: optional(localized),
     order: z.number().int(),
-    photo: optional(image()),
-    /** CSS gradient stand-in until a photo exists. Hidden from Keystatic. */
-    crop: optional(z.string().min(1)),
-    placeholder: z.boolean().default(false),
+    items: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          /** One per measure, or one flat price. Empty only for Kokteli. */
+          prices: z.array(z.number().int().nonnegative()).default([]),
+          /** Scotch / Single malt / Irish / Japanese / Bourbon, inside Viski. */
+          subgroup: optional(z.string()),
+          desc: optional(localized),
+          note: optional(localized),
+          photo: optional(image()),
+        }),
+      )
+      .default([]),
   });
 
 export const reviewSchema = z.object({
@@ -123,7 +136,8 @@ export const instagramPostSchema = (image: SchemaContext['image']) =>
     postedAt: z.coerce.date(),
   });
 
-export type MenuItem = z.infer<ReturnType<typeof menuItemSchema>>;
+export type MenuGroup = z.infer<ReturnType<typeof menuGroupSchema>>;
+export type MenuItem = MenuGroup['items'][number];
 export type InstagramPost = z.infer<ReturnType<typeof instagramPostSchema>>;
 export type Practical = z.infer<typeof practicalSchema>;
 export type Story = z.infer<typeof storySchema>;

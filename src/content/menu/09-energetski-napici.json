@@ -1,0 +1,35 @@
+{
+  "order": 9,
+  "card": "pice",
+  "title": {
+    "sr": "Energetski napici",
+    "en": "Energy drinks"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Red Bull Energy Drink 0.25l",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Red Bull Sugarfree 0.25l",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Red Bull Red Edition 0.25l",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Ultra Energy 0.25l",
+      "prices": [
+        280
+      ]
+    }
+  ]
+}

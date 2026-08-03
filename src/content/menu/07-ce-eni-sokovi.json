@@ -1,0 +1,41 @@
+{
+  "order": 7,
+  "card": "pice",
+  "title": {
+    "sr": "Ceđeni sokovi",
+    "en": "Fresh-pressed juices"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Ceđena limunada 0.25l",
+      "prices": [
+        320
+      ]
+    },
+    {
+      "name": "Ceđena pomorandža 0.25l",
+      "prices": [
+        350
+      ]
+    },
+    {
+      "name": "Ceđeni Mix (limun, narandža, grejp) 0.25l",
+      "prices": [
+        400
+      ]
+    },
+    {
+      "name": "Hladno ceđena malina 0.2l",
+      "prices": [
+        400
+      ]
+    },
+    {
+      "name": "Hladno ceđena borovnica 0.2l",
+      "prices": [
+        400
+      ]
+    }
+  ]
+}

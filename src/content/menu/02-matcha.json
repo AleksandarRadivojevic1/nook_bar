@@ -1,0 +1,35 @@
+{
+  "order": 2,
+  "card": "pice",
+  "title": {
+    "sr": "Matcha",
+    "en": "Matcha"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Iced Matcha",
+      "prices": [
+        380
+      ]
+    },
+    {
+      "name": "Iced Matcha Jagoda",
+      "prices": [
+        400
+      ]
+    },
+    {
+      "name": "Iced Matcha Malina",
+      "prices": [
+        400
+      ]
+    },
+    {
+      "name": "Macha Latte",
+      "prices": [
+        360
+      ]
+    }
+  ]
+}

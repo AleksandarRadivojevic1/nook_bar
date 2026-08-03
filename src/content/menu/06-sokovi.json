@@ -1,0 +1,65 @@
+{
+  "order": 6,
+  "card": "pice",
+  "title": {
+    "sr": "Sokovi",
+    "en": "Soft drinks"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Coca Cola 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Coca Cola Zero 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Fanta 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Sprite 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Schweppes Bitter 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Schweppes Tonic 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Schweppes Grape 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Cockta 0.275l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Cockta Free 0.275l",
+      "prices": [
+        240
+      ]
+    }
+  ]
+}

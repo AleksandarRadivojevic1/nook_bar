@@ -1,0 +1,41 @@
+{
+  "order": 5,
+  "card": "pice",
+  "title": {
+    "sr": "Vode",
+    "en": "Water"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Rosa negazirana 0.33l",
+      "prices": [
+        190
+      ]
+    },
+    {
+      "name": "Rosa negazirana 0.75l",
+      "prices": [
+        320
+      ]
+    },
+    {
+      "name": "Rosa gazirana 0.33l",
+      "prices": [
+        190
+      ]
+    },
+    {
+      "name": "Rosa gazirana 0.75l",
+      "prices": [
+        320
+      ]
+    },
+    {
+      "name": "Romerquelle Limunska Trava 0.33l",
+      "prices": [
+        240
+      ]
+    }
+  ]
+}

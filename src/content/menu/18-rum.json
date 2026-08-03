@@ -1,0 +1,25 @@
+{
+  "order": 18,
+  "card": "pice",
+  "title": {
+    "sr": "Rum",
+    "en": "Rum"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Bacardi Carta Blanca",
+      "prices": [
+        300
+      ]
+    },
+    {
+      "name": "Bacardi Carta Negra",
+      "prices": [
+        300
+      ]
+    }
+  ]
+}

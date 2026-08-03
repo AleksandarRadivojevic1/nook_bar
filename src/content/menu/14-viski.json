@@ -1,0 +1,118 @@
+{
+  "order": 14,
+  "card": "pice",
+  "title": {
+    "sr": "Viski",
+    "en": "Whisky"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Johnnie Walker Red Label",
+      "prices": [
+        300
+      ],
+      "subgroup": "Scotch"
+    },
+    {
+      "name": "Johnnie Walker Black Label",
+      "prices": [
+        450
+      ],
+      "subgroup": "Scotch"
+    },
+    {
+      "name": "J&B",
+      "prices": [
+        300
+      ],
+      "subgroup": "Scotch"
+    },
+    {
+      "name": "Chivas Regal 12",
+      "prices": [
+        370
+      ],
+      "subgroup": "Scotch"
+    },
+    {
+      "name": "Monkey Shoulder",
+      "prices": [
+        430
+      ],
+      "subgroup": "Scotch"
+    },
+    {
+      "name": "Bowmore",
+      "prices": [
+        750
+      ],
+      "subgroup": "Single malt"
+    },
+    {
+      "name": "Glenfiddich 12",
+      "prices": [
+        650
+      ],
+      "subgroup": "Single malt"
+    },
+    {
+      "name": "Macallan",
+      "prices": [
+        1100
+      ],
+      "subgroup": "Single malt"
+    },
+    {
+      "name": "Jameson",
+      "prices": [
+        320
+      ],
+      "subgroup": "Irish"
+    },
+    {
+      "name": "Jameson Black Barrel",
+      "prices": [
+        470
+      ],
+      "subgroup": "Irish"
+    },
+    {
+      "name": "Tullamore D.E.W.",
+      "prices": [
+        350
+      ],
+      "subgroup": "Irish"
+    },
+    {
+      "name": "Ensō",
+      "prices": [
+        750
+      ],
+      "subgroup": "Japanese"
+    },
+    {
+      "name": "Four Roses",
+      "prices": [
+        300
+      ],
+      "subgroup": "Bourbon"
+    },
+    {
+      "name": "Jack Daniel's",
+      "prices": [
+        320
+      ],
+      "subgroup": "Bourbon"
+    },
+    {
+      "name": "Maker's Mark",
+      "prices": [
+        450
+      ],
+      "subgroup": "Bourbon"
+    }
+  ]
+}

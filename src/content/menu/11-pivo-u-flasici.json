@@ -1,0 +1,41 @@
+{
+  "order": 11,
+  "card": "pice",
+  "title": {
+    "sr": "Pivo u flašici",
+    "en": "Bottled beer"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Heineken 0.25l",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Paulaner Salvator 0.33l",
+      "prices": [
+        390
+      ]
+    },
+    {
+      "name": "Paulaner Pšenično 0.33l",
+      "prices": [
+        390
+      ]
+    },
+    {
+      "name": "Estrella DAMM 0.33l",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Estrella DAMM 0% alc 0.33l",
+      "prices": [
+        330
+      ]
+    }
+  ]
+}

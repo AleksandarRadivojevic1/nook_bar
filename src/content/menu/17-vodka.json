@@ -1,0 +1,25 @@
+{
+  "order": 17,
+  "card": "pice",
+  "title": {
+    "sr": "Vodka",
+    "en": "Vodka"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Finlandia",
+      "prices": [
+        250
+      ]
+    },
+    {
+      "name": "Grey Goose",
+      "prices": [
+        400
+      ]
+    }
+  ]
+}

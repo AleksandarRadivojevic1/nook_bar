@@ -1,0 +1,119 @@
+{
+  "order": 1,
+  "card": "pice",
+  "title": {
+    "sr": "Kafa i još nešto",
+    "en": "Coffee and then some"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Espresso",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Double Espresso",
+      "prices": [
+        400
+      ]
+    },
+    {
+      "name": "Espresso Lungo",
+      "prices": [
+        220
+      ]
+    },
+    {
+      "name": "Americano",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Macchiato",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Cappuccino",
+      "prices": [
+        250
+      ]
+    },
+    {
+      "name": "Flat White",
+      "prices": [
+        350
+      ]
+    },
+    {
+      "name": "Cafe Latte",
+      "prices": [
+        350
+      ]
+    },
+    {
+      "name": "Latte Machiatto",
+      "prices": [
+        350
+      ]
+    },
+    {
+      "name": "Mocha",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Topla Nes kafa",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Topla Čokolada (Crna/Bela)",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Espresso Fredo",
+      "prices": [
+        300
+      ]
+    },
+    {
+      "name": "Fredo cappuccino",
+      "prices": [
+        330
+      ]
+    },
+    {
+      "name": "Iced Ness Coffee",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Affogato",
+      "prices": [
+        390
+      ]
+    },
+    {
+      "name": "Plazma Shake",
+      "prices": [
+        420
+      ]
+    },
+    {
+      "name": "Čoko Plazma Frappe",
+      "prices": [
+        450
+      ]
+    }
+  ]
+}

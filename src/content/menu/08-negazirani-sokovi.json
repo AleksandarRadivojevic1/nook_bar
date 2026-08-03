@@ -1,0 +1,33 @@
+{
+  "order": 8,
+  "card": "pice",
+  "title": {
+    "sr": "Negazirani sokovi",
+    "en": "Still drinks"
+  },
+  "measures": [],
+  "items": [
+    {
+      "name": "Next 0.2l",
+      "prices": [
+        250
+      ],
+      "desc": {
+        "sr": "Jagoda, jabuka, breskva, pomorandža, borovnica.",
+        "en": "Strawberry, apple, peach, orange, blueberry."
+      }
+    },
+    {
+      "name": "Fuze Tea 0.25l",
+      "prices": [
+        240
+      ]
+    },
+    {
+      "name": "Cedevita 0.25l",
+      "prices": [
+        190
+      ]
+    }
+  ]
+}

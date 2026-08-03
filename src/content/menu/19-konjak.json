@@ -1,0 +1,31 @@
+{
+  "order": 19,
+  "card": "pice",
+  "title": {
+    "sr": "Konjak",
+    "en": "Cognac"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Hennessy V.S.",
+      "prices": [
+        470
+      ]
+    },
+    {
+      "name": "Courvoisier V.S.",
+      "prices": [
+        450
+      ]
+    },
+    {
+      "name": "Courvoisier V.S.O.P.",
+      "prices": [
+        550
+      ]
+    }
+  ]
+}

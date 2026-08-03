@@ -1,0 +1,49 @@
+{
+  "order": 22,
+  "card": "pice",
+  "title": {
+    "sr": "Ostali alkoholni napici",
+    "en": "Other spirits"
+  },
+  "measures": [
+    "0.03"
+  ],
+  "items": [
+    {
+      "name": "Jägermeister",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Gorki List",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Rubin vinjak 5",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Ouzo",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Baileys",
+      "prices": [
+        260
+      ]
+    },
+    {
+      "name": "Martini 0.1l",
+      "prices": [
+        350
+      ]
+    }
+  ]
+}
