@@ -44,7 +44,7 @@ function differingFraction(a: PNG, b: PNG): number {
 
 test.describe('hero after a round trip', () => {
   test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name === 'reduced-motion', 'the matte is hidden under reduced motion');
+    test.skip(testInfo.project.name === 'reduced-motion', 'there is no reveal to make a round trip through');
   });
 
   test('comes back to the top looking the way it arrived', async ({ page }) => {

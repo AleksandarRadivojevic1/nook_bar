@@ -260,8 +260,17 @@ const bottles: Array<[number, number]> = [
    the shape is the stage the type stands on. */
 .hero-copy{position:absolute;inset:0;z-index:8;pointer-events:none}
 .hero-block{height:auto;display:flex;flex-direction:column;padding:0 var(--gutter);gap:1.4rem}
-.hero-block.is-first{height:100vh;justify-content:center;align-items:center;text-align:center;gap:1.15rem}
-.hero-block.is-first .display{max-width:14ch;color:#F7F2E8}
+/* the extra padding centres the block on the landmass, which sits right of the
+   bounding box's centre; padding rather than a translate, which widens the page */
+.hero-block.is-first{
+  height:100vh;justify-content:center;align-items:center;text-align:center;gap:1.15rem;
+  padding-left:calc(var(--gutter) + 6.4vh);
+}
+/* sized off both axes, because the island is sized off height */
+.hero-block.is-first .display{
+  max-width:14ch;color:#F7F2E8;
+  font-size:clamp(1.7rem,min(3.05vw,5.2vh),3.1rem);
+}
 .hero-block.is-first .eyebrow{color:rgba(242,222,182,.86)}
 .hero-block.is-first .sub{max-width:25ch;color:rgba(247,242,232,.88)}
 .pill{
@@ -289,23 +298,21 @@ const bottles: Array<[number, number]> = [
   :root{--key-y:66%;--glass-y:80%;--counter-y:92%}
   .matte{height:auto;width:124vw}
   .scene-glass{width:36vw}
-  .hero-block.is-first{max-width:none;gap:1.05rem}
+  .hero-block.is-first{max-width:none;gap:1.05rem;padding-left:var(--gutter)}
   .hero-block.is-first .display{max-width:16ch}
   .cue{display:none}
 }
 
 
-  /* The animated properties carry their FINISHED value here; hero.ts rewinds
-     them at init when it is actually going to run. With reduced motion nothing
-     runs and the hero reads as the completed design. */
+  /* Nothing runs, so the stage stands still on its opening frame and the two
+     copy blocks read as two stills of it, stacked. */
   @media (prefers-reduced-motion: reduce) {
-    .matte { display: none; }
-    .survey { opacity: 0; }
-    .readout { display: none; }
     .hero { height: auto; }
     .stage { position: relative; }
     .hero-copy { position: static; }
-    .hero-block.is-first { height: 100vh; }
+    /* over the stage — in flow this block is light type on the bone page.
+       z-index comes off .hero-copy with the positioning. */
+    .hero-block.is-first { position: absolute; top: 0; left: 0; right: 0; height: 100vh; z-index: 8; }
     .hero-block.is-over { height: auto; padding: 12vh var(--gutter); background: #2A1D0F; }
   }
 </style>

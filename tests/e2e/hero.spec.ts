@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { cornerPixels, isBone } from './helpers/pixels';
 
 /**
@@ -15,16 +15,11 @@ async function heroReady(page: Page): Promise<void> {
   await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
-test.describe('hero reveal', () => {
-  // The matte is display:none under reduced motion by design, so the two
-  // pixel assertions below have nothing to measure there.
-  test.beforeEach(({}, testInfo) => {
-    test.skip(
-      testInfo.project.name === 'reduced-motion',
-      'the matte is intentionally hidden when motion is reduced',
-    );
-  });
+function skipAtRest(testInfo: TestInfo): void {
+  test.skip(testInfo.project.name === 'reduced-motion', 'the reveal never runs when motion is reduced');
+}
 
+test.describe('hero reveal', () => {
   test('starts as a bone wall with the island cut out of it', async ({ page }) => {
     await page.goto('/');
     await heroReady(page);
@@ -32,7 +27,8 @@ test.describe('hero reveal', () => {
     expect(corners.every((c) => isBone(c))).toBe(true);
   });
 
-  test('the wall clears every corner by the end of the reveal', async ({ page }) => {
+  test('the wall clears every corner by the end of the reveal', async ({ page }, testInfo) => {
+    skipAtRest(testInfo);
     await page.goto('/');
     await heroReady(page);
     const heroHeight = await page.evaluate(
@@ -45,7 +41,8 @@ test.describe('hero reveal', () => {
     expect(corners.some((c) => isBone(c))).toBe(false);
   });
 
-  test('all scrubbed beats finish before the sticky stage unpins', async ({ page }) => {
+  test('all scrubbed beats finish before the sticky stage unpins', async ({ page }, testInfo) => {
+    skipAtRest(testInfo);
     await page.goto('/');
     const { heroHeight, viewport } = await page.evaluate(() => ({
       heroHeight: document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
@@ -55,7 +52,8 @@ test.describe('hero reveal', () => {
     expect(heroHeight * 0.48).toBeLessThan(heroHeight - viewport);
   });
 
-  test('the second copy block is legible once the room is open', async ({ page }) => {
+  test('the second copy block is legible once the room is open', async ({ page }, testInfo) => {
+    skipAtRest(testInfo);
     await page.goto('/');
     const heroHeight = await page.evaluate(
       () => document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
@@ -71,6 +69,13 @@ test.describe('hero reveal', () => {
 
 test.describe('hero under reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
+
+  test('still opens on Syros', async ({ page }) => {
+    await page.goto('/');
+    await heroReady(page);
+    const corners = await cornerPixels(page);
+    expect(corners.every((c) => isBone(c))).toBe(true);
+  });
 
   test('the copy over the open room is readable without any scroll', async ({ page }) => {
     await page.goto('/');
