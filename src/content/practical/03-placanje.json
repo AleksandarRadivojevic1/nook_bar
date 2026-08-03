@@ -1,0 +1,11 @@
+{
+  "question": {
+    "sr": "Plaćanje",
+    "en": "Payment"
+  },
+  "answer": {
+    "sr": "Sve cene su izražene u dinarima.",
+    "en": "All prices are in dinars."
+  },
+  "order": 3
+}

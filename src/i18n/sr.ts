@@ -45,6 +45,8 @@ export const sr = {
   prostor: {
     manifesto:
       'Nook je mali bar u Leskovcu. Materijali su obični — malter, drvo, mesing koji tamni. Ništa se ne pretvara da je starije nego što jeste. Piće je iskreno, mera je puna, a muzika je taman toliko tiha da se čuje razgovor.',
+    manifesto2:
+      'Inspiracija je Mediteran: kamena sela, materijali koji tu odvek stoje, i površine koje sunce zatekne. Lepota bez napora — ona koja se vidi tek u sitnicama.',
   },
   dan: {
     title: 'Jedan dan',
@@ -55,7 +57,7 @@ export const sr = {
   },
   karta: {
     title: 'Karta',
-    note: 'Kratka namerno. Menja se kad se promeni sezona.',
+    note: 'Od jutarnje kafe do poslednjeg pića uveče. Cene su u dinarima. Ako imate alergije ili druge potrebe, recite osoblju.',
     currency: 'RSD',
     cardDrinks: 'Piće',
     cardKitchen: 'Kuhinja',
@@ -139,6 +141,11 @@ export const sr = {
     concept: 'Koncept — sadržaj ilustrativan',
     legal: 'Sva prava zadržana.',
     madeBy: 'Brending — 134agcy',
+  },
+  press: {
+    quote:
+      '„Nook je u isto vreme hidden spot, ali i mesto koje će ubrzo svima postati poznato i omiljeno."',
+    source: 'Journal.rs',
   },
 };
 

@@ -39,6 +39,8 @@ export const en: Dictionary = {
   prostor: {
     manifesto:
       'Nook is a small bar in Leskovac. The materials are ordinary — plaster, wood, brass going dark. Nothing pretends to be older than it is. The drinks are honest, the measures are full, and the music is quiet enough to talk over.',
+    manifesto2:
+      'The Mediterranean is the reference: stone villages, materials that have always been there, surfaces the sun finds. Beauty without effort — the kind you only notice in small things.',
   },
   dan: {
     title: 'One day',
@@ -49,7 +51,7 @@ export const en: Dictionary = {
   },
   karta: {
     title: 'Menu',
-    note: 'Deliberately short. It changes when the season does.',
+    note: 'From the first coffee of the day to the last drink of the night. Prices in dinars. If you have allergies or other needs, tell the staff.',
     currency: 'RSD',
     cardDrinks: 'Drinks',
     cardKitchen: 'Kitchen',
@@ -121,5 +123,10 @@ export const en: Dictionary = {
     concept: 'Concept — illustrative content',
     legal: 'All rights reserved.',
     madeBy: 'Branding — 134agcy',
+  },
+  press: {
+    quote:
+      'Nook is a hidden spot and, at the same time, a place everyone will soon come to know and love.',
+    source: 'Journal.rs',
   },
 };

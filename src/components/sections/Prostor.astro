@@ -10,7 +10,8 @@ const t = useTranslations(locale);
 ---
 
 <section class="manifesto" id="prostor" data-section="prostor" data-nav-surface="bone">
-  <p id="manifest">{t.prostor.manifesto}</p>
+  <p id="manifest" class="m-line">{t.prostor.manifesto}</p>
+  <p class="m-line m-line-2">{t.prostor.manifesto2}</p>
 </section>
 
 <script>
@@ -27,6 +28,8 @@ const t = useTranslations(locale);
   font-size:clamp(1.2rem,2.5vw,2.1rem);line-height:1.42;
   color:var(--olive-deep);margin:0;max-width:26ch;
 }
+/* The Mediterranean paragraph is quieter and follows the manifesto. */
+.manifesto .m-line-2{margin-top:1.15em;font-size:clamp(1.05rem,2vw,1.6rem)}
 .manifesto .w{opacity:.13}
 
   /* .w is opacity .13 by default and only GSAP raises it. Under reduced motion

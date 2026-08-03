@@ -39,6 +39,16 @@ const claim = fill(t.recenzije.claim, {
   <div class="rev-orn" style="bottom:11%;right:5%"></div>
 
   <div class="reviews-in">
+    <blockquote class="press">
+      <p>{t.press.quote}</p>
+      <cite>
+        <a
+          href="https://www.journal.rs/lifestyle/gastro/nook-bar-leskovac-must-visit-mesto/"
+          rel="noopener"
+          target="_blank">{t.press.source}</a>
+      </cite>
+    </blockquote>
+
     <header class="rev-head">
       <p class="rev-claim">{claim}</p>
       <p class="rev-note">{t.recenzije.note}</p>
@@ -78,6 +88,18 @@ const claim = fill(t.recenzije.claim, {
    so. The debossed wordmark belongs to Siros now. */
 .reviews{position:relative;background:var(--bone);padding:15vh var(--gutter) 12vh;overflow:hidden}
 .reviews-in{position:relative;z-index:2;max-width:54rem;margin:0 auto}
+
+/* A slim press band above the claim: a third party in their own words, linked
+   and attributed, before the aggregate rating speaks. */
+.press{margin:0 0 7vh;padding:0 0 0 clamp(1rem,2vw,1.6rem);
+  border-left:2px solid var(--amber);max-width:40ch}
+.press p{font-family:var(--display);font-weight:300;font-style:italic;
+  font-size:clamp(1.05rem,1.9vw,1.5rem);line-height:1.45;color:var(--olive-deep);margin:0;text-wrap:pretty}
+.press cite{display:block;margin-top:1rem;font-style:normal;
+  font-family:var(--display);font-size:10px;letter-spacing:.28em;text-transform:uppercase}
+.press cite a{color:var(--label);text-decoration:none;border-bottom:1px solid transparent;
+  transition:color .3s,border-color .3s}
+.press cite a:hover,.press cite a:focus-visible{color:var(--amber-text);border-color:var(--amber-text)}
 
 .rev-head{max-width:34ch;margin-bottom:9vh}
 /* Deliberately smaller than the pull-quote it introduces: the quotes are the

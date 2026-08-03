@@ -1,4 +1,11 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
+
+// Counted from the collection; the owners add and remove these through Keystatic.
+const QUESTIONS = readdirSync(
+  join(import.meta.dirname, '..', '..', 'src', 'content', 'practical'),
+).filter((f) => f.endsWith('.json')).length;
 
 test('renders the address and hours from the data', async ({ page }) => {
   await page.goto('/');
@@ -90,10 +97,11 @@ test('the same address renders on both locales, because it is one fact', async (
   expect(sr).toBe(en);
 });
 
-// Empty for now: only the owners can answer these, so the block is absent
-// rather than showing four questions with placeholder answers under them.
-test('shows no question block while the owners have not answered', async ({ page }) => {
+// The owners answered these off the real menu and hours. The block renders one
+// row per entry, and never a placeholder — an empty collection removes it whole.
+test('answers every practical question the owners provided', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#kontakt .qa')).toHaveCount(0);
+  await expect(page.locator('#kontakt .qa-row')).toHaveCount(QUESTIONS);
+  await expect(page.locator('#kontakt')).toContainText('enjoynook');
   await expect(page.locator('#kontakt')).not.toContainText(/uskoro|coming soon/i);
 });

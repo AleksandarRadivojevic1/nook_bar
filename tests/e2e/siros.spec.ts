@@ -20,7 +20,7 @@ test('carries the origin copy in both locales', async ({ page }) => {
 
 test('renders every paragraph as its own paragraph', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#siros .siros-p')).toHaveCount(2);
+  await expect(page.locator('#siros .siros-p')).toHaveCount(3);
 });
 
 // Serbian writes 37,4 and English 37.4. The readout is formatted by Intl

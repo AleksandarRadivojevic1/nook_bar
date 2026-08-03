@@ -1,0 +1,11 @@
+{
+  "question": {
+    "sr": "Radno vreme",
+    "en": "Opening hours"
+  },
+  "answer": {
+    "sr": "Svakog dana od 07 do 24. Petkom i subotom do 01, nedeljom od 09.",
+    "en": "Every day 07–24. Fridays and Saturdays until 01, Sundays from 09."
+  },
+  "order": 1
+}

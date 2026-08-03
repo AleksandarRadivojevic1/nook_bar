@@ -1,0 +1,11 @@
+{
+  "question": {
+    "sr": "Wi-Fi",
+    "en": "Wi-Fi"
+  },
+  "answer": {
+    "sr": "Mreža je u lokalu, lozinka `enjoynook`.",
+    "en": "The network is in the bar, password `enjoynook`."
+  },
+  "order": 2
+}
