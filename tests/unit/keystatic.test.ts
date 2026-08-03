@@ -5,7 +5,7 @@ import { z } from 'astro/zod';
 import config from '../../keystatic.config';
 import {
   danCardSchema,
-  menuItemSchema,
+  menuGroupSchema,
   personSchema,
   reviewSchema,
 } from '../../src/content/schemas';
@@ -79,15 +79,15 @@ describe('fields hidden from the editor survive being dropped', () => {
     expect(parsed.placeholder).toBe(false);
   });
 
-  it('a menu item saved without crop or placeholder still parses', () => {
-    expect(() =>
-      menuItemSchema(stub).parse({
-        name: 'Negroni',
-        price: 650,
-        order: 1,
-        desc: { sr: 'Džin.', en: 'Gin.' },
-      }),
-    ).not.toThrow();
+  it('a menu group saved with bare items fills its defaults and parses', () => {
+    const parsed = menuGroupSchema(stub).parse({
+      title: { sr: 'Kafa i još nešto', en: 'Coffee and then some' },
+      card: 'pice',
+      order: 1,
+      items: [{ name: 'Espresso', prices: [220] }],
+    });
+    expect(parsed.measures).toEqual([]);
+    expect(parsed.items[0].subgroup).toBeUndefined();
   });
 
   it('a journey card saved without media or placeholder still parses', () => {

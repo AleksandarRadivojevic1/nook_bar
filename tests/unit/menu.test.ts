@@ -29,7 +29,7 @@ describe('the menu is the real card', () => {
         expect(item.prices.length, `${g.title.sr} / ${item.name}`).toBe(expected);
         // 0 means "not sold at this size" — only the two-measure wine group.
         for (const p of item.prices) expect(p).toBeGreaterThanOrEqual(0);
-        expect(item.prices.some((p) => p > 0), item.name).toBe(true);
+        expect(item.prices.some((p: number) => p > 0), item.name).toBe(true);
       }
     }
   });

@@ -5,7 +5,7 @@ import {
   galleryTileSchema,
   instagramPostSchema,
   localized,
-  menuItemSchema,
+  menuGroupSchema,
   personSchema,
   practicalSchema,
   reviewSchema,
@@ -16,7 +16,7 @@ import {
 // image() only exists inside Astro's content-config context; a plain string
 // schema stands in, cast to the factory's parameter type.
 const imageStub = (() => z.string()) as unknown as Parameters<typeof galleryTileSchema>[0];
-const menuItem = menuItemSchema(imageStub);
+const menuGroup = menuGroupSchema(imageStub);
 const signature = signatureSchema(imageStub);
 const danCard = danCardSchema(imageStub);
 
@@ -28,27 +28,38 @@ describe('localized fields', () => {
   });
 });
 
-describe('menu items', () => {
+describe('menu groups', () => {
   const valid = {
-    name: 'Negroni',
-    price: 650,
-    order: 1,
-    desc: { sr: 'Džin, kampari, vermut.', en: 'Gin, Campari, vermouth.' },
-    placeholder: true,
+    title: { sr: 'Viski', en: 'Whisky' },
+    card: 'pice',
+    measures: ['0.03'],
+    order: 14,
+    items: [
+      { name: 'Macallan', prices: [1100], subgroup: 'Single malt' },
+      { name: 'Jameson', prices: [320], subgroup: 'Irish' },
+    ],
   };
 
-  it('accepts a complete entry', () => {
-    expect(() => menuItem.parse(valid)).not.toThrow();
+  it('accepts a complete group', () => {
+    expect(() => menuGroup.parse(valid)).not.toThrow();
   });
-  it('rejects a missing English description', () => {
-    expect(() => menuItem.parse({ ...valid, desc: { sr: 'Džin.' } })).toThrow();
+  it('rejects a card that is neither drink nor kitchen', () => {
+    expect(() => menuGroup.parse({ ...valid, card: 'terasa' })).toThrow();
+  });
+  it('rejects a missing English title', () => {
+    expect(() => menuGroup.parse({ ...valid, title: { sr: 'Viski' } })).toThrow();
   });
   it('rejects a negative price', () => {
-    expect(() => menuItem.parse({ ...valid, price: -1 })).toThrow();
+    expect(() => menuGroup.parse({ ...valid, items: [{ name: 'x', prices: [-1] }] })).toThrow();
   });
-  it('defaults placeholder to false', () => {
-    const { placeholder, ...rest } = valid;
-    expect(menuItem.parse(rest).placeholder).toBe(false);
+  it('defaults measures and items to empty', () => {
+    const parsed = menuGroup.parse({
+      title: { sr: 'Kokteli', en: 'Cocktails' },
+      card: 'pice',
+      order: 24,
+    });
+    expect(parsed.measures).toEqual([]);
+    expect(parsed.items).toEqual([]);
   });
 });
 

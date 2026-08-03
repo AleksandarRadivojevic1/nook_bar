@@ -132,21 +132,44 @@ export default config({
     }),
 
     menu: collection({
-      label: 'Menu',
+      label: 'Karta — grupe',
       path: 'src/content/menu/*',
-      slugField: 'name',
+      slugField: 'slugName',
       format: { data: 'json' },
       schema: {
-        name: fields.slug({ name: { label: 'Name' } }),
-        price: fields.integer({ label: 'Price (RSD)' }),
-        desc: localized('Description'),
-        order,
-        photo: fields.image({
-          label: 'Photograph',
-          directory: 'src/assets/menu',
-          publicPath: '../../assets/menu/',
-          description: 'Shown next to the cursor as you move down the menu.',
+        slugName: fields.slug({ name: { label: 'Naziv grupe (interno)' } }),
+        title: localized('Naslov'),
+        card: fields.select({
+          label: 'Karta',
+          options: [
+            { label: 'Piće', value: 'pice' },
+            { label: 'Kuhinja', value: 'kuhinja' },
+          ],
+          defaultValue: 'pice',
         }),
+        measures: fields.array(fields.text({ label: 'Mera' }), {
+          label: 'Mere',
+          description: 'Npr. 0.03, ili 0.15 i 0.75 za vino.',
+          itemLabel: (item) => item.value,
+        }),
+        note: localized('Napomena'),
+        order,
+        items: fields.array(
+          fields.object({
+            name: fields.text({ label: 'Naziv' }),
+            prices: fields.array(fields.integer({ label: 'Cena' }), { label: 'Cene' }),
+            subgroup: fields.text({ label: 'Podgrupa' }),
+            desc: localized('Opis'),
+            note: localized('Oznaka'),
+            photo: fields.image({
+              label: 'Fotografija',
+              directory: 'src/assets/menu',
+              publicPath: '../../assets/menu/',
+              description: 'Bez nje se prikazuje logo.',
+            }),
+          }),
+          { label: 'Stavke', itemLabel: (item) => item.fields.name.value },
+        ),
       },
     }),
 
