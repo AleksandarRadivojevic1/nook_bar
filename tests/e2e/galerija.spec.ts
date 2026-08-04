@@ -74,6 +74,16 @@ test.describe('desktop pin', () => {
     test.skip(testInfo.project.name !== 'desktop', 'pin is a desktop, motion-on effect');
   });
 
+  test('the section is a sane length, not many screens of scroll', async ({ page }) => {
+    await page.goto('/');
+    const screens = await page.evaluate(() => {
+      const sec = document.querySelector('#galerija')!.getBoundingClientRect().height;
+      return sec / window.innerHeight;
+    });
+    // A sticky panel + naturally-scrolling columns; no pin-spacer doubling.
+    expect(screens).toBeLessThan(4);
+  });
+
   test('the panel holds while the photos scroll, and the bar fills', async ({ page }) => {
     await page.goto('/');
     const secTop = await page

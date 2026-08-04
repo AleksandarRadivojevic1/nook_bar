@@ -39,39 +39,30 @@ export function initGalerija(root: HTMLElement): void {
     btn.addEventListener('click', () => modal.open(i));
   });
 
-  // Desktop + motion only: pin the panel, translate the columns as the section
-  // scrolls, and fill the progress rail. Mobile and reduced motion get the
-  // static layout — motion() is null under reduced motion, and the width gate
-  // keeps phones out. The finished-at-rest state is already in CSS.
+  // Desktop + motion only. The panel is held by CSS `position:sticky` — smoother
+  // under Lenis than a ScrollTrigger pin, and it adds no pin-spacer, so the
+  // section stays the columns' natural height instead of doubling. This driver
+  // only fills the progress rail and gives the second column a gentle parallax
+  // drift; there is no full-height translate. Mobile and reduced motion get the
+  // static layout (motion() is null under reduced motion; the width gate keeps
+  // phones out), and the finished-at-rest state is already in CSS.
   if (m && matchMedia('(min-width: 900px)').matches) {
     const { gsap, ScrollTrigger } = m;
     const cols = Array.from(root.querySelectorAll<HTMLElement>('.g-col'));
     const fill = root.querySelector<HTMLElement>('.g-fill');
-    const track = root.querySelector<HTMLElement>('.g-cols');
-    if (cols.length === 2 && track && fill) {
-      // Travel = how far the taller column must rise to reveal its last photo.
-      const travel = () => Math.max(0, track.scrollHeight - window.innerHeight * 0.9);
+    if (cols.length === 2 && fill) {
       ScrollTrigger.create({
         trigger: root,
         start: 'top top',
-        end: () => `+=${travel()}`,
-        pin: '.g-panel',
-        pinSpacing: true,
+        end: 'bottom bottom',
         scrub: true,
-        invalidateOnRefresh: true,
-        // This pin inserts a spacer mid-page, so it must refresh before the nav
-        // surface triggers below it (footer/ink) or they measure their start/end
-        // against a layout without the spacer and never fire. Higher priority
-        // refreshes first.
-        refreshPriority: 1,
         onUpdate: (self) => {
           const p = self.progress;
-          gsap.set(cols[0], { y: -travel() * p });
-          gsap.set(cols[1], { y: -travel() * p * 0.86 }); // gentle parallax
           fill.style.width = `${p * 100}%`;
+          // A small counter-drift for depth — tens of pixels, not screens.
+          gsap.set(cols[1], { y: (0.5 - p) * 90 });
         },
       });
-      ScrollTrigger.refresh();
     }
   }
 }
