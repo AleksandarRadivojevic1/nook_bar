@@ -80,3 +80,30 @@ test.describe('hero under reduced motion', () => {
     expect(opacity).toBeGreaterThan(0.9);
   });
 });
+
+test('the hero backdrop is the toast poster, not the procedural room', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#hero .scene-canvas')).toHaveCount(1);
+  await expect(page.locator('#hero .scene-poster')).toHaveAttribute('src', /poster\.webp/);
+  await expect(page.locator('#hero .scene-base')).toHaveCount(0);
+});
+
+test('the hero never scrolls sideways on a phone', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'narrow layout only');
+  await page.goto('/');
+  const over = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+  );
+  expect(over).toBe(false);
+});
+
+test.describe('hero poster fallback', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } });
+
+  test('shows the toast poster with no canvas scrubbing', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#hero .scene-poster')).toBeVisible();
+    // The player never runs under reduced motion, so the canvas is never drawn.
+    expect(await page.locator('#hero .scene-canvas').getAttribute('data-frame')).toBeNull();
+  });
+});
