@@ -2,6 +2,9 @@ import { createHeroFrames } from './hero-frames';
 import { motion, onSection } from './motion';
 
 export function initHero(root: HTMLElement): void {
+  // Phones can't scroll-scrub the SVG mask + 132-frame canvas at 60fps, so on
+  // mobile CSS shows an autoplay video hero instead and none of this runs.
+  if (matchMedia('(max-width: 760px)').matches) return;
   const m = motion();
   if (!m) return;
   const { gsap } = m;

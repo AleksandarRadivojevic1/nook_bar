@@ -19,6 +19,21 @@ const t = useTranslations(locale);
       <img class="scene-poster scene-poster-motion" src="/hero/frames/desk/f_001.webp" alt="" aria-hidden="true" />
       <img class="scene-poster scene-poster-still" src="/hero/frames/poster.webp" alt="" aria-hidden="true" />
       <canvas class="scene-canvas" data-count={132} data-enter={60} aria-hidden="true"></canvas>
+      <!-- Mobile hero: a hardware-decoded autoplay loop replaces the scroll-
+           scrubbed canvas, which can't stay smooth on a phone. -->
+      <video
+        class="scene-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="/hero/frames/poster.webp"
+        aria-hidden="true"
+      >
+        <source src="/hero/hero.webm" type="video/webm" />
+        <source src="/hero/hero.mp4" type="video/mp4" />
+      </video>
       <div class="scene-veil"></div>
       <!-- holds contrast under the centred light-on-dark copy; without it the
            headline sits directly on the footage and washes out -->
@@ -126,6 +141,7 @@ const t = useTranslations(locale);
 .scene-poster{object-fit:cover;object-position:center}
 .scene-poster-still{display:none}
 .scene-canvas{opacity:0;transition:opacity .4s ease}
+.scene-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 .scene-scrim{
   position:absolute;inset:0;
   background:radial-gradient(46% 34% at 50% 42%, rgba(20,14,7,.66), rgba(20,14,7,.26) 60%, rgba(20,14,7,0) 80%);
@@ -227,10 +243,11 @@ const t = useTranslations(locale);
    on a 390x844 screen it would be a sliver. Copy stays centred on it. */
 @media(max-width:760px){
   :root{--key-y:66%;--glass-y:80%;--counter-y:92%}
-  /* Shorter scroll on the phone — 760vh is ~7.6 screens there. */
-  .hero{height:500vh}
-  .matte{height:auto;width:124vw}
-  .scene-glass{width:36vw}
+  /* One-screen video hero; the scroll-scrub is desktop-only. */
+  .hero{height:100vh}
+  .scene-video{display:block}
+  .scene-canvas,.scene-poster,.matte,.survey,.readout{display:none}
+  .hero-block.is-over{display:none}
   .hero-block.is-first{max-width:none;gap:1.05rem}
   .hero-block.is-first .display{max-width:16ch}
   .cue{display:none}
