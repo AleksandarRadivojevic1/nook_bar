@@ -32,36 +32,10 @@ test('the fallback grid is a responsive multi-column masonry', async ({ page }, 
   expect(cols).toBe(testInfo.project.name === 'mobile' ? '2' : '4');
 });
 
-test.describe('with motion', () => {
-  test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name === 'reduced-motion', 'the WebGL layer is off under reduced motion');
-  });
-
-  test('boots the WebGL layer and gives the canvas real size', async ({ page }) => {
-    await page.goto('/');
-    const section = page.locator('[data-section="galerija"]');
-    await section.scrollIntoViewIfNeeded();
-    await expect(section).toHaveClass(/is-webgl/, { timeout: 5000 });
-
-    const box = await page.locator('.g-canvas').evaluate((el: HTMLCanvasElement) => ({
-      w: el.clientWidth,
-      h: el.clientHeight,
-      backing: el.width,
-    }));
-    expect(box.w).toBeGreaterThan(200);
-    expect(box.h).toBeGreaterThan(200);
-    expect(box.backing).toBeGreaterThan(200);
-  });
-
-  test('the photos still carry their alt text once WebGL takes over', async ({ page }) => {
-    await page.goto('/');
-    await page.locator('[data-section="galerija"]').scrollIntoViewIfNeeded();
-    // The markup grid is folded away visually but must remain in the document.
-    await expect(page.locator('[data-section="galerija"] .g-img').first()).toHaveAttribute(
-      'alt',
-      /\S/,
-    );
-  });
+test('the gallery ships no WebGL layer', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#galerija canvas')).toHaveCount(0);
+  await expect(page.locator('#galerija .g-stage')).toHaveCount(0);
 });
 
 test.describe('lightbox', () => {
@@ -130,12 +104,10 @@ test.describe('lightbox', () => {
 test.describe('reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
-  test('falls back to the still grid with no WebGL layer', async ({ page }) => {
+  test('shows a still grid with every photo at rest', async ({ page }) => {
     await page.goto('/');
     const section = page.locator('[data-section="galerija"]');
     await section.scrollIntoViewIfNeeded();
-    await expect(section).not.toHaveClass(/is-webgl/);
-    await expect(page.locator('.g-stage')).toBeHidden();
 
     const tiles = page.locator('[data-section="galerija"] .g-tile');
     const count = await tiles.count();
