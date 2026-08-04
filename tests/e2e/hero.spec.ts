@@ -51,8 +51,9 @@ test.describe('hero reveal', () => {
       heroHeight: document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
       viewport: window.innerHeight,
     }));
-    // Unpin point is heroHeight - 100vh. The last beat ends at 48% of the hero.
-    expect(heroHeight * 0.48).toBeLessThan(heroHeight - viewport);
+    // Unpin point is heroHeight - 100vh. The last beat — the glasses scrubbing
+    // out — ends at 68% of the hero.
+    expect(heroHeight * 0.68).toBeLessThan(heroHeight - viewport);
   });
 
   test('the second copy block is legible once the room is open', async ({ page }) => {
@@ -78,5 +79,63 @@ test.describe('hero under reduced motion', () => {
       .locator('#hb2')
       .evaluate((el) => Number(getComputedStyle(el).opacity));
     expect(opacity).toBeGreaterThan(0.9);
+  });
+});
+
+test('the hero backdrop is the toast poster, not the procedural room', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#hero .scene-canvas')).toHaveCount(1);
+  await expect(page.locator('#hero .scene-poster')).toHaveAttribute('src', /poster\.webp/);
+  await expect(page.locator('#hero .scene-base')).toHaveCount(0);
+});
+
+test('the hero never scrolls sideways on a phone', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'narrow layout only');
+  await page.goto('/');
+  const over = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+  );
+  expect(over).toBe(false);
+});
+
+test.describe('hero poster fallback', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } });
+
+  test('shows the toast poster with no canvas scrubbing', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#hero .scene-poster')).toBeVisible();
+    // The player never runs under reduced motion, so the canvas is never drawn.
+    expect(await page.locator('#hero .scene-canvas').getAttribute('data-frame')).toBeNull();
+  });
+});
+
+test.describe('hero scrub', () => {
+  test.beforeEach(({}, testInfo) => {
+    test.skip(testInfo.project.name === 'reduced-motion', 'the player is off under reduced motion');
+  });
+
+  test('the glasses scrub in, then out, across two windows', async ({ page }) => {
+    await page.goto('/');
+    const canvas = page.locator('#hero .scene-canvas');
+    const enter = Number(await canvas.getAttribute('data-enter'));
+    const heroHeight = await page.evaluate(
+      () => document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
+    );
+    const frameAt = async (pct: number) => {
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * pct);
+      await page.waitForTimeout(900);
+      return Number(await canvas.getAttribute('data-frame'));
+    };
+
+    // In → clink, over 42%→62% (frames below `enter`).
+    const inEarly = await frameAt(0.46);
+    expect(await canvas.evaluate((c) => Number(getComputedStyle(c).opacity))).toBeGreaterThan(0);
+    const inLate = await frameAt(0.6);
+    expect(inLate).toBeGreaterThan(inEarly);
+    expect(inLate).toBeLessThan(enter);
+
+    // Out → empty, over 62%→68% (frames at or beyond `enter`).
+    const out = await frameAt(0.66);
+    expect(out).toBeGreaterThanOrEqual(enter);
   });
 });

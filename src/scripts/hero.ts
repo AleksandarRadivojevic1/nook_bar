@@ -1,3 +1,4 @@
+import { createHeroFrames } from './hero-frames';
 import { motion, onSection } from './motion';
 
 export function initHero(root: HTMLElement): void {
@@ -99,6 +100,55 @@ export function initHero(root: HTMLElement): void {
       scrollTrigger: { trigger: hero, start: '34% top', end: '48% top', scrub: 0.5 },
     },
   );
+
+  // The toast footage behind the hole, in two scroll windows so nothing sits
+  // static. The coastline opens over an empty warm ground (frame 0, held) across
+  // top→42%. Then the glasses scrub IN and clink over 42%→62% (frames 0…enter-1).
+  // Then, filling what used to be a static hold, they scrub OUT — the pour
+  // finishes and the glasses withdraw to an empty room — over 62%→68% (frames
+  // enter…count-1). The two ranges join on the same clinked frame, so the seam
+  // is invisible.
+  const canvas = root.querySelector<HTMLCanvasElement>('.scene-canvas');
+  const count = Number(canvas?.dataset.count ?? 0);
+  const enter = Number(canvas?.dataset.enter ?? 0);
+  if (canvas && count > 0 && enter > 0 && enter < count) {
+    const frames = createHeroFrames(canvas, count);
+    void frames.load().then(() => frames.drawIndex(0));
+    // Glasses in → clink.
+    gsap.to(
+      {},
+      {
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: '42% top',
+          end: '62% top',
+          scrub: 0.6,
+          onUpdate: (self) => frames.drawIndex(Math.round(self.progress * (enter - 1))),
+        },
+      },
+    );
+    // Clink → glasses out → empty. Finishes before the stage unpins (heroHeight −
+    // 100vh ≈ 70.6%).
+    gsap.to(
+      {},
+      {
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: '62% top',
+          end: '68% top',
+          scrub: 0.6,
+          onUpdate: (self) => frames.drawIndex(enter + Math.round(self.progress * (count - enter - 1))),
+        },
+      },
+    );
+    let raf = 0;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => frames.resize());
+    });
+  }
 }
 
 onSection('hero', initHero);

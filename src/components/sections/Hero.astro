@@ -8,50 +8,19 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-// Procedural room detail. Rendered server-side rather than injected by script:
-// it is static decoration and injecting it client-side costs a layout pass.
-const bokeh: Array<[number, number, number]> = [
-  [18, 62, 110], [74, 30, 64], [86, 70, 140], [30, 22, 48],
-  [62, 80, 88], [46, 14, 36], [8, 36, 72], [92, 44, 52],
-];
-const bottles: Array<[number, number]> = [
-  [58, 54], [61, 72], [64, 44], [71, 66], [74, 50], [77, 78], [80, 58],
-];
 ---
 
 <section class="hero" id="hero" data-section="hero" data-nav-surface="dark">
   <div class="stage">
     <div class="scene">
-      <div class="scene-base"></div>
-      <div class="scene-shelves"></div>
-      <div class="scene-bottles" id="bottles">
-        {bottles.map(([x, h]) => <i style={`left:${x}%;height:${h}px`}></i>)}
-      </div>
-      <div class="scene-key"></div>
-      <div class="scene-counter"></div>
-      <div class="scene-bokeh" id="bokeh">
-        {
-          bokeh.map(([x, y, s], i) => (
-            <i
-              style={`left:${x}%;top:${y}%;width:${s}px;height:${s}px;margin:${-s / 2}px 0 0 ${-s / 2}px;opacity:${(0.22 + ((i * 37) % 40) / 100).toFixed(2)}`}
-            ></i>
-          ))
-        }
-      </div>
-      <svg class="scene-glass" viewBox="0 0 200 260" fill="none" aria-hidden="true">
-        <path
-          d="M52 34h96l-6 46c-3 22-19 38-42 38s-39-16-42-38L52 34z"
-          stroke="rgba(255,232,192,.62)"
-          stroke-width="1.6"></path>
-        <path d="M100 118v96" stroke="rgba(255,232,192,.5)" stroke-width="1.6"></path>
-        <path d="M70 222h60" stroke="rgba(255,232,192,.5)" stroke-width="1.6"></path>
-        <path
-          d="M60 44h80l-5 34c-2 17-15 29-35 29s-33-12-35-29L60 44z"
-          fill="rgba(255,206,140,.26)"></path>
-      </svg>
+      <!-- The real bar footage lives behind the coastline hole. The poster (the
+           held clink) is the no-JS / reduced-motion / pre-load backdrop; the
+           canvas draws over it once hero.ts scrubs the frame sequence in. -->
+      <img class="scene-poster" src="/hero/frames/poster.webp" alt="" aria-hidden="true" />
+      <canvas class="scene-canvas" data-count={132} data-enter={60} aria-hidden="true"></canvas>
       <div class="scene-veil"></div>
       <!-- holds contrast under the centred light-on-dark copy; without it the
-           headline sits directly on the key light and washes out -->
+           headline sits directly on the footage and washes out -->
       <div class="scene-scrim"></div>
     </div>
 
@@ -148,44 +117,13 @@ const bottles: Array<[number, number]> = [
 .hero{position:relative;height:340vh}
 .stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bone)}
 
-/* the warm room — procedural stand-in for a photograph */
+/* the warm room — the real bar footage, revealed through the coastline hole */
 .scene{position:absolute;inset:0;z-index:1;background:#1B1409;overflow:hidden}
-.scene-base{
-  position:absolute;inset:0;
-  background:linear-gradient(176deg,#221909 0%,#3C2A15 38%,#6B4520 66%,#2A1D0F 100%);
-}
-/* backbar: horizontal bands of warm shelf light */
-.scene-shelves{
-  position:absolute;inset:0;opacity:.55;
-  background:
-    linear-gradient(180deg,transparent 20%,rgba(255,206,138,.20) 21.4%,transparent 22.6%),
-    linear-gradient(180deg,transparent 33%,rgba(255,206,138,.16) 34.3%,transparent 35.4%),
-    linear-gradient(180deg,transparent 46%,rgba(255,206,138,.12) 47.2%,transparent 48.2%);
-}
-/* bottle silhouettes, deliberately soft — a suggestion, not an inventory */
-.scene-bottles{position:absolute;inset:0;opacity:.42;filter:blur(3px)}
-.scene-bottles i{
-  position:absolute;bottom:32%;width:14px;border-radius:6px 6px 2px 2px;
-  background:linear-gradient(180deg,rgba(46,32,16,.9),rgba(88,58,28,.55));
-}
-/* the key light over the counter */
-.scene-key{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(30% 22% at var(--arch-x) var(--key-y), rgba(255,222,166,.98) 0%, rgba(236,176,96,.70) 32%, rgba(150,96,44,.28) 62%, rgba(40,28,17,0) 82%),
-    radial-gradient(70% 46% at var(--arch-x) calc(var(--key-y) + 36%), rgba(201,138,68,.42) 0%, rgba(34,25,15,0) 74%);
-}
-/* the counter edge — falls off toward the arch, so it doesn't read as a
-   horizon ruled straight across the whole viewport */
-.scene-counter{
-  position:absolute;left:0;right:0;top:var(--counter-y);height:2px;
-  background:linear-gradient(90deg,rgba(255,214,150,0) 22%,rgba(255,222,170,.62) 62%,rgba(255,214,150,0) 92%);
-  box-shadow:0 10px 34px rgba(255,190,110,.26);
-}
-.scene-bokeh{position:absolute;inset:0;opacity:.48;filter:blur(1.5px)}
-.scene-bokeh i{position:absolute;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,224,170,.9),rgba(255,200,130,0) 70%)}
-.scene-glass{position:absolute;left:var(--arch-x);top:var(--glass-y);translate:-50% -50%;width:min(19vh,15vw);opacity:.62}
+/* The poster is the always-on backdrop; the canvas draws the scrubbed frame
+   over it and only becomes visible once the player has painted a frame. */
+.scene-poster,.scene-canvas{position:absolute;inset:0;width:100%;height:100%}
+.scene-poster{object-fit:cover;object-position:center}
+.scene-canvas{opacity:0;transition:opacity .4s ease}
 .scene-scrim{
   position:absolute;inset:0;
   background:radial-gradient(46% 34% at 50% 42%, rgba(20,14,7,.66), rgba(20,14,7,.26) 60%, rgba(20,14,7,0) 80%);
