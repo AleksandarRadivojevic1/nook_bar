@@ -59,6 +59,11 @@ export function initGalerija(root: HTMLElement): void {
         pinSpacing: true,
         scrub: true,
         invalidateOnRefresh: true,
+        // This pin inserts a spacer mid-page, so it must refresh before the nav
+        // surface triggers below it (footer/ink) or they measure their start/end
+        // against a layout without the spacer and never fire. Higher priority
+        // refreshes first.
+        refreshPriority: 1,
         onUpdate: (self) => {
           const p = self.progress;
           gsap.set(cols[0], { y: -travel() * p });
