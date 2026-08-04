@@ -39,13 +39,8 @@ export function initGalerija(root: HTMLElement): void {
     btn.addEventListener('click', () => modal.open(i));
   });
 
-  // Desktop + motion only. The panel is held by CSS `position:sticky` — smoother
-  // under Lenis than a ScrollTrigger pin, and it adds no pin-spacer, so the
-  // section stays the columns' natural height instead of doubling. This driver
-  // only fills the progress rail and gives the second column a gentle parallax
-  // drift; there is no full-height translate. Mobile and reduced motion get the
-  // static layout (motion() is null under reduced motion; the width gate keeps
-  // phones out), and the finished-at-rest state is already in CSS.
+  // Desktop + motion. CSS position:sticky holds the panel; the two columns are
+  // translated at different rates for a no-pin depth parallax.
   if (m && matchMedia('(min-width: 900px)').matches) {
     const { gsap, ScrollTrigger } = m;
     const cols = Array.from(root.querySelectorAll<HTMLElement>('.g-col'));
@@ -59,8 +54,9 @@ export function initGalerija(root: HTMLElement): void {
         onUpdate: (self) => {
           const p = self.progress;
           fill.style.width = `${p * 100}%`;
-          // A small counter-drift for depth — tens of pixels, not screens.
-          gsap.set(cols[1], { y: (0.5 - p) * 90 });
+          const d = 0.5 - p;
+          gsap.set(cols[0], { y: d * 130 });
+          gsap.set(cols[1], { y: d * 40 });
         },
       });
     }
