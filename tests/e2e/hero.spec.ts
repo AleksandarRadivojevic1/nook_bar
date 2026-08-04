@@ -51,9 +51,8 @@ test.describe('hero reveal', () => {
       heroHeight: document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
       viewport: window.innerHeight,
     }));
-    // Unpin point is heroHeight - 100vh. The last beat — the glasses scrubbing
-    // out — ends at 68% of the hero.
-    expect(heroHeight * 0.68).toBeLessThan(heroHeight - viewport);
+    // Last beat — the glasses scrubbing out — ends at 84%; unpin is at ~86.8%.
+    expect(heroHeight * 0.84).toBeLessThan(heroHeight - viewport);
   });
 
   test('the second copy block is legible once the room is open', async ({ page }) => {

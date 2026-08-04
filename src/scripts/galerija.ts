@@ -55,8 +55,8 @@ export function initGalerija(root: HTMLElement): void {
           const p = self.progress;
           fill.style.width = `${p * 100}%`;
           const d = 0.5 - p;
-          gsap.set(cols[0], { y: d * 130 });
-          gsap.set(cols[1], { y: d * 40 });
+          gsap.set(cols[0], { y: d * 160 });
+          gsap.set(cols[1], { y: d * -160 });
         },
       });
     }
