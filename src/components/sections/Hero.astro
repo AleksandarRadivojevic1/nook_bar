@@ -227,6 +227,8 @@ const t = useTranslations(locale);
    on a 390x844 screen it would be a sliver. Copy stays centred on it. */
 @media(max-width:760px){
   :root{--key-y:66%;--glass-y:80%;--counter-y:92%}
+  /* Shorter scroll on the phone — 760vh is ~7.6 screens there. */
+  .hero{height:500vh}
   .matte{height:auto;width:124vw}
   .scene-glass{width:36vw}
   .hero-block.is-first{max-width:none;gap:1.05rem}

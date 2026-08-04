@@ -23,6 +23,10 @@ export function createHeroFrames(canvas: HTMLCanvasElement, count: number): Hero
   );
   const imgs: Array<HTMLImageElement | undefined> = new Array(count);
   const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 2);
+  // Decoded, every mobile frame is ~1.6 MB — 132 of them (~215 MB) blow past
+  // what the phone will cache, so it re-decodes on every scrub and stutters.
+  // Load every 2nd frame there; nearestLoaded paints the gaps.
+  const stride = isMobile ? 2 : 1;
   let current = -1;
   let pending = -1;
   let rafId = 0;
@@ -92,6 +96,8 @@ export function createHeroFrames(canvas: HTMLCanvasElement, count: number): Hero
         return;
       }
       urls.forEach((url, i) => {
+        // Keep frame 0 and the last frame regardless, so both ends stay crisp.
+        if (stride > 1 && i % stride !== 0 && i !== count - 1) return;
         const img = new Image();
         img.decoding = 'async';
         img.onload = () => {
