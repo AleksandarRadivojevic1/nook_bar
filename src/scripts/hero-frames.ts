@@ -3,6 +3,7 @@ import { frameIndex } from './frame-index';
 export interface HeroFrames {
   load(): Promise<void>;
   draw(progress: number): void;
+  drawIndex(i: number): void;
   resize(): void;
 }
 
@@ -67,6 +68,13 @@ export function createHeroFrames(canvas: HTMLCanvasElement, count: number): Hero
     paint(current);
   };
 
+  // Paint an absolute frame index, clamped. Used to drive two scroll windows
+  // (the glasses in, then out) from different frame ranges of one sequence.
+  const drawIndex = (i: number) => {
+    current = i < 0 ? 0 : i > count - 1 ? count - 1 : i;
+    paint(current);
+  };
+
   const load = () =>
     new Promise<void>((resolve) => {
       let started = false;
@@ -90,5 +98,5 @@ export function createHeroFrames(canvas: HTMLCanvasElement, count: number): Hero
     });
 
   resize();
-  return { load, draw, resize };
+  return { load, draw, drawIndex, resize };
 }

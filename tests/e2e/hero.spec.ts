@@ -51,9 +51,9 @@ test.describe('hero reveal', () => {
       heroHeight: document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
       viewport: window.innerHeight,
     }));
-    // Unpin point is heroHeight - 100vh. The last beat — the toast scrub —
-    // ends at 62% of the hero.
-    expect(heroHeight * 0.62).toBeLessThan(heroHeight - viewport);
+    // Unpin point is heroHeight - 100vh. The last beat — the glasses scrubbing
+    // out — ends at 68% of the hero.
+    expect(heroHeight * 0.68).toBeLessThan(heroHeight - viewport);
   });
 
   test('the second copy block is legible once the room is open', async ({ page }) => {
@@ -114,23 +114,28 @@ test.describe('hero scrub', () => {
     test.skip(testInfo.project.name === 'reduced-motion', 'the player is off under reduced motion');
   });
 
-  test('scrolling advances the toast frame and reveals the canvas', async ({ page }) => {
+  test('the glasses scrub in, then out, across two windows', async ({ page }) => {
     await page.goto('/');
     const canvas = page.locator('#hero .scene-canvas');
+    const enter = Number(await canvas.getAttribute('data-enter'));
     const heroHeight = await page.evaluate(
       () => document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
     );
+    const frameAt = async (pct: number) => {
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * pct);
+      await page.waitForTimeout(900);
+      return Number(await canvas.getAttribute('data-frame'));
+    };
 
-    // The glasses scrub in over 42%→62%, after the coastline reveal.
-    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.46);
-    await page.waitForTimeout(900);
-    const early = Number(await canvas.getAttribute('data-frame'));
+    // In → clink, over 42%→62% (frames below `enter`).
+    const inEarly = await frameAt(0.46);
     expect(await canvas.evaluate((c) => Number(getComputedStyle(c).opacity))).toBeGreaterThan(0);
+    const inLate = await frameAt(0.6);
+    expect(inLate).toBeGreaterThan(inEarly);
+    expect(inLate).toBeLessThan(enter);
 
-    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.6);
-    await page.waitForTimeout(900);
-    const late = Number(await canvas.getAttribute('data-frame'));
-
-    expect(late).toBeGreaterThan(early);
+    // Out → empty, over 62%→68% (frames at or beyond `enter`).
+    const out = await frameAt(0.66);
+    expect(out).toBeGreaterThanOrEqual(enter);
   });
 });
