@@ -116,8 +116,8 @@ export function initHero(root: HTMLElement): void {
         scrollTrigger: {
           trigger: hero,
           start: '42% top',
-          end: '64% top',
-          scrub: 0.6,
+          end: '70% top',
+          scrub: 1.1,
           onUpdate: (self) => frames.drawIndex(Math.round(self.progress * (enter - 1))),
         },
       },
@@ -128,9 +128,9 @@ export function initHero(root: HTMLElement): void {
         ease: 'none',
         scrollTrigger: {
           trigger: hero,
-          start: '64% top',
-          end: '84% top',
-          scrub: 0.6,
+          start: '70% top',
+          end: '98% top',
+          scrub: 1.1,
           onUpdate: (self) => frames.drawIndex(enter + Math.round(self.progress * (count - enter - 1))),
         },
       },

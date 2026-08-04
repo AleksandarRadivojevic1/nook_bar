@@ -24,12 +24,21 @@ const views = await Promise.all(
 ---
 
 <section class="galerija" id="galerija" data-section="galerija" data-nav-surface="bone">
+  <div class="g-fade g-fade-top" aria-hidden="true"></div>
   <div class="g-inner">
     <div class="g-panel">
-      <p class="eyebrow">{t.galerija.eyebrow}</p>
-      <h2 class="display">{t.galerija.title}</h2>
-      <p class="sub">{t.galerija.note}</p>
-      <div class="g-progress" aria-hidden="true"><span class="g-fill"></span></div>
+      <div class="g-panel-head">
+        <p class="eyebrow">{t.galerija.eyebrow}</p>
+        <h2 class="display">{t.galerija.title}</h2>
+      </div>
+      <div class="g-panel-foot">
+        <p class="sub">{t.galerija.note}</p>
+        <div class="g-progress" aria-hidden="true">
+          <span class="g-num">01</span>
+          <span class="g-track"><span class="g-fill"></span></span>
+          <span class="g-num">{String(tiles.length).padStart(2, '0')}</span>
+        </div>
+      </div>
     </div>
 
     <div class="g-cols">
@@ -41,14 +50,15 @@ const views = await Promise.all(
               .map((view) => {
                 const i = views.indexOf(view);
                 return (
-                  <button class="g-open" type="button" data-index={i} data-full={view.full}>
+                  <button class="g-open" type="button" data-index={i} data-full={view.full} style={`order:${i}`}>
                     <Image
                       class="g-img"
                       src={view.src}
                       alt={view.caption}
-                      widths={[320, 640, 960]}
-                      sizes="(max-width:900px) 45vw, 28vw"
+                      widths={[400, 640, 960, 1280]}
+                      sizes="(max-width:899px) 92vw, 28vw"
                     />
+                    <span class="g-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
                   </button>
                 );
               })}
@@ -57,6 +67,7 @@ const views = await Promise.all(
       }
     </div>
   </div>
+  <div class="g-fade g-fade-bottom" aria-hidden="true"></div>
   <div class="grain is-fine"></div>
 </section>
 
@@ -93,35 +104,71 @@ const views = await Promise.all(
 .g-panel .sub{margin-top:1.1rem}
 
 .g-open{
-  display:block;width:100%;margin:0 0 clamp(.8rem,1.6vw,1.4rem);
+  position:relative;
+  display:block;width:100%;margin:0 0 clamp(1.4rem,3vw,2.6rem);
   padding:0;border:0;background:var(--bone);cursor:pointer;
-  aspect-ratio:4/5;overflow:hidden;
-  box-shadow:0 14px 40px rgba(58,54,40,.16);
-  outline:1px solid color-mix(in srgb,var(--sand) 60%,transparent);
-  outline-offset:-1px;
+  aspect-ratio:4/5;overflow:hidden;border-radius:14px;
+  box-shadow:0 18px 50px rgba(58,54,40,.18);
 }
 .g-img{display:block;width:100%;height:100%;object-fit:cover}
 
-/* Progress rail — filled 0→100% by the desktop driver; hidden on mobile. */
-.g-progress{margin-top:2.4rem;height:1px;background:var(--hair);width:min(220px,60%)}
+.g-index{
+  position:absolute;top:.9rem;right:.7rem;z-index:2;
+  writing-mode:vertical-rl;
+  font-family:var(--display);font-size:9px;letter-spacing:.28em;
+  color:#F7F2E8;opacity:.86;text-shadow:0 1px 6px rgba(0,0,0,.45);
+  pointer-events:none;
+}
+
+.g-progress{
+  margin-top:2.4rem;display:flex;align-items:center;gap:.9rem;
+  width:min(260px,70%);
+  font-family:var(--display);font-size:10px;letter-spacing:.24em;color:var(--label);
+  font-variant-numeric:tabular-nums;
+}
+.g-num{opacity:.7}
+.g-track{flex:1;height:1px;background:var(--hair)}
 .g-fill{display:block;height:100%;width:0;background:var(--olive-deep)}
 
-/* ── Mobile / narrow: a plain stacked read, no pin, no progress ── */
+/* The top band is pinned to the viewport, so photos dissolve into the bone as
+   they scroll up past it. The bottom band is anchored to the section's end — it
+   only appears once you reach the bottom, and never dims images mid-scroll. */
+.g-fade{display:none;left:0;right:0;z-index:5;pointer-events:none}
+.g-fade-top{position:sticky;top:0;height:20vh;margin-bottom:-20vh;background:linear-gradient(var(--bone),transparent)}
+.g-fade-bottom{position:absolute;bottom:0;height:18vh;background:linear-gradient(transparent,var(--bone))}
+
+/* ── Mobile / narrow: the reference read. One column of images scrolls behind
+   a pinned heading (top) and a pinned note + progress (bottom); the edge fades
+   dissolve the images into the bone at both. `order` on each photo restores the
+   1→12 sequence after the two column wrappers collapse to display:contents. ── */
 @media (max-width:899px){
-  .g-inner{display:block;padding:12vh var(--gutter)}
-  .g-panel{margin-bottom:6vh}
-  .g-progress{display:none}
-  .g-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,1.6vw,1.4rem);align-items:start}
-  .g-col:nth-child(2){margin-top:0}
-}
-@media (max-width:520px){
-  .g-cols{grid-template-columns:1fr}
+  .g-inner{display:flex;flex-direction:column;position:relative;padding:0}
+  .g-panel{display:contents}
+  .g-panel-head{
+    order:0;position:sticky;top:0;z-index:6;pointer-events:none;
+    padding:calc(env(safe-area-inset-top) + 11vh) var(--gutter) 0;
+  }
+  .g-panel-foot{
+    order:2;position:sticky;bottom:0;z-index:6;pointer-events:none;
+    padding:6vh var(--gutter) calc(env(safe-area-inset-bottom) + 5vh);
+    background:linear-gradient(transparent,var(--bone) 55%);
+  }
+  .g-panel-head .display{margin-top:.7rem}
+  .g-progress{display:flex;margin-top:1.1rem}
+  .g-cols{
+    order:1;display:flex;flex-direction:column;
+    padding:0 var(--gutter);margin-top:-9vh;
+  }
+  .g-col{display:contents}
+  .g-fade{display:block}
+  .g-fade-top{height:26vh;margin-bottom:-26vh}
+  .g-fade-bottom{height:22vh}
 }
 
 /* ── Desktop: a sticky panel beside two staggered columns ── */
 @media (min-width:900px){
   .g-inner{
-    display:grid;grid-template-columns:38% 1fr;
+    display:grid;grid-template-columns:34% 1fr;
     gap:clamp(2rem,5vw,5rem);padding:10vh var(--gutter) 8vh;
   }
   .g-panel{
@@ -130,11 +177,10 @@ const views = await Promise.all(
   }
   .g-cols{
     display:grid;grid-template-columns:1fr 1fr;
-    gap:clamp(.8rem,1.6vw,1.4rem);align-items:start;
-    max-width:760px;
+    gap:clamp(1.2rem,2.6vw,2.4rem);align-items:start;
   }
-  .g-col:nth-child(2){margin-top:8vh}
   .g-col{will-change:transform}
+  .g-fade{display:block}
 }
 
 /* ── Lightbox ──────────────────────────────────────────────────────────

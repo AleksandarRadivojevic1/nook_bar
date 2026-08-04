@@ -39,27 +39,32 @@ export function initGalerija(root: HTMLElement): void {
     btn.addEventListener('click', () => modal.open(i));
   });
 
-  // Desktop + motion. CSS position:sticky holds the panel; the two columns are
-  // translated at different rates for a no-pin depth parallax.
-  if (m && matchMedia('(min-width: 900px)').matches) {
+  // The progress fill tracks scroll on every size. On desktop the two columns
+  // also weave: equal-height and aligned at both ends, the left drifts down and
+  // the right up, the offset peaking mid-scroll and resolving back to aligned by
+  // the bottom (a sine, so start and end line up). Heavily smoothed for a slow,
+  // inertial read. Mobile is a single column (display:contents) — fill only.
+  if (m) {
     const { gsap, ScrollTrigger } = m;
     const cols = Array.from(root.querySelectorAll<HTMLElement>('.g-col'));
     const fill = root.querySelector<HTMLElement>('.g-fill');
-    if (cols.length === 2 && fill) {
-      ScrollTrigger.create({
-        trigger: root,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-          fill.style.width = `${p * 100}%`;
-          const d = 0.5 - p;
-          gsap.set(cols[0], { y: d * 160 });
-          gsap.set(cols[1], { y: d * -160 });
-        },
-      });
-    }
+    const woven = matchMedia('(min-width: 900px)').matches && cols.length === 2;
+    const amp = 190;
+    ScrollTrigger.create({
+      trigger: root,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1.2,
+      onUpdate: (self) => {
+        const p = self.progress;
+        if (fill) fill.style.width = `${p * 100}%`;
+        if (woven) {
+          const d = Math.sin(Math.PI * p) * amp;
+          gsap.set(cols[0], { y: d });
+          gsap.set(cols[1], { y: -d });
+        }
+      },
+    });
   }
 }
 

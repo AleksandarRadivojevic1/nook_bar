@@ -15,14 +15,17 @@ export interface HeroFrames {
  */
 export function createHeroFrames(canvas: HTMLCanvasElement, count: number): HeroFrames {
   const ctx = canvas.getContext('2d');
-  const set = window.matchMedia('(max-width: 760px)').matches ? 'mob' : 'desk';
+  const isMobile = window.matchMedia('(max-width: 760px)').matches;
+  const set = isMobile ? 'mob' : 'desk';
   const urls = Array.from(
     { length: count },
     (_, i) => `/hero/frames/${set}/f_${String(i + 1).padStart(3, '0')}.webp`,
   );
   const imgs: Array<HTMLImageElement | undefined> = new Array(count);
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 2);
   let current = -1;
+  let pending = -1;
+  let rafId = 0;
 
   // The nearest loaded frame to `i`, so scrolling ahead of the preload still
   // paints something rather than a blank canvas.
@@ -63,17 +66,23 @@ export function createHeroFrames(canvas: HTMLCanvasElement, count: number): Hero
     if (current >= 0) paint(current);
   };
 
-  const draw = (progress: number) => {
-    current = frameIndex(progress, count);
-    paint(current);
+  // Coalesce paint requests to one per display frame and drop repeats: scroll
+  // fires far more often than the screen refreshes, and the cover-fit drawImage
+  // is the mobile cost.
+  const schedule = (i: number) => {
+    pending = i;
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      if (pending !== current) paint(pending);
+    });
   };
+
+  const draw = (progress: number) => schedule(frameIndex(progress, count));
 
   // Paint an absolute frame index, clamped. Used to drive two scroll windows
   // (the glasses in, then out) from different frame ranges of one sequence.
-  const drawIndex = (i: number) => {
-    current = i < 0 ? 0 : i > count - 1 ? count - 1 : i;
-    paint(current);
-  };
+  const drawIndex = (i: number) => schedule(i < 0 ? 0 : i > count - 1 ? count - 1 : i);
 
   const load = () =>
     new Promise<void>((resolve) => {
@@ -91,7 +100,7 @@ export function createHeroFrames(canvas: HTMLCanvasElement, count: number): Hero
             started = true;
             resolve(); // start as soon as any frame is ready; the rest fill in
           }
-          if (i === current) paint(i);
+          if (i === pending || i === current) paint(i);
         };
         img.src = url;
       });
