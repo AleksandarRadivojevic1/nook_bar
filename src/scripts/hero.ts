@@ -101,9 +101,10 @@ export function initHero(root: HTMLElement): void {
     },
   );
 
-  // The toast footage behind the hole: preload the sequence and scrub it across
-  // the same window the coastline opens over, so the clink lands as the hole
-  // clears the viewport. Progress clamps at 1, holding the clink after.
+  // The toast footage behind the hole. The coastline opens over an empty warm
+  // ground (frame 0, held) across top→42%; only once the reveal is done and the
+  // scene would otherwise sit static do the glasses scrub in and clink, over
+  // 42%→62%. Progress clamps at 1, holding the clink until the stage hands off.
   const canvas = root.querySelector<HTMLCanvasElement>('.scene-canvas');
   const count = Number(canvas?.dataset.count ?? 0);
   if (canvas && count > 0) {
@@ -115,8 +116,8 @@ export function initHero(root: HTMLElement): void {
         ease: 'none',
         scrollTrigger: {
           trigger: hero,
-          start: 'top top',
-          end: '42% top',
+          start: '42% top',
+          end: '62% top',
           scrub: 0.6,
           onUpdate: (self) => frames.draw(self.progress),
         },

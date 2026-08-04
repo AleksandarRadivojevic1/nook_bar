@@ -51,8 +51,9 @@ test.describe('hero reveal', () => {
       heroHeight: document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
       viewport: window.innerHeight,
     }));
-    // Unpin point is heroHeight - 100vh. The last beat ends at 48% of the hero.
-    expect(heroHeight * 0.48).toBeLessThan(heroHeight - viewport);
+    // Unpin point is heroHeight - 100vh. The last beat — the toast scrub —
+    // ends at 62% of the hero.
+    expect(heroHeight * 0.62).toBeLessThan(heroHeight - viewport);
   });
 
   test('the second copy block is legible once the room is open', async ({ page }) => {
@@ -120,12 +121,13 @@ test.describe('hero scrub', () => {
       () => document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
     );
 
-    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.08);
+    // The glasses scrub in over 42%→62%, after the coastline reveal.
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.46);
     await page.waitForTimeout(900);
     const early = Number(await canvas.getAttribute('data-frame'));
     expect(await canvas.evaluate((c) => Number(getComputedStyle(c).opacity))).toBeGreaterThan(0);
 
-    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.38);
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.6);
     await page.waitForTimeout(900);
     const late = Number(await canvas.getAttribute('data-frame'));
 
