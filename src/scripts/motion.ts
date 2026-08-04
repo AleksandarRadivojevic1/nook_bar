@@ -19,13 +19,8 @@ export function motion() {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // A slightly longer glide on an expo-out curve reads as weighted rather than
-  // slippery, and easing back the wheel step keeps a single notch from
-  // overshooting the scrubbed hero. Touch is left native (syncTouch:false) so
-  // phones keep their own inertia; the multiplier only nudges its pace.
   const lenis = new Lenis({
-    duration: 1.15,
-    easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+    lerp: 0.09,
     smoothWheel: true,
     syncTouch: false,
     wheelMultiplier: 0.9,

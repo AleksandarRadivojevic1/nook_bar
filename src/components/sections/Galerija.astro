@@ -95,8 +95,6 @@ const views = await Promise.all(
 .g-open{
   display:block;width:100%;margin:0 0 clamp(.8rem,1.6vw,1.4rem);
   padding:0;border:0;background:var(--bone);cursor:pointer;
-  /* A uniform 4:5 crop keeps the two columns aligned and the section a sane
-     height; the lightbox still opens the full, uncropped photo. */
   aspect-ratio:4/5;overflow:hidden;
   box-shadow:0 14px 40px rgba(58,54,40,.16);
   outline:1px solid color-mix(in srgb,var(--sand) 60%,transparent);
@@ -120,10 +118,7 @@ const views = await Promise.all(
   .g-cols{grid-template-columns:1fr}
 }
 
-/* ── Desktop: a sticky panel beside two staggered columns ──
-   The panel holds via CSS position:sticky while the columns scroll naturally
-   past it — no ScrollTrigger pin, so no pin-spacer doubling the section and no
-   Lenis/pin jitter. The section stays the columns' natural height. */
+/* ── Desktop: a sticky panel beside two staggered columns ── */
 @media (min-width:900px){
   .g-inner{
     display:grid;grid-template-columns:38% 1fr;
@@ -136,14 +131,10 @@ const views = await Promise.all(
   .g-cols{
     display:grid;grid-template-columns:1fr 1fr;
     gap:clamp(.8rem,1.6vw,1.4rem);align-items:start;
-    /* Cap the photo size on wide screens so the columns — and the section —
-       don't balloon in height. A stretched item (the default) honours max-width
-       and stays left-aligned; justify-self:start would collapse it to content. */
     max-width:760px;
   }
   .g-col:nth-child(2){margin-top:8vh}
-  /* Only the second column drifts (a few tens of px); the first does not move. */
-  .g-col:nth-child(2){will-change:transform}
+  .g-col{will-change:transform}
 }
 
 /* ── Lightbox ──────────────────────────────────────────────────────────

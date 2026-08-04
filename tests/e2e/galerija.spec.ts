@@ -106,4 +106,25 @@ test.describe('desktop pin', () => {
     expect(Math.abs(panelB - panelA)).toBeLessThan(30); // panel pinned
     expect(fillB).toBeGreaterThan(fillA); // progress advanced
   });
+
+  test('the two columns move at different speeds', async ({ page }) => {
+    await page.goto('/');
+    const { secTop, range } = await page.locator('#galerija').evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return { secTop: r.top + window.scrollY, range: r.height - window.innerHeight };
+    });
+    const gap = () =>
+      page.evaluate(() => {
+        const y = (i: number) =>
+          new DOMMatrixReadOnly(
+            getComputedStyle(document.querySelectorAll('#galerija .g-col')[i]).transform,
+          ).m42;
+        return y(0) - y(1);
+      });
+    await scrollTo(page, secTop + range * 0.15);
+    const near = await gap();
+    await scrollTo(page, secTop + range * 0.85);
+    const far = await gap();
+    expect(Math.abs(near - far)).toBeGreaterThan(30);
+  });
 });
