@@ -1,29 +1,14 @@
 import gsapFallback from 'gsap';
-import { createGalleryGL, type GalleryGL } from './gallery-gl';
 import { createGalleryModal, type ModalItem } from './gallery-modal';
 import { motion, onSection, prefersReducedMotion } from './motion';
-import { advanceBulge, bulgeTarget } from './wave';
-
-/** WebGL is required for the bulge; without it the CSS grid stands on its own. */
-function hasWebGL(): boolean {
-  try {
-    const probe = document.createElement('canvas');
-    return Boolean(probe.getContext('webgl2') || probe.getContext('webgl'));
-  } catch {
-    return false;
-  }
-}
 
 /**
- * Two layers, one section.
+ * The gallery lightbox.
  *
- * The lightbox is wired first and always: it is plain DOM driven by the tile
- * buttons, so it works with no WebGL, no motion, and keyboard only.
- *
- * On top of that — only when motion is allowed and WebGL is available — the
- * markup grid is folded away and replaced by a canvas whose photos bulge toward
- * the camera as the page scrolls. Clicks on the canvas are mapped back to a
- * photo index and open the same lightbox.
+ * The photos render as a static two-column layout in the markup; this wires the
+ * `.g-open` buttons to a shared lightbox. It is plain DOM — it works with no
+ * motion and by keyboard alone. The desktop pin/parallax enhancement layers on
+ * top of this in a later step.
  */
 export function initGalerija(root: HTMLElement): void {
   const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('.g-open'));
@@ -54,89 +39,41 @@ export function initGalerija(root: HTMLElement): void {
     btn.addEventListener('click', () => modal.open(i));
   });
 
-  if (!m) return;
-  const { ScrollTrigger, lenis } = m;
-
-  const canvas = root.querySelector<HTMLCanvasElement>('.g-canvas');
-  const stage = root.querySelector<HTMLElement>('.g-stage');
-  const images = Array.from(root.querySelectorAll<HTMLImageElement>('.g-img'));
-  if (!canvas || !stage || images.length === 0 || !hasWebGL()) return;
-
-  // Reveal the stage before measuring — the canvas needs its laid-out size.
-  root.classList.add('is-webgl');
-
-  let scene: GalleryGL;
-  try {
-    scene = createGalleryGL(canvas, images);
-  } catch (err) {
-    // A context that refuses to build is not worth breaking the section over,
-    // but it should never fail silently either.
-    console.warn('[galerija] WebGL layer unavailable, falling back to the grid', err);
-    root.classList.remove('is-webgl');
-    return;
-  }
-
-  // The stage has to be as tall as this breakpoint's grid needs; the layout
-  // math in the scene is the only thing that knows how many rows there are.
-  const sizeStage = () => {
-    stage.style.height = scene.stageVh().toFixed(1) + 'vh';
-  };
-  sizeStage();
-
-  // Drives the grid's vertical travel across the pinned stage.
-  ScrollTrigger.create({
-    trigger: stage,
-    start: 'top top',
-    end: 'bottom bottom',
-    onUpdate: (self) => scene.setScroll(self.progress),
-  });
-
-  // Gates the render loop on a wider window than the stage itself, so the grid
-  // is already composed when it scrolls into view rather than popping in.
-  let active = false;
-  ScrollTrigger.create({
-    trigger: stage,
-    start: 'top bottom',
-    end: 'bottom top',
-    onToggle: (self) => {
-      active = self.isActive;
-    },
-  });
-
-  canvas.addEventListener('click', (e) => {
-    // A click that lands while the grid is still flying is a scroll, not a pick.
-    if (Math.abs(lenis.velocity) > 12) return;
-    const hit = scene.hitTest(e.clientX, e.clientY);
-    if (hit !== null) modal.open(hit);
-  });
-
-  canvas.addEventListener('pointermove', (e) => {
-    const over = scene.hitTest(e.clientX, e.clientY) !== null;
-    canvas.style.cursor = over ? 'pointer' : '';
-  });
-
-  let bulge = 0;
-  g.ticker.add(() => {
-    if (!active) return;
-    // A frozen backdrop reads better than a grid drifting under the lightbox.
-    if (!modal.isOpen()) {
-      bulge = advanceBulge(bulge, bulgeTarget(lenis.velocity));
-      scene.setBulge(bulge);
-    }
-    scene.render();
-  });
-
-  let raf = 0;
-  window.addEventListener('resize', () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      scene.resize();
-      // Order matters: the stage must be its new height before ScrollTrigger
-      // measures, or every trigger below the gallery lands at the old offset.
-      sizeStage();
+  // Desktop + motion only: pin the panel, translate the columns as the section
+  // scrolls, and fill the progress rail. Mobile and reduced motion get the
+  // static layout — motion() is null under reduced motion, and the width gate
+  // keeps phones out. The finished-at-rest state is already in CSS.
+  if (m && matchMedia('(min-width: 900px)').matches) {
+    const { gsap, ScrollTrigger } = m;
+    const cols = Array.from(root.querySelectorAll<HTMLElement>('.g-col'));
+    const fill = root.querySelector<HTMLElement>('.g-fill');
+    const track = root.querySelector<HTMLElement>('.g-cols');
+    if (cols.length === 2 && track && fill) {
+      // Travel = how far the taller column must rise to reveal its last photo.
+      const travel = () => Math.max(0, track.scrollHeight - window.innerHeight * 0.9);
+      ScrollTrigger.create({
+        trigger: root,
+        start: 'top top',
+        end: () => `+=${travel()}`,
+        pin: '.g-panel',
+        pinSpacing: true,
+        scrub: true,
+        invalidateOnRefresh: true,
+        // This pin inserts a spacer mid-page, so it must refresh before the nav
+        // surface triggers below it (footer/ink) or they measure their start/end
+        // against a layout without the spacer and never fire. Higher priority
+        // refreshes first.
+        refreshPriority: 1,
+        onUpdate: (self) => {
+          const p = self.progress;
+          gsap.set(cols[0], { y: -travel() * p });
+          gsap.set(cols[1], { y: -travel() * p * 0.86 }); // gentle parallax
+          fill.style.width = `${p * 100}%`;
+        },
+      });
       ScrollTrigger.refresh();
-    });
-  });
+    }
+  }
 }
 
 onSection('galerija', initGalerija);
