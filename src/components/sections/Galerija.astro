@@ -24,29 +24,38 @@ const views = await Promise.all(
 ---
 
 <section class="galerija" id="galerija" data-section="galerija" data-nav-surface="bone">
-  <div class="galerija-head">
-    <p class="eyebrow">{t.galerija.eyebrow}</p>
-    <h2 class="display">{t.galerija.title}</h2>
-    <p class="sub">{t.galerija.note}</p>
-  </div>
+  <div class="g-inner">
+    <div class="g-panel">
+      <p class="eyebrow">{t.galerija.eyebrow}</p>
+      <h2 class="display">{t.galerija.title}</h2>
+      <p class="sub">{t.galerija.note}</p>
+      <div class="g-progress" aria-hidden="true"><span class="g-fill"></span></div>
+    </div>
 
-  <div class="g-grid">
-    {
-      views.map((view, i) => (
-        <figure class="g-tile">
-          <button class="g-open" type="button" data-index={i} data-full={view.full}>
-            <Image
-              class="g-img"
-              src={view.src}
-              alt={view.caption}
-              widths={[320, 640, 960]}
-              sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-            />
-          </button>
-          <figcaption>{view.caption}</figcaption>
-        </figure>
-      ))
-    }
+    <div class="g-cols">
+      {
+        [0, 1].map((col) => (
+          <div class="g-col">
+            {views
+              .filter((_, i) => i % 2 === col)
+              .map((view) => {
+                const i = views.indexOf(view);
+                return (
+                  <button class="g-open" type="button" data-index={i} data-full={view.full}>
+                    <Image
+                      class="g-img"
+                      src={view.src}
+                      alt={view.caption}
+                      widths={[320, 640, 960]}
+                      sizes="(max-width:900px) 45vw, 28vw"
+                    />
+                  </button>
+                );
+              })}
+          </div>
+        ))
+      }
+    </div>
   </div>
   <div class="grain is-fine"></div>
 </section>
@@ -69,62 +78,56 @@ const views = await Promise.all(
 
 <style is:global>
 /* ══════════════════════════════════════════════════════════════════════
-   ACT 6 — GALERIJA
-   `.g-grid` is a plain CSS multi-column masonry — what a visitor gets with no
-   JS or reduced motion, the accessible copy, and the lightbox source. A later
-   step replaces this with the pinned two-column layout.
+   ACT 6 — GALERIJA  (pinned split)
+   A left panel and two staggered columns of portrait photos. This is the
+   static base: correct with no JS, on mobile, and under reduced motion. On
+   desktop with motion on, galerija.ts pins the panel and scrolls the columns
+   past it (the enhancement lives in a later step); everything here reads at
+   rest without it.
+   Each photo is a `.g-open` button so the lightbox is reachable by keyboard.
    ══════════════════════════════════════════════════════════════════════ */
-.galerija{background:var(--bone);padding:15vh var(--gutter) 15vh;position:relative;overflow:clip}
-.galerija-head{max-width:40ch;margin-bottom:6vh}
-.galerija-head .display{margin-top:1rem}
-.galerija-head .sub{margin-top:1.1rem}
+.galerija{background:var(--bone);position:relative;overflow:clip}
 
-.g-grid{
-  column-count:4;
-  column-gap:clamp(.6rem,1.1vw,1rem);
-}
-@media(max-width:1024px){ .g-grid{column-count:3} }
-@media(max-width:640px){ .g-grid{column-count:2} }
+.g-panel{max-width:40ch}
+.g-panel .display{margin-top:1rem}
+.g-panel .sub{margin-top:1.1rem}
 
-.g-tile{
-  break-inside:avoid;
-  margin:0 0 clamp(.6rem,1.1vw,1rem);
-  position:relative;overflow:hidden;
-  background:var(--sand);
-  box-shadow:inset 0 0 0 1px rgba(69,69,52,.14);
-}
-/* The tile is a button so the lightbox is reachable by keyboard and without
-   WebGL — the canvas itself can take neither focus nor a click. */
 .g-open{
-  display:block;width:100%;
-  margin:0;padding:0;border:0;background:none;
-  cursor:pointer;
+  display:block;width:100%;margin:0 0 clamp(.8rem,1.6vw,1.4rem);
+  padding:0;border:0;background:var(--bone);cursor:pointer;
+  box-shadow:0 14px 40px rgba(58,54,40,.16);
+  outline:1px solid color-mix(in srgb,var(--sand) 60%,transparent);
+  outline-offset:-1px;
 }
-.g-img{
-  display:block;width:100%;height:auto;
-  transition:transform .9s cubic-bezier(.2,.7,.2,1);
-}
-/* will-change only while it can actually change. Left on permanently it holds a
-   compositor layer per photo for the whole page, including the twelve that are
-   folded away at opacity 0 behind the canvas. */
-.g-tile:hover .g-img{transform:scale(1.05);will-change:transform}
+.g-img{display:block;width:100%;height:auto}
 
-/* Hover-only caption. This single rule is the toggle: raise `opacity` here (and
-   drop the :hover rule) to make captions always visible again. The text is also
-   the image alt, so it is always present for assistive tech even when hidden. */
-.g-tile figcaption{
-  position:absolute;left:0;right:0;bottom:0;z-index:2;
-  padding:2.2rem .95rem .8rem;
-  font-family:var(--display);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
-  color:#F7F2E8;
-  background:linear-gradient(180deg,rgba(20,14,7,0),rgba(20,14,7,.62));
-  opacity:0;transition:opacity .4s ease;
-}
-.g-tile:hover figcaption{opacity:1}
+/* Progress rail — filled 0→100% by the desktop driver; hidden on mobile. */
+.g-progress{margin-top:2.4rem;height:1px;background:var(--hair);width:min(220px,60%)}
+.g-fill{display:block;height:100%;width:0;background:var(--olive-deep)}
 
-@media (prefers-reduced-motion: reduce){
-  /* A still contact sheet — no hover ramp, no scripted drift. */
-  .g-img{transition:none}
+/* ── Mobile / narrow: a plain stacked read, no pin, no progress ── */
+@media (max-width:899px){
+  .g-inner{display:block;padding:12vh var(--gutter)}
+  .g-panel{margin-bottom:6vh}
+  .g-progress{display:none}
+  .g-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,1.6vw,1.4rem);align-items:start}
+  .g-col:nth-child(2){margin-top:0}
+}
+@media (max-width:520px){
+  .g-cols{grid-template-columns:1fr}
+}
+
+/* ── Desktop: panel beside two staggered columns ── */
+@media (min-width:900px){
+  .g-inner{
+    display:grid;grid-template-columns:38% 1fr;
+    gap:clamp(2rem,5vw,5rem);padding:15vh var(--gutter);
+  }
+  .g-cols{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(.8rem,1.6vw,1.4rem);align-items:start;
+  }
+  .g-col:nth-child(2){margin-top:14vh}
 }
 
 /* ── Lightbox ──────────────────────────────────────────────────────────

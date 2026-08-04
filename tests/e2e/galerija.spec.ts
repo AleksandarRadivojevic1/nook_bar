@@ -1,35 +1,43 @@
 import { expect, test } from '@playwright/test';
 
-test('renders at least nine gallery tiles, each with a caption/alt', async ({ page }) => {
+test('renders twelve photos as lightbox buttons in two columns', async ({ page }) => {
   await page.goto('/');
-  const tiles = page.locator('[data-section="galerija"] .g-tile');
-  const count = await tiles.count();
-  expect(count).toBeGreaterThanOrEqual(9);
+  const buttons = page.locator('#galerija .g-open');
+  await expect(buttons).toHaveCount(12);
+  await expect(page.locator('#galerija .g-col')).toHaveCount(2);
 
-  const imgs = page.locator('[data-section="galerija"] .g-img');
+  // Every photo still carries its alt text.
+  const imgs = page.locator('#galerija .g-img');
+  const count = await imgs.count();
   for (let i = 0; i < count; i++) {
     const alt = await imgs.nth(i).getAttribute('alt');
     expect(alt?.trim().length ?? 0).toBeGreaterThan(0);
   }
 });
 
-test('captions are hidden at rest and content is localised', async ({ page }) => {
+test('the panel copy is localised', async ({ page }) => {
   await page.goto('/');
-  const cap = page.locator('[data-section="galerija"] .g-tile figcaption').first();
-  expect(await cap.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(0);
-  await expect(page.locator('[data-section="galerija"]')).toContainText('Šank');
+  await expect(page.locator('#galerija .g-panel')).toContainText('Prostor u slikama');
 
   await page.goto('/en');
-  await expect(page.locator('[data-section="galerija"]')).toContainText('The bar');
+  await expect(page.locator('#galerija .g-panel')).toContainText('The room in pictures');
 });
 
-test('the fallback grid is a responsive multi-column masonry', async ({ page }, testInfo) => {
+test('a photo opens the lightbox with its caption', async ({ page }) => {
   await page.goto('/');
-  const cols = await page
-    .locator('[data-section="galerija"] .g-grid')
-    .evaluate((el) => getComputedStyle(el).columnCount);
-  // Desktop / reduced-motion run at 1920px → 4 columns; mobile (Pixel 7) → 2.
-  expect(cols).toBe(testInfo.project.name === 'mobile' ? '2' : '4');
+  await page.locator('#galerija .g-open').first().click();
+  await expect(page.locator('#galerija-modal')).toBeVisible();
+  await expect(page.locator('#galerija-modal .g-modal-caption')).toContainText(/\S/);
+  await page.keyboard.press('Escape');
+});
+
+test('the gallery never scrolls sideways on a phone', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'narrow layout only');
+  await page.goto('/');
+  const over = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+  );
+  expect(over).toBe(false);
 });
 
 test('the gallery ships no WebGL layer', async ({ page }) => {
@@ -104,17 +112,17 @@ test.describe('lightbox', () => {
 test.describe('reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
-  test('shows a still grid with every photo at rest', async ({ page }) => {
+  test('shows every photo at rest with no pin', async ({ page }) => {
     await page.goto('/');
     const section = page.locator('[data-section="galerija"]');
     await section.scrollIntoViewIfNeeded();
 
-    const tiles = page.locator('[data-section="galerija"] .g-tile');
-    const count = await tiles.count();
+    const imgs = page.locator('[data-section="galerija"] .g-img');
+    const count = await imgs.count();
+    expect(count).toBe(12);
     for (let i = 0; i < count; i++) {
-      const t = tiles.nth(i);
-      expect(await t.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(1);
-      expect(await t.evaluate((el) => getComputedStyle(el).transform)).toBe('none');
+      const img = imgs.nth(i);
+      expect(await img.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(1);
     }
   });
 });
