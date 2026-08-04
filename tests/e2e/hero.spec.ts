@@ -107,3 +107,28 @@ test.describe('hero poster fallback', () => {
     expect(await page.locator('#hero .scene-canvas').getAttribute('data-frame')).toBeNull();
   });
 });
+
+test.describe('hero scrub', () => {
+  test.beforeEach(({}, testInfo) => {
+    test.skip(testInfo.project.name === 'reduced-motion', 'the player is off under reduced motion');
+  });
+
+  test('scrolling advances the toast frame and reveals the canvas', async ({ page }) => {
+    await page.goto('/');
+    const canvas = page.locator('#hero .scene-canvas');
+    const heroHeight = await page.evaluate(
+      () => document.querySelector('[data-section="hero"]')!.getBoundingClientRect().height,
+    );
+
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.08);
+    await page.waitForTimeout(900);
+    const early = Number(await canvas.getAttribute('data-frame'));
+    expect(await canvas.evaluate((c) => Number(getComputedStyle(c).opacity))).toBeGreaterThan(0);
+
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), heroHeight * 0.38);
+    await page.waitForTimeout(900);
+    const late = Number(await canvas.getAttribute('data-frame'));
+
+    expect(late).toBeGreaterThan(early);
+  });
+});

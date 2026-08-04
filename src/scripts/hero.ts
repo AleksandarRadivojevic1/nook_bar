@@ -1,3 +1,4 @@
+import { createHeroFrames } from './hero-frames';
 import { motion, onSection } from './motion';
 
 export function initHero(root: HTMLElement): void {
@@ -99,6 +100,34 @@ export function initHero(root: HTMLElement): void {
       scrollTrigger: { trigger: hero, start: '34% top', end: '48% top', scrub: 0.5 },
     },
   );
+
+  // The toast footage behind the hole: preload the sequence and scrub it across
+  // the same window the coastline opens over, so the clink lands as the hole
+  // clears the viewport. Progress clamps at 1, holding the clink after.
+  const canvas = root.querySelector<HTMLCanvasElement>('.scene-canvas');
+  const count = Number(canvas?.dataset.count ?? 0);
+  if (canvas && count > 0) {
+    const frames = createHeroFrames(canvas, count);
+    void frames.load().then(() => frames.draw(0));
+    gsap.to(
+      {},
+      {
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: '42% top',
+          scrub: 0.6,
+          onUpdate: (self) => frames.draw(self.progress),
+        },
+      },
+    );
+    let raf = 0;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => frames.resize());
+    });
+  }
 }
 
 onSection('hero', initHero);
