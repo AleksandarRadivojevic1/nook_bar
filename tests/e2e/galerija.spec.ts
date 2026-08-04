@@ -1,4 +1,13 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function scrollTo(page: Page, y: number) {
+  await page.evaluate((top) => {
+    const l = (window as unknown as { __lenis?: { scrollTo(t: number, o: object): void } }).__lenis;
+    if (l) l.scrollTo(top, { immediate: true });
+    else window.scrollTo({ top, behavior: 'instant' as ScrollBehavior });
+  }, y);
+  await page.waitForTimeout(250);
+}
 
 test('renders twelve photos as lightbox buttons in two columns', async ({ page }) => {
   await page.goto('/');
@@ -124,5 +133,34 @@ test.describe('reduced motion', () => {
       const img = imgs.nth(i);
       expect(await img.evaluate((el) => Number(getComputedStyle(el).opacity))).toBe(1);
     }
+  });
+});
+
+test.describe('desktop pin', () => {
+  test.beforeEach(({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'pin is a desktop, motion-on effect');
+  });
+
+  test('the panel holds while the photos scroll, and the bar fills', async ({ page }) => {
+    await page.goto('/');
+    const secTop = await page
+      .locator('#galerija')
+      .evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+    await scrollTo(page, secTop + 200);
+    const panelA = await page
+      .locator('#galerija .g-panel')
+      .evaluate((e) => e.getBoundingClientRect().top);
+    const fillA = await page
+      .locator('#galerija .g-fill')
+      .evaluate((e) => e.getBoundingClientRect().width);
+    await scrollTo(page, secTop + 900);
+    const panelB = await page
+      .locator('#galerija .g-panel')
+      .evaluate((e) => e.getBoundingClientRect().top);
+    const fillB = await page
+      .locator('#galerija .g-fill')
+      .evaluate((e) => e.getBoundingClientRect().width);
+    expect(Math.abs(panelB - panelA)).toBeLessThan(30); // panel pinned
+    expect(fillB).toBeGreaterThan(fillA); // progress advanced
   });
 });

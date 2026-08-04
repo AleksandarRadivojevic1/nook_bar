@@ -38,6 +38,37 @@ export function initGalerija(root: HTMLElement): void {
   buttons.forEach((btn, i) => {
     btn.addEventListener('click', () => modal.open(i));
   });
+
+  // Desktop + motion only: pin the panel, translate the columns as the section
+  // scrolls, and fill the progress rail. Mobile and reduced motion get the
+  // static layout — motion() is null under reduced motion, and the width gate
+  // keeps phones out. The finished-at-rest state is already in CSS.
+  if (m && matchMedia('(min-width: 900px)').matches) {
+    const { gsap, ScrollTrigger } = m;
+    const cols = Array.from(root.querySelectorAll<HTMLElement>('.g-col'));
+    const fill = root.querySelector<HTMLElement>('.g-fill');
+    const track = root.querySelector<HTMLElement>('.g-cols');
+    if (cols.length === 2 && track && fill) {
+      // Travel = how far the taller column must rise to reveal its last photo.
+      const travel = () => Math.max(0, track.scrollHeight - window.innerHeight * 0.9);
+      ScrollTrigger.create({
+        trigger: root,
+        start: 'top top',
+        end: () => `+=${travel()}`,
+        pin: '.g-panel',
+        pinSpacing: true,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          gsap.set(cols[0], { y: -travel() * p });
+          gsap.set(cols[1], { y: -travel() * p * 0.86 }); // gentle parallax
+          fill.style.width = `${p * 100}%`;
+        },
+      });
+      ScrollTrigger.refresh();
+    }
+  }
 }
 
 onSection('galerija', initGalerija);

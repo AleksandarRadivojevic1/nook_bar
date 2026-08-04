@@ -128,6 +128,8 @@ const views = await Promise.all(
     gap:clamp(.8rem,1.6vw,1.4rem);align-items:start;
   }
   .g-col:nth-child(2){margin-top:14vh}
+  /* The driver translates each column every frame while the section is pinned. */
+  .g-col{will-change:transform}
 }
 
 /* ── Lightbox ──────────────────────────────────────────────────────────
