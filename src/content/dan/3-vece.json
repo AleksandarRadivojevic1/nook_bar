@@ -9,8 +9,8 @@
     "en": "The first cocktail, as the light goes down."
   },
   "when": {
-    "sr": "18 — 22",
-    "en": "18 — 22"
+    "sr": "18 – 22",
+    "en": "18 – 22"
   },
   "media": "radial-gradient(56% 42% at 38% 32%,rgba(255,214,150,.9),rgba(90,62,30,0) 70%),linear-gradient(160deg,#C9AE86,#7C552C 56%,#2C1E10)",
   "placeholder": true

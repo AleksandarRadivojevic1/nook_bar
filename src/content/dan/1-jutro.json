@@ -9,8 +9,8 @@
     "en": "Coffee, and nobody asks you anything."
   },
   "when": {
-    "sr": "08 — 11",
-    "en": "08 — 11"
+    "sr": "08 – 11",
+    "en": "08 – 11"
   },
   "media": "radial-gradient(60% 44% at 42% 24%,rgba(255,232,190,.92),rgba(120,88,48,0) 70%),linear-gradient(168deg,#D8C6A4,#8A6C42 58%,#3A2B18)",
   "placeholder": true

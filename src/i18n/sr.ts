@@ -5,7 +5,7 @@
  */
 export const sr = {
   meta: {
-    title: 'Nook — bar u Leskovcu',
+    title: 'Nook, bar u Leskovcu',
     description:
       'Skriveni bar u Leskovcu. Svratiš na kafu, ostaneš duže nego što si mislio.',
   },
@@ -111,7 +111,7 @@ export const sr = {
        from site.json now, through addressLines(). A price RANGE per person is
        an editorial statement about the bar rather than a stored fact, and it
        genuinely formats differently per locale, so it stays. */
-    priceValue: 'RSD 500 — 1.000|po osobi',
+    priceValue: 'RSD 500 – 1.000|po osobi',
     hoursLabel: 'Radno vreme',
     socialLabel: 'Instagram',
     mapLabel: 'Gde smo',
@@ -129,10 +129,10 @@ export const sr = {
     location: 'Leskovac, Srbija',
     /* Derived from site.json, never typed. The noun is inflected because
        Serbian agreement changes at 22 — see pluralNoun. */
-    rating: '{score} — {count} {noun}',
+    rating: '{score} · {count} {noun}',
     concept: 'Koncept · sadržaj ilustrativan',
     legal: 'Sva prava zadržana.',
-    madeBy: 'Brending — 134agcy',
+    madeBy: 'Brending · 134agcy',
   },
   press: {
     quote:

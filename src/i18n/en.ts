@@ -4,7 +4,7 @@ import type { Dictionary } from './sr';
 // blank element at runtime.
 export const en: Dictionary = {
   meta: {
-    title: 'Nook — a bar in Leskovac',
+    title: 'Nook, a bar in Leskovac',
     description:
       'A hidden bar in Leskovac. You come in for a coffee and stay longer than you meant to.',
   },
@@ -95,7 +95,7 @@ export const en: Dictionary = {
     addressLabel: 'Address',
     priceLabel: 'Price',
     nowLabel: 'Now',
-    priceValue: 'RSD 500 — 1,000|per person',
+    priceValue: 'RSD 500 – 1,000|per person',
     hoursLabel: 'Hours',
     socialLabel: 'Instagram',
     mapLabel: 'Where we are',
@@ -111,10 +111,10 @@ export const en: Dictionary = {
     locationCol: 'Location',
     ratingCol: 'Rating',
     location: 'Leskovac, Serbia',
-    rating: '{score} — {count} {noun}',
+    rating: '{score} · {count} {noun}',
     concept: 'Concept · illustrative content',
     legal: 'All rights reserved.',
-    madeBy: 'Branding — 134agcy',
+    madeBy: 'Branding · 134agcy',
   },
   press: {
     quote:

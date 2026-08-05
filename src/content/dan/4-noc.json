@@ -9,8 +9,8 @@
     "en": "Until midnight. Then a little longer."
   },
   "when": {
-    "sr": "22 — 24",
-    "en": "22 — 24"
+    "sr": "22 – 24",
+    "en": "22 – 24"
   },
   "media": "radial-gradient(58% 44% at 52% 28%,rgba(242,228,198,.86),rgba(70,70,50,0) 72%),linear-gradient(172deg,#BDB79A,#6E6B4F 56%,#282819)",
   "placeholder": true

@@ -17,7 +17,7 @@ const cards = [
   { id: 'kuhinja', label: t.karta.cardKitchen, groups: groups.filter((g) => g.data.card === 'kuhinja') },
 ];
 
-const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '—');
+const money = (p: number) => (p > 0 ? p.toLocaleString('sr-RS') : '–');
 
 // A row is interactive iff it has a photo or a description. Precompute its
 // thumbnail and large crop here — the logo stands in until a photo exists — so
