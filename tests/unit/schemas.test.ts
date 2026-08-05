@@ -64,7 +64,7 @@ describe('menu groups', () => {
 
 describe('reviews', () => {
   const base = {
-    quote: 'The best bar in town.',
+    quote: { sr: 'Najbolji bar u gradu.', en: 'The best bar in town.' },
     author: 'M. P.',
     stars: 5,
     order: 1,

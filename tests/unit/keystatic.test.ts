@@ -68,7 +68,7 @@ describe('fields hidden from the editor survive being dropped', () => {
 
   it('a review saved without stars or placeholder still parses', () => {
     const saved = {
-      quote: 'The best bar in town.',
+      quote: { sr: 'Najbolji bar u gradu.', en: 'The best bar in town.' },
       author: 'M. P.',
       lang: 'en',
       source: 'google',

@@ -1,5 +1,8 @@
 {
-  "quote": "A warm and welcoming atmosphere. This has definitely become my new favorite spot in town.",
+  "quote": {
+    "sr": "Topla atmosfera u kojoj se odmah osećaš dobrodošlo. Ovo je definitivno postalo moje omiljeno mesto u gradu.",
+    "en": "A warm and welcoming atmosphere. This has definitely become my new favorite spot in town."
+  },
   "author": "Jovana I.",
   "source": "google",
   "stars": 5,

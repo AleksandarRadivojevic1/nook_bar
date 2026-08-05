@@ -144,7 +144,7 @@ const t = useTranslations(locale);
 .scene-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 .scene-scrim{
   position:absolute;inset:0;
-  background:radial-gradient(46% 34% at 50% 42%, rgba(20,14,7,.66), rgba(20,14,7,.26) 60%, rgba(20,14,7,0) 80%);
+  background:radial-gradient(50% 38% at 50% 43%, rgba(20,14,7,.74), rgba(20,14,7,.32) 60%, rgba(20,14,7,0) 82%);
 }
 /* vignette: corners fall away so the full-bleed state still has a centre */
 .scene-veil{
@@ -220,6 +220,14 @@ const t = useTranslations(locale);
 .hero-block.is-first .display{max-width:14ch;color:#F7F2E8}
 .hero-block.is-first .eyebrow{color:rgba(242,222,182,.86)}
 .hero-block.is-first .sub{max-width:25ch;color:rgba(247,242,232,.88)}
+/* The headline runs wider than the knockout matte, so its ends spill onto the
+   bone background where white would vanish. A soft dark halo keeps the copy
+   legible over both the landmass and the bone, without touching the layout. */
+.hero-block.is-first .display,
+.hero-block.is-first .sub,
+.hero-block.is-first .eyebrow{
+  text-shadow:0 1px 2px rgba(20,14,7,.5),0 0 26px rgba(20,14,7,.62);
+}
 .pill{
   margin-top:.9rem;pointer-events:auto;
   font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;

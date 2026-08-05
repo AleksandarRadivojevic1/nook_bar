@@ -224,12 +224,7 @@ export default config({
             description: 'First name and last initial only.',
           },
         }),
-        quote: fields.text({
-          label: 'Quote',
-          multiline: true,
-          description:
-            'VERBATIM, exactly as it was written on Google. Do not tidy it, translate it or fix the grammar.',
-        }),
+        quote: localized('Quote', true),
         lang: fields.select({
           label: 'Written in',
           options: [

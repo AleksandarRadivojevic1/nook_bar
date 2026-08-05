@@ -3,6 +3,7 @@ import { fill, pluralNoun, useTranslations, type Locale } from '../i18n';
 import { formatClock, formatDate } from '../lib/hours';
 import { visibleSections, type SectionId } from '../lib/sections';
 import { formatScore, site } from '../lib/site';
+import Wordmark from './Wordmark.astro';
 
 interface Props {
   locale: Locale;
@@ -70,26 +71,11 @@ const year = now.getFullYear();
 
     <div class="footer-legal">
       <div>© {year} Nook · Leskovac</div>
-      <div>{t.footer.boundaries}</div>
       <div>{t.footer.concept}</div>
     </div>
 
     <div class="footer-mark">
-      <svg viewBox="0 0 1200 236" aria-label="Nook">
-        <!-- Each glyph is placed on an even centre-to-centre rhythm rather than
-             stretched with textLength. Equal edge-gaps read as uneven here
-             because K is much narrower than N and the O's — the eye tracks the
-             centres, so the K looked pinched against the last O. Fixed centres
-             (305 apart) give an even rhythm; the leading centre is nudged so the
-             INK, not the geometry, sits centred on the panel. -->
-        <text
-          y="230"
-          text-anchor="middle"
-          font-family="Jost, sans-serif"
-          font-weight="400"
-          font-size="300"
-          fill="#F7F2E8"><tspan x="158">N</tspan><tspan x="463">O</tspan><tspan x="768">O</tspan><tspan x="1073">K</tspan></text>
-      </svg>
+      <Wordmark class="footer-mark-svg" />
       </div>
     </footer>
   </div>
@@ -159,7 +145,7 @@ const year = now.getFullYear();
   padding:0 clamp(1.25rem,3vw,2.6rem) 2.2vh;
   font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,242,232,.5);
 }
-.footer-mark{position:relative;z-index:4;width:100%;margin-bottom:-5px}
-.footer-mark svg{width:100%;height:auto;display:block}
+.footer-mark{position:relative;z-index:4;width:100%;margin-bottom:0;color:#F7F2E8}
+.footer-mark svg{width:84%;height:auto;display:block;margin:0 auto}
 
 </style>

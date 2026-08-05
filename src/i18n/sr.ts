@@ -7,7 +7,7 @@ export const sr = {
   meta: {
     title: 'Nook — bar u Leskovcu',
     description:
-      'Skriveno mesto u Leskovcu. Kafa od jutra, koktel do ponoći, i nijedan sat na zidu.',
+      'Skriveni bar u Leskovcu. Svratiš na kafu, ostaneš duže nego što si mislio.',
   },
   /**
    * One label per section, keyed by the section's id. `src/lib/sections.ts`
@@ -32,10 +32,10 @@ export const sr = {
     eyebrow: 'Bar · Leskovac',
     headlineLine1: 'Neka mesta se ne traže.',
     headlineLine2: 'Na njih se naiđe.',
-    sub: 'Kafa od jutra, koktel do ponoći, i nijedan sat na zidu.',
-    cta: 'Otkrij',
+    sub: 'Ovde niko ne gleda na sat.',
+    cta: 'Uđi',
     script: 'skriveno mesto',
-    over: 'Iza vrata koja lako promašiš — soba koja te je čekala.',
+    over: 'Iza vrata koja lako promašiš. Soba koja te je čekala.',
     readoutInspiration: 'Inspiracija',
     readoutSyros: 'Siros, Kikladi',
     readoutBar: 'Nook',
@@ -43,20 +43,20 @@ export const sr = {
   },
   prostor: {
     manifesto:
-      'Nook je mali bar u Leskovcu. Materijali su obični — malter, drvo, mesing koji tamni. Ništa se ne pretvara da je starije nego što jeste. Piće je iskreno, mera je puna, a muzika je taman toliko tiha da se čuje razgovor.',
+      'Nook nije mesto kroz koje prolaziš. Ovde se ostane još na jednu kafu. Pa još na jedan koktel.',
     manifesto2:
-      'Inspiracija je Mediteran: kamena sela, materijali koji tu odvek stoje, i površine koje sunce zatekne. Lepota bez napora — ona koja se vidi tek u sitnicama.',
+      'Dođeš da radiš, da se odmoriš ili nešto proslaviš. A vratiš se zbog atmosfere.',
   },
   dan: {
     title: 'Jedan dan',
-    sub: 'Od prve kafe do poslednjeg koktela — bar se menja četiri puta dnevno.',
+    sub: 'Jutro pripada kafi, veče koktelu. Ostatak pripada onome ko sedi preko puta tebe.',
     arrive: 'Koste Stamenkovića 23 · Leskovac',
     arriveScript: 'I tu si.',
     pin: 'Leskovac',
   },
   karta: {
     title: 'Karta',
-    note: 'Od jutarnje kafe do poslednjeg pića uveče. Cene su u dinarima. Ako imate alergije ili druge potrebe, recite osoblju.',
+    note: 'Cene su u dinarima. Ako imate alergije ili posebne želje, recite osoblju.',
     currency: 'RSD',
     cardDrinks: 'Piće',
     cardKitchen: 'Kuhinja',
@@ -79,7 +79,7 @@ export const sr = {
   potpis: {
     eyebrow: 'Potpis',
     title: 'Tri koja pamtiš',
-    note: 'Karta se menja. Ova tri ostaju — po njima nas prepoznaju.',
+    note: 'Karta se menja. Ova tri ostaju.',
   },
   recenzije: {
     title: 'Recenzije',
@@ -87,7 +87,7 @@ export const sr = {
        be two more facts nobody remembers to update, which is how the opening
        hours ended up wrong on all seven days. */
     claim: '{count} ljudi je ostavilo recenziju. Svih {count} je dalo {score}.',
-    note: 'Ostavljene onako kako su napisane.',
+    note: 'Mi bismo mogli da pričamo. Bolje da čuješ njih.',
     google: 'Google recenzija',
     localGuide: 'Local Guide',
     /* Lives here rather than under footer: the noun belongs to reviews, and
@@ -96,8 +96,8 @@ export const sr = {
   },
   galerija: {
     eyebrow: 'Galerija',
-    title: 'Prostor u slikama',
-    note: 'Nekoliko trenutaka iz prostora.',
+    title: 'Ovako izgleda.',
+    note: 'Pre nego što svratiš.',
     close: 'Zatvori',
     prev: 'Prethodna',
     next: 'Sledeća',
@@ -131,8 +131,7 @@ export const sr = {
     /* Derived from site.json, never typed. The noun is inflected because
        Serbian agreement changes at 22 — see pluralNoun. */
     rating: '{score} — {count} {noun}',
-    boundaries: 'Granice © OpenStreetMap contributors, ODbL',
-    concept: 'Koncept — sadržaj ilustrativan',
+    concept: 'Koncept · sadržaj ilustrativan',
     legal: 'Sva prava zadržana.',
     madeBy: 'Brending — 134agcy',
   },

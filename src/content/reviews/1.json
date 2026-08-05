@@ -1,5 +1,8 @@
 {
-  "quote": "Amazing new spot in town. Staff is really attentive, and the vibe is great.",
+  "quote": {
+    "sr": "Sjajno novo mesto u gradu. Osoblje je pažljivo, a atmosfera odlična.",
+    "en": "Amazing new spot in town. Staff is really attentive, and the vibe is great."
+  },
   "author": "Katarina V.",
   "source": "localGuide",
   "guideReviews": 45,

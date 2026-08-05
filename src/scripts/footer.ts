@@ -18,6 +18,26 @@ export function initFooter(): void {
   if (!m) return;
   const { gsap } = m;
 
+  // Stage one: the wordmark is hidden at rest and rises in once you have
+  // scrolled a little way into the footer, ahead of the frame. The hidden
+  // state is set here, not in CSS, so with no JS / reduced motion it just
+  // shows. It plays before the frame (which fires at the very end below).
+  const mark = document.querySelector<HTMLElement>('.footer-mark');
+  if (mark) {
+    gsap.set(mark, { autoAlpha: 0, yPercent: 45 });
+    gsap.to(mark, {
+      autoAlpha: 1,
+      yPercent: 0,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: wrap,
+        start: 'top 30%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }
+
   // Read the finished frame out of CSS before rewinding it.
   const cs = getComputedStyle(panel);
   const frame = {

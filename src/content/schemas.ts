@@ -49,15 +49,15 @@ export const menuGroupSchema = (image: SchemaContext['image']) =>
   });
 
 export const reviewSchema = z.object({
-  /** Verbatim, and never translated. See the EN marker in Recenzije.astro. */
-  quote: z.string().min(1),
+  /** Shown in the reader's language; both are supplied. */
+  quote: localized,
   /** First name and last initial only. */
   author: z.string().min(1),
   source: z.enum(['google', 'localGuide']).default('google'),
   guideReviews: optional(z.number().int().positive()),
   /** Hidden from Keystatic, so it needs a default or the next edit drops it. */
   stars: z.number().int().min(1).max(5).default(5),
-  /** What it was written in, not what it is read in. Drives the EN marker. */
+  /** The language it was originally written in. Informational only. */
   lang: z.enum(['sr', 'en']),
   featured: z.boolean().default(false),
   order: z.number().int(),

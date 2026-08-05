@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { fill, pluralNoun, useTranslations, type Locale } from '../../i18n';
-import { langMarker, orderReviews } from '../../lib/reviews';
+import { orderReviews } from '../../lib/reviews';
 import { formatScore, site } from '../../lib/site';
 
 interface Props {
@@ -56,23 +56,14 @@ const claim = fill(t.recenzije.claim, {
 
     <div class="rev-list">
       {
-        reviews.map((review) => {
-          const marker = langMarker(review.lang, locale);
-          return (
-            <figure class:list={['rev-item', review.featured && 'is-featured']}>
-              <blockquote class="rev-quote">{review.quote}</blockquote>
-              <figcaption class="rev-by">
-                <b>{review.author}</b> · {sourceLabel(review.source, review.guideReviews)}
-                {marker && (
-                  <Fragment>
-                    {' · '}
-                    <span class="rev-lang">{marker}</span>
-                  </Fragment>
-                )}
-              </figcaption>
-            </figure>
-          );
-        })
+        reviews.map((review) => (
+          <figure class:list={['rev-item', review.featured && 'is-featured']}>
+            <blockquote class="rev-quote">{review.quote[locale]}</blockquote>
+            <figcaption class="rev-by">
+              <b>{review.author}</b> · {sourceLabel(review.source, review.guideReviews)}
+            </figcaption>
+          </figure>
+        ))
       }
     </div>
   </div>
@@ -84,8 +75,8 @@ const claim = fill(t.recenzije.claim, {
 </script>
 
 <style is:global>
-/* RECENZIJE — a page, not a widget. Quotes are verbatim; the EN marker says
-   so. The debossed wordmark belongs to Siros now. */
+/* RECENZIJE — a page, not a widget. Quotes read in the visitor's language.
+   The debossed wordmark belongs to Siros now. */
 .reviews{position:relative;background:var(--bone);padding:15vh var(--gutter) 12vh;overflow:hidden}
 .reviews-in{position:relative;z-index:2;max-width:54rem;margin:0 auto}
 
@@ -124,7 +115,6 @@ const claim = fill(t.recenzije.claim, {
 .rev-by{font-family:var(--display);font-size:10px;letter-spacing:.28em;text-transform:uppercase;
   color:var(--label)}
 .rev-by b{font-weight:500;color:var(--olive-deep)}
-.rev-lang{opacity:.72}
 
 /* the line-work survives as static corner ornament, with a little drift */
 .rev-orn{position:absolute;z-index:1;pointer-events:none;opacity:.5}

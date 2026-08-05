@@ -1,6 +1,7 @@
 ---
 import { useTranslations, type Locale } from '../i18n';
 import { visibleSections, type SectionId } from '../lib/sections';
+import Wordmark from './Wordmark.astro';
 
 interface Props {
   locale: Locale;
@@ -21,7 +22,9 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
   <div class="nav-links">
     {primary.map((s) => <a href={`#${s.id}`} data-nav-link={s.id}>{t.nav[s.id]}</a>)}
   </div>
-  <a class="nav-mark" href={locale === 'sr' ? '/' : '/en/'}>Nook</a>
+  <a class="nav-mark" href={locale === 'sr' ? '/' : '/en/'} aria-label="Nook">
+    <Wordmark class="nav-mark-svg" />
+  </a>
   <!-- Outside .nav-links on purpose: that is hidden below 720px, and the
        language switch must not disappear on mobile. -->
   <div class="nav-right">
@@ -72,7 +75,13 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
 }
 .nav a{opacity:.78;transition:opacity .3s}
 .nav a:hover{opacity:1}
-.nav-mark{font-weight:400;letter-spacing:.34em;transition:color .55s ease}
+/* Absolutely centred: the flex groups either side have unequal widths, so
+   space-between would never put the mark on the true centre of the bar. */
+.nav-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;transition:color .55s ease}
+/* the vectorised logo inherits the mark's colour via currentColor, so it keeps
+   the olive/bone surface-switching the old text mark had. */
+.nav-mark-svg{height:15px;width:auto;display:block}
 .nav.is-solid .nav-mark{color:var(--olive-deep)}
 .nav-mark.on-dark{color:#F7F2E8}
 .nav-links{display:flex;gap:1.6rem}
@@ -86,7 +95,8 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
 /* The section you are currently looking at. */
 .nav-links a[aria-current='true']{opacity:1}
 .nav-links a[aria-current='true']::after{transform:scaleX(1)}
-.nav-cta{border:1px solid currentColor;border-radius:2rem;padding:.5rem 1.15rem;opacity:.85;
+.nav-cta{border:1px solid currentColor;border-radius:2rem;padding:.5rem 1.25rem;opacity:.85;
+  text-indent:.24em; /* offset trailing letter-spacing, as in .nav-menu-cta */
   transition:opacity .3s,transform .3s ease,background-color .3s}
 .nav-cta:hover{opacity:1;transform:translateY(-1px)}
 .nav.is-dark{color:#F7F2E8}
@@ -138,7 +148,10 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
 .nav-menu-cta{
   margin-top:1.6rem;align-self:start;
   font-size:11px;letter-spacing:.24em;text-transform:uppercase;
-  border:1px solid currentColor;border-radius:2rem;padding:.85rem 1.6rem;
+  border:1px solid currentColor;border-radius:2rem;padding:.9rem 2rem;
+  /* letter-spacing adds a trailing gap after the last glyph, shoving the text
+     left inside the pill; the indent puts it back on centre. */
+  text-indent:.24em;
   color:var(--label);
 }
 body.nav-menu-open{overflow:hidden}

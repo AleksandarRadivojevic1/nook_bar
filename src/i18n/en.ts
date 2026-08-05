@@ -6,7 +6,7 @@ export const en: Dictionary = {
   meta: {
     title: 'Nook — a bar in Leskovac',
     description:
-      'A hidden spot in Leskovac. Coffee from morning, cocktails until midnight, and no clock on the wall.',
+      'A hidden bar in Leskovac. You come in for a coffee and stay longer than you meant to.',
   },
   nav: {
     prostor: 'The room',
@@ -24,12 +24,12 @@ export const en: Dictionary = {
   },
   hero: {
     eyebrow: 'Bar · Leskovac',
-    headlineLine1: 'Some places are not looked for.',
+    headlineLine1: "Some places you don't look for.",
     headlineLine2: 'You come across them.',
-    sub: 'Coffee from morning, cocktails until midnight, and no clock on the wall.',
+    sub: 'Nobody here watches the clock.',
     cta: 'Step in',
     script: 'hidden spot',
-    over: 'Behind a door you could easily miss — a room that was waiting for you.',
+    over: 'Behind a door you could easily miss. The room that was waiting for you.',
     readoutInspiration: 'Inspiration',
     readoutSyros: 'Syros, Cyclades',
     readoutBar: 'Nook',
@@ -37,20 +37,20 @@ export const en: Dictionary = {
   },
   prostor: {
     manifesto:
-      'Nook is a small bar in Leskovac. The materials are ordinary — plaster, wood, brass going dark. Nothing pretends to be older than it is. The drinks are honest, the measures are full, and the music is quiet enough to talk over.',
+      "Nook isn't somewhere you simply pass through. It's the place where one coffee turns into two, and one drink becomes an evening.",
     manifesto2:
-      'The Mediterranean is the reference: stone villages, materials that have always been there, surfaces the sun finds. Beauty without effort — the kind you only notice in small things.',
+      "Whether you're here to work, unwind or celebrate, the atmosphere keeps people coming back.",
   },
   dan: {
     title: 'One day',
-    sub: 'From the first coffee to the last cocktail — the bar changes four times a day.',
+    sub: "Morning belongs to coffee, evening to cocktails. The rest belongs to whoever's sitting across from you.",
     arrive: 'Koste Stamenkovića 23 · Leskovac',
     arriveScript: 'And there you are.',
     pin: 'Leskovac',
   },
   karta: {
     title: 'Menu',
-    note: 'From the first coffee of the day to the last drink of the night. Prices in dinars. If you have allergies or other needs, tell the staff.',
+    note: 'Prices are in dinars. Allergies or anything else, just tell the staff.',
     currency: 'RSD',
     cardDrinks: 'Drinks',
     cardKitchen: 'Kitchen',
@@ -73,20 +73,20 @@ export const en: Dictionary = {
   potpis: {
     eyebrow: 'Signature',
     title: 'Three you remember',
-    note: 'The menu changes. These three stay — they are how people know us.',
+    note: "The menu changes. These three don't.",
   },
   recenzije: {
     title: 'Reviews',
     claim: '{count} people left a review. All {count} gave it {score}.',
-    note: 'Left as they were written.',
+    note: 'We could talk. Better you hear them.',
     google: 'Google review',
     localGuide: 'Local Guide',
     reviewNoun: { one: 'review', few: 'reviews', other: 'reviews' },
   },
   galerija: {
     eyebrow: 'Gallery',
-    title: 'The room in pictures',
-    note: 'A few moments from the room.',
+    title: 'This is what it looks like.',
+    note: 'Before you drop by.',
     close: 'Close',
     prev: 'Previous',
     next: 'Next',
@@ -113,8 +113,7 @@ export const en: Dictionary = {
     ratingCol: 'Rating',
     location: 'Leskovac, Serbia',
     rating: '{score} — {count} {noun}',
-    boundaries: 'Boundaries © OpenStreetMap contributors, ODbL',
-    concept: 'Concept — illustrative content',
+    concept: 'Concept · illustrative content',
     legal: 'All rights reserved.',
     madeBy: 'Branding — 134agcy',
   },

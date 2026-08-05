@@ -1,5 +1,8 @@
 {
-  "quote": "Perfect spot for breakfast and coffee, or late night cocktails.",
+  "quote": {
+    "sr": "Savršeno mesto za doručak i kafu, ili koktele kasno uveče.",
+    "en": "Perfect spot for breakfast and coffee, or late night cocktails."
+  },
   "author": "Kristina I.",
   "source": "google",
   "stars": 5,

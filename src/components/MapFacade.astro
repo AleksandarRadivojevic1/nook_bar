@@ -1,7 +1,6 @@
 ---
 import { useTranslations, type Locale } from '../i18n';
 import { blockMap } from '../lib/blockmap';
-import { site } from '../lib/site';
 
 interface Props {
   locale: Locale;
@@ -15,7 +14,10 @@ const t = useTranslations(locale);
 const byRank = [...blockMap.streets].sort((a, b) => a.rank - b.rank);
 const WIDTH = { 1: 7, 2: 4.2, 3: 2 } as const;
 
-const embed = `https://www.google.com/maps?q=${site.lat},${site.lng}&z=17&output=embed`;
+// Google's own place-embed (Share → Embed a map). Unlike `?q=…&output=embed`,
+// this drops the real "Nook Bar" marker via the place id. `1s${locale}` sets
+// the map's UI language to match the page.
+const embed = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2730.745009375763!2d21.9487068709841!3d42.992217109123956!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x475583b9f6d86b21%3A0x92235e0373ac5293!2sNook%20Bar!5e0!3m2!1s${locale}!2srs!4v1785935700502!5m2!1s${locale}!2srs`;
 
 /**
  * A window on the asset rather than the whole of it, in metres, centred on
