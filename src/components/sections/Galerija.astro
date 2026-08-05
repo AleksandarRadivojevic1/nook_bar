@@ -224,23 +224,35 @@ body.g-modal-open{overflow:hidden}
 .g-modal-center{
   flex:1;min-height:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:1.2rem;
+  gap:1.2rem;padding-bottom:1rem;
 }
 .g-modal-img{
-  max-width:min(100%,900px);max-height:70vh;
+  max-width:min(100%,900px);max-height:58vh;
+  min-height:0;flex:0 1 auto;
   width:auto;height:auto;object-fit:contain;
   display:block;
 }
 .g-modal-caption{
-  margin:0;text-align:center;
-  font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  margin:0;max-width:56ch;text-align:center;text-wrap:pretty;
+  font-family:var(--display);font-size:11px;line-height:1.7;letter-spacing:.2em;text-transform:uppercase;
   color:#F7F2E8;
 }
 /* Each word rides in its own clipped box so the stagger reads as a reveal. */
 .g-word{display:inline-block;overflow:hidden;vertical-align:bottom}
 .g-word > span{display:inline-block;white-space:pre}
 
-.g-modal-nav{display:flex;align-items:center;justify-content:space-between}
+.g-modal-nav{display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;gap:1rem;padding-top:.4rem}
+/* Prev/next need to read as buttons over any photo — a pill outline at full
+   opacity, where the base .g-modal button style leaves them faint and edgeless. */
+.g-modal-prev,.g-modal-next{
+  opacity:1;border:1px solid rgba(247,242,232,.34);border-radius:999px;
+  padding:.6rem 1.15rem;transition:border-color .3s ease,background .3s ease;
+}
+.g-modal-prev:hover,.g-modal-prev:focus-visible,
+.g-modal-next:hover,.g-modal-next:focus-visible{
+  border-color:rgba(247,242,232,.85);background:rgba(247,242,232,.07);
+}
 
 @media (prefers-reduced-motion: reduce){
   .g-modal{backdrop-filter:none}
