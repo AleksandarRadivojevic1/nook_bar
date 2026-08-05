@@ -104,7 +104,15 @@ const other = locale === 'sr' ? { href: '/en/', label: 'EN', tag: 'en' } : { hre
 
   .nav-right { display: flex; align-items: center; gap: .6rem; }
   .nav-lang { font-variant-numeric: tabular-nums; }
-  @media (max-width: 720px) { .nav-hide-sm { display: none; } }
+  @media (max-width: 720px) {
+    .nav-hide-sm { display: none; }
+    /* Otherwise EN + MENI collapse together to one side and the centred logo
+       lands on top of them. display:contents lifts the two out of .nav-right so
+       space-between pins them to the edges — MENI left, EN right, logo centred. */
+    .nav-right { display: contents; }
+    .nav-toggle { order: -1; }
+    .nav-lang { order: 1; }
+  }
 
 /* ── mobile menu ─────────────────────────────────────────────────────────
    Mirrors `.nav-links`: the toggle exists exactly where those links do not. */

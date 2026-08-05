@@ -108,7 +108,6 @@ const t = useTranslations(locale);
       <p class="eyebrow">{t.hero.eyebrow}</p>
       <h1 class="display">{t.hero.headlineLine1}<br />{t.hero.headlineLine2}</h1>
       <p class="sub">{t.hero.sub}</p>
-      <a class="pill" href="#prostor">{t.hero.cta}</a>
     </div>
     <div class="hero-block is-over" id="hb2">
       <div class="wordmark-lg">Nook</div>
@@ -228,13 +227,6 @@ const t = useTranslations(locale);
 .hero-block.is-first .eyebrow{
   text-shadow:0 1px 2px rgba(20,14,7,.5),0 0 26px rgba(20,14,7,.62);
 }
-.pill{
-  margin-top:.9rem;pointer-events:auto;
-  font-family:var(--display);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--ink);background:var(--bone);border-radius:2rem;padding:.85rem 1.7rem;
-  transition:background .35s,color .35s,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;
-}
-.pill:hover{background:#fff;transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,14,7,.22)}
 /* second block: centred over the opened room, light on dark */
 .hero-block.is-over{height:240vh;justify-content:center;align-items:center;text-align:center;gap:.5rem}
 .hero-block.is-over .display,.hero-block.is-over .eyebrow{color:#F7F2E8}

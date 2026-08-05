@@ -33,7 +33,6 @@ export const sr = {
     headlineLine1: 'Neka mesta se ne traže.',
     headlineLine2: 'Na njih se naiđe.',
     sub: 'Ovde niko ne gleda na sat.',
-    cta: 'Uđi',
     script: 'skriveno mesto',
     over: 'Iza vrata koja lako promašiš. Soba koja te je čekala.',
     readoutInspiration: 'Inspiracija',

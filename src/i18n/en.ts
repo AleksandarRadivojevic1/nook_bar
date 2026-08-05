@@ -27,7 +27,6 @@ export const en: Dictionary = {
     headlineLine1: "Some places you don't look for.",
     headlineLine2: 'You come across them.',
     sub: 'Nobody here watches the clock.',
-    cta: 'Step in',
     script: 'hidden spot',
     over: 'Behind a door you could easily miss. The room that was waiting for you.',
     readoutInspiration: 'Inspiration',
